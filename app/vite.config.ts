@@ -7,9 +7,10 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig({
   // Base URL for GitHub Pages
-  // If using custom domain (e.g., michaelschreiber.net), use '/'
-  // If using username.github.io/repo-name, use '/repo-name/'
-  base: '/',
+  // Use environment variable if set, otherwise default to '/'
+  // For custom domain: base: '/'
+  // For username.github.io/repo-name: base: '/repo-name/'
+  base: process.env.VITE_BASE_URL || '/',
   plugins: [
     vue(),
     vueDevTools(),
