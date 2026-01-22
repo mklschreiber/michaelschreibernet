@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "titleKey": "projects.projectTitle",
+    "descriptionKey": "projects.projectDescription",
+    "technologies": ["Android", "Kotlin"],
+    "link": "https://play.google.com/store/apps/details?id=io.software_lab.mystandby",
+    "linkTextKey": "projects.projectLinkText"
+  }
+]
