@@ -7,6 +7,7 @@ const i18n = createI18n<[MessageSchema], 'en' | 'de'>({
   legacy: false,
   locale: 'de',
   fallbackLocale: 'en',
+  globalInjection: true,
   messages: {
     en,
     de,
