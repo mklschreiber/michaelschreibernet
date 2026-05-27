@@ -18,6 +18,9 @@ const de: MessageSchema = {
     projectTitle: 'myStandby',
     projectDescription: 'Eine Android App zur Verwaltung von Bereitschaftsdiensten, entwickelt mit Kotlin',
     projectLinkText: 'Im Play Store ansehen',
+    projectTitleMichaelSchreiberNet: 'michaelschreiber.net',
+    projectDescriptionMichaelSchreiberNet: 'Eine Vue-Applikation zur Auflistung meiner persönlichen Projekte.',
+    projectLinkTextGithub: 'Auf GitHub ansehen',
   },
   contact: {
     title: 'Kontakt',

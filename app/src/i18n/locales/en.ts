@@ -18,6 +18,9 @@ const en: MessageSchema = {
     projectTitle: 'myStandby',
     projectDescription: 'An Android app for managing on-call duties, developed with Kotlin',
     projectLinkText: 'View on Play Store',
+    projectTitleMichaelSchreiberNet: 'michaelschreiber.net',
+    projectDescriptionMichaelSchreiberNet: 'A Vue application that lists my personal projects.',
+    projectLinkTextGithub: 'View on GitHub',
   },
   contact: {
     title: 'Contact',

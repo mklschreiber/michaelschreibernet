@@ -12,7 +12,13 @@ export default defineConfig({
   // For username.github.io/repo-name: base: '/repo-name/'
   base: process.env.VITE_BASE_URL || '/',
   plugins: [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('md-'),
+        },
+      },
+    }),
     vueDevTools(),
   ],
   resolve: {

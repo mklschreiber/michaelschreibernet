@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import AppNavigation from '@/components/AppNavigation.vue'
+import MdFilledButton from '@/components/MdFilledButton.vue'
+import MdOutlinedButton from '@/components/MdOutlinedButton.vue'
 
 const { t } = useI18n()
 </script>
@@ -14,14 +15,15 @@ const { t } = useI18n()
       <h1>{{ t('landing.title') }}</h1>
       <p>{{ t('landing.subtitle') }}</p>
       <div class="cta-buttons">
-        <RouterLink to="/projects" class="btn btn-primary">{{ t('landing.viewProjects') }}</RouterLink>
-        <RouterLink to="/contact" class="btn btn-secondary">{{ t('landing.getInTouch') }}</RouterLink>
+        <MdFilledButton to="/projects">{{ t('landing.viewProjects') }}</MdFilledButton>
+        <MdOutlinedButton to="/contact">{{ t('landing.getInTouch') }}</MdOutlinedButton>
       </div>
     </main>
   </div>
 </template>
 
 <style scoped>
+
 .landing-page {
   min-height: 100vh;
   display: flex;
@@ -53,33 +55,15 @@ const { t } = useI18n()
 .cta-buttons {
   display: flex;
   gap: var(--spacing-md);
+  width: 100%;
+  justify-content: center;
 }
 
-.btn {
-  padding: var(--spacing-md) var(--spacing-lg);
-  text-decoration: none;
-  border-radius: var(--radius-md);
-  font-weight: var(--font-weight-semibold);
-  transition: all var(--transition-base);
-}
-
-.btn-primary {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-hover);
-}
-
-.btn-secondary {
-  background-color: transparent;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-}
-
-.btn-secondary:hover {
-  background-color: var(--color-primary);
-  color: white;
+@media (max-width: 768px) {
+  .cta-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 var(--spacing-md);
+  }
 }
 </style>

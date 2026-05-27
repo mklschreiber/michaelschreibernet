@@ -6,5 +6,13 @@
     "technologies": ["Android", "Kotlin"],
     "link": "https://play.google.com/store/apps/details?id=io.software_lab.mystandby",
     "linkTextKey": "projects.projectLinkText"
+  },
+  {
+    "id": 2,
+    "titleKey": "projects.projectTitleMichaelSchreiberNet",
+    "descriptionKey": "projects.projectDescriptionMichaelSchreiberNet",
+    "technologies": ["Vue.js"],
+    "link": "https://github.com/mklschreiber/michaelschreibernet",
+    "linkTextKey": "projects.projectLinkTextGithub"
   }
 ]
