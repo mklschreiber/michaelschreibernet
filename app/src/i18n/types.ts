@@ -17,6 +17,8 @@ export interface MessageSchema {
     projectDescription: string
     projectLinkText: string
     projectLinkTextGithub: string
+    projectTitleMichaelSchreiberNet: string
+    projectDescriptionMichaelSchreiberNet: string
   }
   contact: {
     title: string
