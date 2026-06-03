@@ -1,19 +1,18 @@
 # Backlog – michaelschreiber.net
 
-## Legende
+## Legend
 
-| Status | Bedeutung |
+| Status | Meaning |
 |---|---|
-| 📋 Backlog | Noch nicht gestartet |
-| 🔧 In Progress | Wird gerade implementiert |
-| ✅ Done | Abgeschlossen |
-| ❌ Blocked | Blockiert durch Abhängigkeit |
+| 📋 Backlog | Not yet started |
+| 🔧 In Progress | Currently being implemented |
+| ✅ Done | Completed |
+| ❌ Blocked | Blocked by dependency |
 
 ---
 
 ## Tickets
 
-| Ticket | Titel | Status | Abhängig von |
+| Ticket | Title | Status | Depends on |
 |---|---|---|---|
-| [MSNET-0001](./MSNET-0001/MSNET-0001.md) | "Über mich" Sektion | 📋 Backlog | – |
-
+| [MSNET-0001](./MSNET-0001/MSNET-0001.md) | "About Me" Section | ✅ Done | – |

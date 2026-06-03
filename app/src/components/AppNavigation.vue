@@ -5,14 +5,14 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-// Zustand für das Hamburger-Menü
+// State for the hamburger menu
 const isMenuOpen = ref(false)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-// Optional: Schließt das Menü, wenn ein Link angeklickt wird
+// Optional: Close the menu when a link is clicked
 const closeMenu = () => {
   isMenuOpen.value = false
 }
@@ -29,6 +29,7 @@ const closeMenu = () => {
 
       <nav :class="['navigation', { 'is-open': isMenuOpen }]">
         <RouterLink to="/" @click="closeMenu">{{ t('nav.home') }}</RouterLink>
+        <RouterLink to="/about" @click="closeMenu">{{ t('nav.about') }}</RouterLink>
         <RouterLink to="/projects" @click="closeMenu">{{ t('nav.projects') }}</RouterLink>
         <RouterLink to="/contact" @click="closeMenu">{{ t('nav.contact') }}</RouterLink>
       </nav>

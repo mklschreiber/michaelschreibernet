@@ -14,6 +14,11 @@ const router = createRouter({
       component: LandingPage,
     },
     {
+      path: '/about',
+      name: 'about',
+      component: () => import('@/views/AboutPage.vue'),
+    },
+    {
       path: '/projects',
       name: 'projects',
       component: ProjectOverviewPage,

@@ -2,27 +2,28 @@
 applyTo: "**"
 ---
 
-# Projekt-Kontext: michaelschreiber.net
+# Project Context: michaelschreiber.net
 
-## Projektdokumentation (PFLICHT-LEKTÜRE)
+## Project Documentation (REQUIRED READING)
 
-Bevor du mit der Arbeit beginnst, lies die **Projektdokumentation** in `.ai-docs/`:
+Before you start working, read the **project documentation** in `.ai-docs/`:
 
-| Datei | Wann lesen |
+| File | When to read |
 |---|---|
-| **`dev-journal.md`** | IMMER – Fortschritt, offene Punkte, Arbeitsprotokoll |
-| **`01-vision.md`** | Um zu verstehen WAS gebaut wird |
-| **`02-architecture.md`** | Für Projektstruktur und Tech-Stack |
-| **`03-decitions.md`** | Welche Entscheidungen bereits getroffen wurden |
-| **`04-glossar.md`** | Fachbegriffe |
-| **`05-setup.md`** | Installation und Entwicklung |
+| **`dev-journal.md`** | ALWAYS – progress, open items, work log |
+| **`01-vision.md`** | To understand WHAT is being built |
+| **`02-architecture.md`** | For project structure and tech stack |
+| **`03-decitions.md`** | Which decisions have already been made |
+| **`04-glossar.md`** | Technical terms |
+| **`05-setup.md`** | Installation and development |
 
-## Regeln für alle Agenten
+## Rules for All Agents
 
-1. **Lies das Journal** bevor du loslegst – damit du weißt, was bereits passiert ist
-2. **Aktualisiere das Journal** wenn du fertig bist:
-   - Hake erledigte Punkte ab unter "Fortschritt" (`- [x]`)
-   - Füge einen Eintrag im "Arbeitsprotokoll" hinzu mit deinem Agentennamen und was du gemacht hast
-   - Dokumentiere neue Entscheidungen in der Entscheidungstabelle
-3. **Keine Alleingänge** – Wenn du eine Architektur-Entscheidung treffen musst, die nicht im Journal steht, dokumentiere sie dort mit Begründung
-4. **Referenziere bestehende Dateien** statt sie neu zu erfinden – siehe "Referenzen" im Journal
+1. **Read the journal** before you start – so you know what has already happened
+2. **Update the journal** when you are done:
+   - Check off completed items under "Progress" (`- [x]`)
+   - Add an entry in the "Work Log" with your agent name and what you did
+   - Document new decisions in the decisions table
+3. **No solo decisions** – If you need to make an architecture decision that is not in the journal, document it there with justification
+4. **Reference existing files** instead of reinventing them – see "References" in the journal
+5. **Write all comments and documentation (including ADRs, change-logs, plans, test concepts, reviews) in English**
