@@ -17,7 +17,7 @@ vi.stubGlobal(
 )
 
 function createWrapper(locale = 'de') {
-  const i18n = createI18n({ legacy: false, locale, messages: { de, en } })
+  const i18n = createI18n({ legacy: false, locale, messages: { de, en } as Record<string, any> })
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
@@ -90,15 +90,15 @@ describe('AboutPage', () => {
   it('first entry has data-entry-id mercedesBenz (most recent)', () => {
     const wrapper = createWrapper()
     const entries = wrapper.findAll('[data-entry-id]')
-    expect(entries[0].attributes('data-entry-id')).toBe('mercedesBenz')
+    expect(entries[0]?.attributes('data-entry-id')).toBe('mercedesBenz')
   })
 
   it('alternates sides left/right', () => {
     const wrapper = createWrapper()
     const entries = wrapper.findAll('[data-entry-id]')
-    expect(entries[0].classes()).toContain('timeline-entry--left')
-    expect(entries[1].classes()).toContain('timeline-entry--right')
-    expect(entries[2].classes()).toContain('timeline-entry--left')
+    expect(entries[0]?.classes()).toContain('timeline-entry--left')
+    expect(entries[1]?.classes()).toContain('timeline-entry--right')
+    expect(entries[2]?.classes()).toContain('timeline-entry--left')
   })
 
   it('renders title in English when locale is en', () => {

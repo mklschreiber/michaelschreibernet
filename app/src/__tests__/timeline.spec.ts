@@ -8,8 +8,8 @@ describe('timeline data', () => {
   })
 
   it('has Mercedes-Benz Tech Innovation as first (most recent) entry', () => {
-    expect(timelineEntries[0].id).toBe('mercedesBenz')
-    expect(timelineEntries[0].date).toBe('about.timeline.entries.mercedesBenz.date')
+    expect(timelineEntries[0]?.id).toBe('mercedesBenz')
+    expect(timelineEntries[0]?.date).toBe('about.timeline.entries.mercedesBenz.date')
   })
 
   it('each entry has all required fields', () => {
