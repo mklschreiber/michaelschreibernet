@@ -26,3 +26,7 @@
 - Change-Log in `.ai-docs/tickets/MSNET-0001/MSNET-0001-changes.md`
 - Backlog auf ✅ Done gesetzt
 
+### 2026-07-27 – developer: SEO implemented
+- Added static metadata, structured Person data, crawl directives, and sitemap discovery.
+- Added centrally managed metadata for every application route and SEO unit tests.
+- Recorded ADR-010 for the centralized route metadata approach.

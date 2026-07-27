@@ -20,3 +20,10 @@
 - **Justification:** Date information is language-dependent ("heute" vs. "present", "Werkstudent" vs. "Working Student"). Full localization without data duplication.
 - **Alternatives:** Data in separate TS file (unnecessary indirection), without i18n (no multilingual support)
 - **Impact:** i18n files are extended with timeline entries. `MessageSchema = typeof de` reflects new keys automatically.
+
+## ADR-010: Route Metadata Managed Centrally
+- **Status:** Accepted
+- **Decision:** Route-specific SEO metadata is maintained in `src/seo.ts` and applied by a router navigation hook.
+- **Justification:** This keeps page titles, descriptions, Open Graph metadata, and canonical URLs consistent across every SPA route without duplicating document-head logic in views.
+- **Alternatives:** Static metadata only (cannot describe subpages), per-view metadata updates (duplicates logic and risks inconsistency).
+- **Impact:** Every declared route supplies a metadata entry; static SEO essentials remain in `index.html`.
