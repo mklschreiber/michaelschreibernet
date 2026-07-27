@@ -5,19 +5,24 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 import AboutPage from '@/views/AboutPage.vue'
 import de from '@/i18n/locales/de'
 import en from '@/i18n/locales/en'
+import type { MessageSchema } from '@/i18n/types'
 
 vi.stubGlobal(
   'IntersectionObserver',
   class {
-    constructor(_cb: unknown) {}
+    constructor() {}
     observe = vi.fn()
     unobserve = vi.fn()
     disconnect = vi.fn()
   },
 )
 
-function createWrapper(locale = 'de') {
-  const i18n = createI18n({ legacy: false, locale, messages: { de, en } as Record<string, any> })
+function createWrapper(locale: 'de' | 'en' = 'de') {
+  const i18n = createI18n<[MessageSchema], 'de' | 'en'>({
+    legacy: false,
+    locale,
+    messages: { de, en },
+  })
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
@@ -108,4 +113,3 @@ describe('AboutPage', () => {
     expect(wrapper.find('.about-page__timeline-title').text()).toBe('Professional Experience')
   })
 })
-
