@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(0.579683,0,0,0.579683,-229.147554,-348.124167)">
+        <circle cx="582.5" cy="1164.5" r="17.5" style="fill:none;stroke:black;stroke-width:14.38px;"/>
+    </g>
+    <g transform="matrix(0.579683,0,0,0.579683,-254.89887,-554.915041)">
+        <circle cx="582.5" cy="1164.5" r="17.5" style="fill:none;stroke:black;stroke-width:14.38px;"/>
+    </g>
+    <g transform="matrix(0.579683,0,0,0.579683,-99.610629,-348.124167)">
+        <circle cx="582.5" cy="1164.5" r="17.5" style="fill:none;stroke:black;stroke-width:14.38px;"/>
+    </g>
+    <g transform="matrix(0.579683,0,0,0.579683,-99.610629,-410.551601)">
+        <circle cx="582.5" cy="1164.5" r="17.5" style="fill:none;stroke:black;stroke-width:14.38px;"/>
+    </g>
+    <g transform="matrix(0.579683,0,0,0.579683,26.024581,-481.562807)">
+        <circle cx="582.5" cy="1164.5" r="17.5" style="fill:none;stroke:black;stroke-width:14.38px;"/>
+    </g>
+    <g transform="matrix(0.579683,0,0,0.579683,98.596472,-519.019267)">
+        <circle cx="582.5" cy="1164.5" r="17.5" style="fill:none;stroke:black;stroke-width:14.38px;"/>
+    </g>
+    <g transform="matrix(0.579683,0,0,0.579683,72.064813,-555.695384)">
+        <circle cx="582.5" cy="1164.5" r="17.5" style="fill:none;stroke:black;stroke-width:14.38px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-582.182452)">
+        <path d="M555,909L663.676,1017.676L793.161,888.192" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-582.182452)">
+        <path d="M580,1152L580,998L661.085,1079.085L791.529,950.641" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-582.182452)">
+        <path d="M794,1118L937,1118L995,1067L918,1004" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-582.182452)">
+        <path d="M759,1166L954,1166L997,1125L996,1068" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-582.182452)">
+        <path d="M961,1097L843,997L899,947L985,946" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-582.182452)">
+        <path d="M951.719,899L887,899L842,942L841,995" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-452.645528)">
+        <path d="M755.281,988.719L791.999,952.001" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-344.861261,-582.182452)">
+        <path d="M795,889L795,1116" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-343.300575,-582.182452)">
+        <path d="M746,1072L746,996" style="fill:none;stroke:black;stroke-width:10.68px;"/>
+    </g>
+    <g transform="matrix(0.780343,0,0,0.780343,-376.074978,-592.32691)">
+        <text x="562.118px" y="1259.924px" style="font-family:'Roboto-Light', 'Roboto';font-weight:300;font-size:54.167px;">michael</text>
+        <text x="749.744px" y="1259.924px" style="font-family:'Roboto-Medium', 'Roboto';font-weight:500;font-size:54.167px;">schr<tspan x="855.274px 883.627px " y="1259.924px 1259.924px ">ei</tspan>ber</text>
+        <g transform="matrix(54.166667,0,0,54.166667,1064.111538,1259.924319)">
+        </g>
+        <text x="975.72px" y="1259.924px" style="font-family:'Roboto-Light', 'Roboto';font-weight:300;font-size:54.167px;">.net</text>
+    </g>
+</svg>

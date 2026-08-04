@@ -10,6 +10,7 @@ const en: MessageSchema = {
   landing: {
     title: 'Welcome',
     subtitle: 'Discover my projects and get in touch.',
+    logoAlt: 'Animated michaelschreiber.net logo as a connected IT network',
     viewProjects: 'View Projects',
     getInTouch: 'Get in Touch',
   },

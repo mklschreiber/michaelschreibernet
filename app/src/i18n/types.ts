@@ -8,6 +8,7 @@ export interface MessageSchema {
   landing: {
     title: string
     subtitle: string
+    logoAlt: string
     viewProjects: string
     getInTouch: string
   }

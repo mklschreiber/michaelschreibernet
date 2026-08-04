@@ -31,7 +31,6 @@ function setEntryRef(index: number) {
     <AppNavigation />
 
     <main class="about-page__content">
-      <!-- Visitenkarte -->
       <section class="about-page__card">
         <div class="about-page__avatar" :aria-label="t('about.businessCard.avatarAlt')">
           <span class="about-page__initials">MS</span>
