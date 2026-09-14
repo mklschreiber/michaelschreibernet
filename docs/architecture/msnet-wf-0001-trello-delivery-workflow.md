@@ -58,23 +58,27 @@ The board must contain exactly one list with each of these names:
 
 | Trello list | Meaning | Allowed transition |
 |---|---|---|
-| `Backlog` | Accepted but not claimed work; dependencies may still be incomplete. | `In Progress` only when ready; `Blocked` when requirements or an external condition prevent work. |
-| `In Progress` | One coordinator has claimed the card and agents may work on it. | `Blocked`, or `Done` after explicit completion/review. |
-| `Blocked` | Work cannot continue. A workflow comment states the reason and unblock condition. | `Backlog` before work begins, or `In Progress` when resolved. |
+| `TBD` | Ideas and not-yet-ready items; excluded from ticket queries, like a pre-backlog. | `Open` once the card has a complete requirement description. |
+| `Open` | Accepted, ready-to-claim work; dependencies may still be incomplete. | `In Progress` only when ready. |
+| `In Progress` | One coordinator has claimed the card and agents may work on it. | `Review` after the Tester phase completes. |
+| `Review` | Implementation and tests are complete; a human review verdict is pending. | `In Progress` if the coordinator's chat-based review request comes back negative (with feedback recorded as a comment); `Done` only by explicit, manual user action after a positive review. |
 | `Done` | Work was accepted and is complete. Done cards remain open on Trello and must not be archived, because they are dependency evidence. | No normal outgoing transition. |
 
-`Ready` is deliberately not a Trello list or custom field. A card is ready
-when it is in `Backlog`, has a valid requirement description, and every
-referenced dependency card is in `Done`. An unresolved dependency therefore
-leaves the card in `Backlog`; it is not silently selected. A missing,
-ambiguous, or malformed dependency blocks the card and is recorded as such.
+There is no `Blocked` list. A card that cannot proceed stays in its current
+list and the reason is recorded as a workflow comment instead of a list move.
 
-The open-ticket skill lists all non-template cards in `Backlog`, `In
-Progress`, and `Blocked`, in board-list order and each list's Trello `pos`
-order. The next-ticket skill considers only ready `Backlog` cards and selects
-the first by `pos`. An explicitly requested card is subject to the same
-readiness checks. `In Progress` work is resumed only when the coordinator
-explicitly identifies it; it is never selected as “next”.
+`Ready` is deliberately not a Trello list or custom field. A card is ready
+when it is in `Open`, has a valid requirement description, and every
+referenced dependency card is in `Done`. An unresolved dependency therefore
+leaves the card in `Open`; it is not silently selected. A missing, ambiguous,
+or malformed dependency is recorded as not ready, with the reason stated.
+
+The open-ticket skill lists all non-`TBD` cards in `Open`, `In Progress`, and
+`Review`, in board-list order and each list's Trello `pos` order. The
+next-ticket skill considers only ready `Open` cards and selects the first by
+`pos`. An explicitly requested card is subject to the same readiness checks.
+`In Progress` and `Review` work is resumed only when the coordinator
+explicitly identifies it; neither is ever selected as “next”.
 
 Immediately before claiming a selected card, the coordinator re-fetches the
 card and all dependency states. It moves the card to `In Progress`, then
@@ -82,6 +86,27 @@ re-fetches it to confirm the move. This minimizes, but cannot atomically
 eliminate, a concurrent manual claim. If the re-fetch shows a different list
 or another recorded owner, agents stop and request a human resolution rather
 than duplicate work.
+
+### Review gate, version bump, and pull request
+
+The Architect → Developer → Tester phases run exactly as before. Once the
+Tester phase succeeds, the coordinator:
+
+1. Moves the card from `In Progress` to `Review`.
+2. Posts the `phase=ready-for-review` workflow comment (format below).
+3. Asks the user directly in the chat session for a review verdict — this is
+   a synchronous, in-conversation gate, not a Trello field or automation.
+4. On a **positive** verdict: bumps the version in `app/package.json`
+   (patch by default unless the user specifies otherwise) and opens a GitHub
+   pull request for the ticket branch with `gh pr create`. It records the PR
+   URL in a workflow comment.
+5. On a **negative** verdict: records the requested changes as a workflow
+   comment, moves the card back to `In Progress`, and resumes the relevant
+   agent phase(s) to address the feedback.
+
+The coordinator never moves a card to `Done`. Only the user, after accepting
+the review and (typically) merging the PR, moves the card from `Review` to
+`Done` themselves.
 
 ### Trello comments retain delivery progress and transient artifacts
 
@@ -107,10 +132,11 @@ artifacts or status records.
 
 The existing top-level three-role workflow is the only ticket execution
 workflow: Architect, Developer, then Tester. The next-ticket skill moves a
-card to `In Progress`, runs those phases, and ends with a
-`ready-for-review` comment. It does **not** move the card to `Done`; a human
-or an explicitly requested completion/review action does so after reviewing
-the reported result. This preserves the current skill's explicit
+card to `In Progress`, runs those phases, then moves the card to `Review` and
+ends with a `ready-for-review` comment plus an in-chat review request (see
+"Review gate, version bump, and pull request" above). It does **not** move
+the card to `Done`; the user does so manually after reviewing the result and
+the opened pull request. This preserves the current skill's explicit
 no-auto-completion behavior without a second, incompatible six-phase local
 workflow.
 
@@ -153,9 +179,10 @@ on `TRELLO_BOARD_ID`.
   `[msnet-workflow]` marker before repeating a comment. It does not blindly
   retry writes, avoiding duplicate claims and progress comments.
 - If an agent or a test phase fails after a successful claim, the card stays
-  `In Progress` unless work genuinely cannot continue. The coordinator posts
-  a `failed` or `blocked` comment with the next action; it moves the card to
-  `Blocked` only when a human/external prerequisite is required.
+  in its current list (`In Progress`, or `Review` if feedback came back
+  negative). The coordinator posts a `failed` or `blocked` comment with the
+  next action; there is no `Blocked` list to move it to, so a stalled card is
+  surfaced to the user in chat instead.
 - Only a successful explicit completion action can move a card to `Done`.
   A remote write failure is always surfaced to the user and manually
   reconcilable from the card's Trello action history.
@@ -214,11 +241,23 @@ next-ticket skill -- re-fetch + PUT idList --> In Progress card
                         Tester -> app/src/__tests__/
                          + docs/architecture/<story>-tests.md
                          |
-                         +-- POST ready-for-review comment --> Trello
-                                                         |
-                                 explicit human completion/review
-                                                         v
-                                                       Done
+                         +-- POST ready-for-review comment
+                         +-- PUT idList --> Review card
+                         |
+                  ask user for review verdict (chat)
+                         |
+             +-----------+-----------+
+             v                       v
+        positive                negative
+             |                       |
+   bump app/package.json      POST feedback comment
+   gh pr create -> PR URL     PUT idList --> In Progress
+             |                       |
+   POST comment with PR URL    (resume agent phase)
+             |
+   user reviews/merges PR,
+   then manually
+   PUT idList --> Done
 ```
 
 The description and list state travel only from Trello to agents. Git holds
@@ -257,19 +296,30 @@ TicketCard {
   url: string
 }
 
-TicketState = Backlog | InProgress | Blocked | Done
-ReadyTicket = TicketCard where state == Backlog and dependencies == Done
+TicketState = Open | InProgress | Review | Done
+ReadyTicket = TicketCard where state == Open and dependencies == Done
 ```
+
+`TBD` cards are pre-backlog ideas: excluded from `TicketState`/ticket queries
+entirely, the same way a `Templates` list would be, until moved to `Open`
+with a complete description.
 
 ## Open Questions
 
-1. Which exact Trello board ID is approved for `TRELLO_BOARD_ID`, and do its
-   existing list names match `Backlog`, `In Progress`, `Blocked`, `Done`, and
-   optional `Templates`? This must be confirmed during board setup rather
-   than inferred from a board name.
-2. Do all five discovered open cards already have unique MSNET prefixes,
-   complete descriptions, and explicit dependency links? Any missing data
-   must be corrected on Trello before the local backlog is removed.
-3. Who is authorized to perform the explicit final review and move an
-   `In Progress` card to `Done`? Until named, the workflow intentionally
-   ends at `ready-for-review`.
+1. ~~Which exact Trello board ID is approved for `TRELLO_BOARD_ID`, and do
+   its existing list names match `Backlog`, `In Progress`, `Blocked`,
+   `Done`, and optional `Templates`?~~ **Resolved 2026-09-14**: the approved
+   board is `https://trello.com/b/LsjRTPAO/michaelschreibernet`
+   (`ari:cloud:trello::board/workspace/690594d4b29a847f8633b4a8/6a1853062ea9d0814e39023a`).
+   Its actual lists are `TBD`, `Open`, `In Progress`, `Review`, `Done` — not
+   `Backlog`/`Blocked`. The board (not this document's original assumption)
+   is authoritative; the list contract above and the two Trello skills were
+   updated to match it.
+2. Do all discovered open cards already have unique MSNET prefixes, complete
+   descriptions, and explicit dependency links? Any missing data must be
+   corrected on Trello before it is selected as ready.
+3. ~~Who is authorized to perform the explicit final review and move an
+   `In Progress` card to `Done`?~~ **Resolved 2026-09-14**: the user reviews
+   in chat when the coordinator requests it at the `Review` stage, and the
+   user alone moves the card from `Review` to `Done`, typically after
+   merging the pull request the coordinator opened.

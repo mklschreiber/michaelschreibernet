@@ -1,4 +1,4 @@
-# michaelschreiber.net
+# michael**schreiber**.net
 
 Vue.js personal website with automated GitHub Pages deployment.
 

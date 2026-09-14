@@ -1,48 +1,102 @@
 ---
-name: michaelschreibernet-implement-next-story
-description: Pick up the topmost open ticket from the myStandby Trello board, move it to "In Progress", and implement it end-to-end using the architect, developer, and tester agents. Use this when the user asks to implement the next story, pick up the next ticket, or work off the top of the backlog.
+name: michaelschreibernet-implement-next-ticket
+description: Select the first ready card from the michaelschreiber.net Trello board's Open list, move it to "In Progress", and implement it end-to-end using the architect, developer, and tester agents. Use this when the user asks to implement the next story, pick up the next ticket, or work off the top of the backlog for michaelschreiber.net.
 ---
 
-Take the topmost card from the "Open" list on the myStandby Trello board
-(Board ID: `ari:cloud:trello::board/workspace/690594d4b29a847f8633b4a8/6a1853062ea9d0814e39023a`),
-move it to "In Progress", and implement it through the project's multi-agent workflow
-described in [docs/agent-handbook.md](../../../docs/agent-handbook.md).
+Select the first ready card on the approved **michaelschreiber.net** Trello
+board, move it to `In Progress`, and implement it through the project's
+Architect → Developer → Tester workflow described in
+[docs/agent-handbook.md](../../../docs/agent-handbook.md) and
+[docs/architecture/msnet-wf-0001-trello-delivery-workflow.md](../../../docs/architecture/msnet-wf-0001-trello-delivery-workflow.md).
+Trello is authoritative; never read a local backlog or ticket artifacts as a
+fallback.
 
-Steps:
+## Prerequisites
 
-1. **Fetch the open tickets.** Reuse the `michaelschreibernet-open-tickets` skill to get all cards in
-   the "Open" list. Take the topmost card (first position in the list) as the ticket to work on.
-   If no open tickets are found, report: "No open tickets in the myStandby board." and stop.
-2. **Move the ticket to "In Progress".**
-   - Call `trelloReadList` with `action: "list_by_board"` on the board ID above to find the list
-     named "In Progress" (create it first via `trelloWriteBoard`/ask the user if it does not exist).
-   - Call `trelloWriteCard` with `action: "move"`, the card's `cardId`, and the destination
-     `listId` of "In Progress".
-3. **Create a git branch for the ticket**, in the format `<label>/<ticket-name>`:
-   - **First part (`<label>`)**: the card's Trello label name, lowercased (e.g. `FEATURE` → `feature`,
-     `BUG` → `bug`). If the card has multiple labels, use the first one. If the card has no label,
-     ask the user which prefix to use instead of guessing.
-   - **Second part (`<ticket-name>`)**: the card's title, slugified — lowercase, non-alphanumeric
-     characters replaced with `-`, collapse repeated `-`, trim leading/trailing `-`
-     (e.g. "Simulate-Feature" → `simulate-feature`).
-   - Combine as `<label>/<ticket-name>` (e.g. `feature/simulate-feature`).
-   - Ensure the working tree is clean, check out the repo's default/main branch, pull the latest
-     changes, then create and check out the new branch from it (`git checkout -b <branch-name>`).
-   - If a branch with that name already exists locally or remotely, check it out instead of
-     creating a new one, and inform the user.
-4. **Derive the user story.** Take the card's title and description and phrase them as a user
-   story ("As a user, I want ... so that ...") if not already in that form. Include the card's
-   URL for traceability.
-5. **Run the agent workflow** as described in `docs/agent-handbook.md`, using the agent
-   definitions in `docs/agents/architect.md`, `docs/agents/developer.md`, and
+Confirm `TRELLO_BOARD_ID`, `TRELLO_API_KEY`, `TRELLO_TOKEN`, `curl`, `jq`,
+and `gh` (GitHub CLI, authenticated) are available. If any is missing, stop
+and report exactly which one — do not select or claim a ticket without them.
+
+## Steps
+
+1. **Fetch ready tickets.** Reuse the
+   [`michaelschreibernet-open-tickets`](../michaelschreibernet-open-tickets/SKILL.md)
+   skill's board fetch and readiness logic. Select the first **ready** card
+   in `Open` by `pos` order. If no ready card exists, report which `Open`
+   cards exist and why none are ready (missing description, unresolved
+   dependency, etc.) and stop. Do not select an `In Progress` or `Review`
+   card — those are only resumed when the user explicitly identifies them.
+2. **Re-fetch and claim.** Immediately before claiming, re-fetch the selected
+   card and its dependencies to confirm it is still ready (guards against a
+   concurrent manual claim). Then:
+   ```
+   PUT /1/cards/{cardId}?idList={inProgressListId}
+   ```
+   Re-fetch the card to confirm the move succeeded. If the re-fetch shows a
+   different list or an unexpected existing claim, stop and ask the user to
+   resolve it manually rather than duplicating work.
+3. **Post a claim comment** in the workflow format:
+   ```
+   [msnet-workflow] phase=claim actor=coordinator at=<ISO-8601 timestamp> outcome=success
+
+   Claimed <MSNET-id>: <title> — starting Architect → Developer → Tester workflow.
+   ```
+4. **Create a git branch** in the format `<label>/<ticket-name>`:
+   - **`<label>`**: the card's first Trello label name, lowercased (e.g.
+     `FEATURE` → `feature`, `BUG` → `bug`). If the card has no label, ask the
+     user which prefix to use instead of guessing.
+   - **`<ticket-name>`**: the card's title (without the `MSNET-XXXX:` prefix),
+     slugified — lowercase, non-alphanumeric characters replaced with `-`,
+     repeated `-` collapsed, leading/trailing `-` trimmed.
+   - Ensure the working tree is clean, check out the repo's default branch,
+     pull the latest changes, then create and check out the new branch
+     (`git checkout -b <branch-name>`). If the branch already exists locally
+     or remotely, check it out instead and inform the user.
+5. **Use the card's description as the canonical user story and acceptance
+   criteria** — it already follows the required template
+   (`## User story`, `## Acceptance criteria`, `## Scope and technical
+   context`, `## Dependencies`). Include the card URL for traceability.
+6. **Run the agent workflow** described in `docs/agent-handbook.md`, using
+   `docs/agents/architect.md`, `docs/agents/developer.md`, and
    `docs/agents/tester.md`:
-   1. Invoke the **architect** agent with the user story to produce/update an architecture
-      concept under `docs/architecture/`.
-   2. Invoke the **developer** agent with the story and a reference to the architecture concept
-      to implement the code. If the developer raises an architecture question, route it back to
-      the architect, apply the answer, then resume the developer.
-   3. Invoke the **tester** agent with the story and the implemented code to create the testing
-      concept and tests, then run the test suite as described in `docs/agents/tester.md`.
-6. **Summarize the result** for the user: ticket title/URL, branch name, architecture concept file,
-   changed files, and test results. Do not commit, push, mark the ticket done, or move it further —
-   those are separate, explicit steps the user can request once they have reviewed the result.
+   1. Invoke the **architect** agent with the card URL and description to
+      produce/update an architecture concept under `docs/architecture/`. It
+      posts a `phase=architecture` comment linking the concept.
+   2. Invoke the **developer** agent with the story and the architecture
+      concept to implement the code. Route any architecture question back to
+      the architect, apply the answer, then resume the developer. It posts a
+      `phase=implementation` comment.
+   3. Invoke the **tester** agent with the story and the implemented code to
+      create the testing concept and tests, then run the test suite as
+      described in `docs/agents/tester.md`. It posts a `phase=testing`
+      comment.
+   4. On any phase failure, keep the card in its current list and post a
+      `phase=blocked` or a failed-outcome comment with the next action.
+      There is no `Blocked` list to move it to — surface the stall to the
+      user in chat instead.
+7. **Move to Review and request a verdict.** Once all three phases succeed:
+   ```
+   PUT /1/cards/{cardId}?idList={reviewListId}
+   ```
+   Post the closing comment:
+   ```
+   [msnet-workflow] phase=ready-for-review actor=coordinator at=<ISO-8601 timestamp> outcome=success
+
+   Architecture, implementation, and tests complete for <MSNET-id>. Branch: <branch-name>.
+   ```
+   Then ask the user directly in the chat session for a review verdict —
+   this is an in-conversation gate, not a Trello automation.
+8. **On a positive verdict:**
+   - Bump the version in `app/package.json` (patch by default unless the
+     user specifies otherwise).
+   - Open a GitHub pull request for the ticket branch with `gh pr create`.
+   - Post a workflow comment recording the PR URL.
+   - Do not move the card to `Done` — only the user does that, manually,
+     typically after merging the PR.
+9. **On a negative verdict:**
+   - Post a workflow comment recording the requested changes.
+   - Move the card back to `In Progress` and resume the relevant agent
+     phase(s) to address the feedback, then return to step 7.
+10. **Summarize the result** for the user: ticket title/URL, branch name,
+    architecture concept file, changed files, test results, and (if opened)
+    the PR URL.

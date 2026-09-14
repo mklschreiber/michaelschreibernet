@@ -53,13 +53,15 @@ The user story and acceptance criteria are mandatory. Dependencies are either
 `None` or unique MSNET IDs linked to their cards. Requirement changes are made
 on the Trello card, never in a local ticket file.
 
-The approved board has exactly one active list named `Backlog`, `In Progress`,
-`Blocked`, and `Done`. `Templates`, if present, is not a delivery status and is
-excluded from ticket queries. A ticket is ready only when it is in `Backlog`,
-has a valid description, and every referenced dependency is in `Done`. The
-first ready card by Trello list and card `pos` order is the next ticket.
-`In Progress` work is resumed only when the coordinator explicitly identifies
-it.
+The approved board has exactly one active list named `TBD`, `Open`,
+`In Progress`, `Review`, and `Done`. `TBD` holds ideas that are not yet ready
+for implementation; like a `Templates` list, it is excluded from ticket
+queries. A ticket is ready only when it is in `Open`, has a valid
+description, and every referenced dependency is in `Done`. The first ready
+card by Trello list and card `pos` order is the next ticket. `In Progress`
+and `Review` work is resumed only when the coordinator explicitly identifies
+it. There is no `Blocked` list; a card that cannot proceed stays where it is
+and the reason is recorded as a workflow comment instead.
 
 Before using a workflow skill, the operator must provide `TRELLO_BOARD_ID`,
 `TRELLO_API_KEY`, and `TRELLO_TOKEN`, and have `curl` and `jq` available. The
@@ -78,11 +80,17 @@ actor=<role> at=<ISO-8601 timestamp> outcome=<success|blocked|failed>
 ```
 
 The coordinator moves a selected ready card to `In Progress`, confirms the
-move, and ends the Architect → Developer → Tester flow with a
-`ready-for-review` comment. It never moves a card to `Done`; only an explicit
-completion or review action may do that. On a failed phase, keep the card in
-`In Progress` and post a failure comment unless a human or external
-prerequisite genuinely requires `Blocked`.
+move, and runs the Architect → Developer → Tester flow. On success, it moves
+the card to `Review`, posts a `ready-for-review` comment, and asks the user
+directly in chat for a review verdict. A positive verdict bumps the version
+in `app/package.json` and opens a GitHub pull request for the ticket branch
+(`gh pr create`), recorded in a follow-up comment. A negative verdict is
+recorded as a comment with the requested changes, and the card moves back to
+`In Progress` while the relevant phase is resumed. The coordinator never
+moves a card to `Done`; only the user does that, manually, after reviewing
+and typically merging the pull request. On a failed phase, keep the card in
+its current list and post a failure comment — there is no `Blocked` list to
+move it to.
 
 Use the root Trello skills for ticket discovery and implementation:
 
