@@ -189,5 +189,24 @@
     }
   },
   "active": "ba7c36781782763b",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "docs/architecture/colored-tags-tests.md",
+    "app/dist/assets/AboutPage-TY_JA3pH.css",
+    "app/dist/assets/index-CIEzyhAw.css",
+    "app/dist/assets/index-l4TxP6q5.js",
+    "app/dist/assets/AboutPage-Cb8TIZ_x.js",
+    "app/src/__tests__/ProjectCard.spec.ts",
+    "app/src/__tests__/tagColor.spec.ts",
+    "app/dist/logo_anim.gif",
+    "app/dist/bg_image.png",
+    "app/dist/bg_image-960.jpg",
+    "app/dist/bg_image-640.jpg",
+    "app/dist/bg_image-3200.jpg",
+    "app/dist/bg_image-2560.jpg",
+    "app/dist/bg_image-1920.jpg",
+    "app/dist/bg_image-1280.jpg",
+    "app/src/utils/tagColor.ts",
+    "app/src/utils",
+    "docs/architecture/colored-tags.md"
+  ]
 }

@@ -73,7 +73,7 @@ skills validate the board and fail rather than using stale local data.
 Workflow comments, not the description, record claims and progress:
 
 ```text
-[msnet-workflow] phase=<claim|architecture|implementation|testing|blocked|ready-for-review>
+[msnet-workflow] phase=<claim|architecture|implementation|testing|blocked|ready-for-review|review-feedback|pr-opened>
 actor=<role> at=<ISO-8601 timestamp> outcome=<success|blocked|failed>
 
 <concise result, changed files/test command results, and durable-document link if applicable>
@@ -82,19 +82,26 @@ actor=<role> at=<ISO-8601 timestamp> outcome=<success|blocked|failed>
 The coordinator moves a selected ready card to `In Progress`, confirms the
 move, and runs the Architect → Developer → Tester flow. On success, it moves
 the card to `Review`, posts a `ready-for-review` comment, and asks the user
-directly in chat for a review verdict. A positive verdict bumps the version
-in `app/package.json` (and the mirrored fields in `app/package-lock.json`)
-following Semantic Versioning — MAJOR for a breaking change, MINOR for a
-backward-compatible feature, PATCH for a bug fix only — classified from the
-ticket/diff, asking the user when it is genuinely ambiguous, and opens a
-GitHub pull request for the ticket branch (`gh pr create`), recorded in a
-follow-up comment. A negative verdict is
-recorded as a comment with the requested changes, and the card moves back to
-`In Progress` while the relevant phase is resumed. The coordinator never
-moves a card to `Done`; only the user does that, manually, after reviewing
-and typically merging the pull request. On a failed phase, keep the card in
-its current list and post a failure comment — there is no `Blocked` list to
-move it to.
+directly in chat for a review verdict.
+
+The review verdict itself is only ever documented on the card when it is
+**not** positive: a positive verdict gets no `review-feedback` comment at
+all, only the `pr-opened` comment described below — successful reviews leave
+no trace on the card beyond the version bump and PR link. A negative verdict
+is recorded as a `phase=review-feedback` comment with the requested changes,
+and the card moves back to `In Progress` while the relevant phase is
+resumed.
+
+A positive verdict bumps the version in `app/package.json` (and the mirrored
+fields in `app/package-lock.json`) following Semantic Versioning — MAJOR for
+a breaking change, MINOR for a backward-compatible feature, PATCH for a bug
+fix only — classified from the ticket/diff, asking the user when it is
+genuinely ambiguous, and opens a GitHub pull request for the ticket branch
+(`gh pr create`), recorded in a `phase=pr-opened` comment. The coordinator
+never moves a card to `Done`; only the user does that, manually, after
+reviewing and typically merging the pull request. On a failed phase, keep
+the card in its current list and post a failure comment — there is no
+`Blocked` list to move it to.
 
 Use the root Trello skills for ticket discovery and implementation:
 
