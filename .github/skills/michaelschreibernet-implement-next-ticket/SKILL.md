@@ -87,8 +87,14 @@ and report exactly which one — do not select or claim a ticket without them.
    Then ask the user directly in the chat session for a review verdict —
    this is an in-conversation gate, not a Trello automation.
 8. **On a positive verdict:**
-   - Bump the version in `app/package.json` (patch by default unless the
-     user specifies otherwise).
+   - Bump the version in `app/package.json` and the mirrored `version`
+     fields in `app/package-lock.json`, following Semantic Versioning
+     (`MAJOR.MINOR.PATCH`):
+     - **MAJOR** — a breaking change.
+     - **MINOR** — a backward-compatible new feature (the common case).
+     - **PATCH** — a backward-compatible bug fix only.
+     Classify the change from the ticket/diff; ask the user if it is
+     genuinely ambiguous rather than guessing.
    - Open a GitHub pull request for the ticket branch with `gh pr create`.
    - Post a workflow comment recording the PR URL.
    - Do not move the card to `Done` — only the user does that, manually,

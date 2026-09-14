@@ -96,10 +96,19 @@ Tester phase succeeds, the coordinator:
 2. Posts the `phase=ready-for-review` workflow comment (format below).
 3. Asks the user directly in the chat session for a review verdict — this is
    a synchronous, in-conversation gate, not a Trello field or automation.
-4. On a **positive** verdict: bumps the version in `app/package.json`
-   (patch by default unless the user specifies otherwise) and opens a GitHub
-   pull request for the ticket branch with `gh pr create`. It records the PR
-   URL in a workflow comment.
+4. On a **positive** verdict: bumps the version in `app/package.json` (and
+   the mirrored `version` fields in `app/package-lock.json`) following
+   Semantic Versioning (`MAJOR.MINOR.PATCH`):
+   - **MAJOR** — a breaking change (e.g. removes/renames a public route,
+     component prop, or otherwise breaks existing usage).
+   - **MINOR** — a backward-compatible new feature (the common case for a
+     new ticket, e.g. this workflow's own `gh pr create` step).
+   - **PATCH** — a backward-compatible bug fix only.
+
+   The coordinator classifies the change from the ticket/diff; if it is
+   genuinely ambiguous, it asks the user rather than guessing. It then opens
+   a GitHub pull request for the ticket branch with `gh pr create` and
+   records the PR URL in a workflow comment.
 5. On a **negative** verdict: records the requested changes as a workflow
    comment, moves the card back to `In Progress`, and resumes the relevant
    agent phase(s) to address the feedback.

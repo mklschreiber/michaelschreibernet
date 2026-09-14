@@ -83,8 +83,12 @@ The coordinator moves a selected ready card to `In Progress`, confirms the
 move, and runs the Architect → Developer → Tester flow. On success, it moves
 the card to `Review`, posts a `ready-for-review` comment, and asks the user
 directly in chat for a review verdict. A positive verdict bumps the version
-in `app/package.json` and opens a GitHub pull request for the ticket branch
-(`gh pr create`), recorded in a follow-up comment. A negative verdict is
+in `app/package.json` (and the mirrored fields in `app/package-lock.json`)
+following Semantic Versioning — MAJOR for a breaking change, MINOR for a
+backward-compatible feature, PATCH for a bug fix only — classified from the
+ticket/diff, asking the user when it is genuinely ambiguous, and opens a
+GitHub pull request for the ticket branch (`gh pr create`), recorded in a
+follow-up comment. A negative verdict is
 recorded as a comment with the requested changes, and the card moves back to
 `In Progress` while the relevant phase is resumed. The coordinator never
 moves a card to `Done`; only the user does that, manually, after reviewing
