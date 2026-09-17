@@ -24,6 +24,14 @@ material.
   color.
 - [Tests for Colored Project Tags](colored-tags-tests.md) — records the unit
   coverage for `getTagColor` and the `ProjectCard.vue` badge integration.
+- [CI Checks for Pull Requests](improve-ci-cd-setup.md) — defines a new
+  `.github/workflows/ci.yml` with independent lint, unit-test, and build jobs
+  triggered on pull requests, and a non-mutating `lint:check` npm script so
+  the lint job actually gates on violations instead of silently
+  auto-fixing them.
+- [Tests for CI Checks for Pull Requests](improve-ci-cd-setup-tests.md) —
+  records the local re-verification of `lint:check`, `test:unit -- --run`,
+  and `build`, plus a static correctness review of the workflow YAML.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the
