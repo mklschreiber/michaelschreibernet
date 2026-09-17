@@ -73,16 +73,44 @@ skills validate the board and fail rather than using stale local data.
 Workflow comments, not the description, record claims and progress:
 
 ```text
-[msnet-workflow] phase=<claim|architecture|implementation|testing|blocked|ready-for-review|review-feedback|pr-opened>
+[msnet-workflow] phase=<claim|architecture|implementation|testing|ai-review|blocked|ready-for-review|review-feedback|pr-opened>
 actor=<role> at=<ISO-8601 timestamp> outcome=<success|blocked|failed>
 
 <concise result, changed files/test command results, and durable-document link if applicable>
 ```
 
 The coordinator moves a selected ready card to `In Progress`, confirms the
-move, and runs the Architect → Developer → Tester flow. On success, it moves
-the card to `Review`, posts a `ready-for-review` comment, and asks the user
-directly in chat for a review verdict.
+move, and runs the Architect → Developer → Tester flow.
+
+## AI Review Gate
+
+After the Tester phase succeeds, and **before** the card moves to `Review`
+and the user is asked for a manual review, the coordinator invokes the
+**Reviewer** agent (`docs/agents/reviewer.md`) for an independent AI review:
+
+1. **Invoke the reviewer.** It reads the architecture concept, the testing
+   concept, and the actual code changes, runs the relevant `npm run` checks
+   from `app/`, and documents the round in
+   `docs/architecture/<story-id>-review.md`, ending with a verdict of
+   `positive` or `findings`.
+2. **Record on the card, every round.** The coordinator posts a
+   `phase=ai-review` workflow comment with the round's verdict and findings
+   (or "No findings." if positive). Unlike the user-review outcome below,
+   every AI review round is recorded, regardless of verdict, for
+   traceability.
+3. **On `findings`:** the coordinator routes each finding to the responsible
+   agent — architect for concept gaps, developer for implementation bugs,
+   tester for coverage gaps — has it addressed, then re-invokes the reviewer
+   for another round (appending to the same review file and posting another
+   `phase=ai-review` comment) until the verdict is `positive`.
+4. **On `positive`:** the coordinator proceeds to move the card to `Review`.
+
+The reviewer has no Trello access; the coordinator is responsible for
+mirroring its verdict into the workflow log.
+
+On success, the coordinator moves the card to `Review`, posts a
+`ready-for-review` comment, and asks the user directly in chat for a review
+verdict.
 
 The review verdict itself is only ever documented on the card when it is
 **not** positive: a positive verdict gets no `review-feedback` comment at

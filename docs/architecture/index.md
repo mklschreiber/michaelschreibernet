@@ -32,6 +32,23 @@ material.
 - [Tests for CI Checks for Pull Requests](improve-ci-cd-setup-tests.md) —
   records the local re-verification of `lint:check`, `test:unit -- --run`,
   and `build`, plus a static correctness review of the workflow YAML.
+- [AI Review Gate](msnet-wf-0002-ai-review-gate.md) — adds a fourth agent
+  role, Reviewer, and an independent AI review round between the Tester
+  phase and the user's manual review, synchronized with the myStandby
+  project's equivalent gate.
+- [Tests for AI Review Gate](msnet-wf-0002-ai-review-gate-tests.md) —
+  records the static/manual verification approach for this delivery-tooling
+  change, since no Vue application code changed.
+
+## Reviews
+
+<!-- New entries will be added here by the Reviewer Agent -->
+<!-- Format: * [Review for Ticket Title](story-id-review.md) - Short description of the latest verdict -->
+* [Review for Improve AI Setup](msnet-wf-0002-ai-review-gate-review.md) -
+  Round 1: positive — symlinks, the `ai-review` phase enum, SKILL.md step
+  renumbering/cross-references, and all index/handbook/CLAUDE.md wiring
+  verified correct; one non-blocking wording note left for a future touch of
+  `SKILL.md`.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

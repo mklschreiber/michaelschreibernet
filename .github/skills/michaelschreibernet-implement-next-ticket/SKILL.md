@@ -1,11 +1,11 @@
 ---
 name: michaelschreibernet-implement-next-ticket
-description: Select the first ready card from the michaelschreiber.net Trello board's Open list, move it to "In Progress", and implement it end-to-end using the architect, developer, and tester agents. Use this when the user asks to implement the next story, pick up the next ticket, or work off the top of the backlog for michaelschreiber.net.
+description: Select the first ready card from the michaelschreiber.net Trello board's Open list, move it to "In Progress", and implement it end-to-end using the architect, developer, tester, and reviewer agents. Use this when the user asks to implement the next story, pick up the next ticket, or work off the top of the backlog for michaelschreiber.net.
 ---
 
 Select the first ready card on the approved **michaelschreiber.net** Trello
 board, move it to `In Progress`, and implement it through the project's
-Architect → Developer → Tester workflow described in
+Architect → Developer → Tester → Reviewer workflow described in
 [docs/agent-handbook.md](../../../docs/agent-handbook.md) and
 [docs/architecture/msnet-wf-0001-trello-delivery-workflow.md](../../../docs/architecture/msnet-wf-0001-trello-delivery-workflow.md).
 Trello is authoritative; never read a local backlog or ticket artifacts as a
@@ -39,7 +39,7 @@ and report exactly which one — do not select or claim a ticket without them.
    ```
    [msnet-workflow] phase=claim actor=coordinator at=<ISO-8601 timestamp> outcome=success
 
-   Claimed <MSNET-id>: <title> — starting Architect → Developer → Tester workflow.
+   Claimed <MSNET-id>: <title> — starting Architect → Developer → Tester → Reviewer workflow.
    ```
 4. **Create a git branch** in the format `<label>/<ticket-name>`:
    - **`<label>`**: the card's first Trello label name, lowercased (e.g.
@@ -74,7 +74,24 @@ and report exactly which one — do not select or claim a ticket without them.
       `phase=blocked` or a failed-outcome comment with the next action.
       There is no `Blocked` list to move it to — surface the stall to the
       user in chat instead.
-7. **Move to Review and request a verdict.** Once all three phases succeed:
+7. **Run the AI Review Gate**, per "AI Review Gate" in
+   `docs/agent-handbook.md`, using `docs/agents/reviewer.md`:
+   1. Invoke the **reviewer** agent with the story, the architecture concept,
+      and the implemented code and tests. It documents the round in
+      `docs/architecture/<story-id>-review.md` and reports a verdict of
+      `positive` or `findings`.
+   2. **Regardless of verdict**, post a workflow comment:
+      ```
+      [msnet-workflow] phase=ai-review actor=coordinator at=<ISO-8601 timestamp> outcome=success
+
+      Round <N> for <MSNET-id>: <positive, no findings | findings summary>. Review: <path>.
+      ```
+   3. **If `findings`:** route each finding to the responsible agent —
+      architect for concept gaps, developer for implementation bugs, tester
+      for coverage gaps — have it addressed, then repeat this step (re-invoke
+      the reviewer) until the verdict is `positive`.
+   4. **If `positive`:** continue to step 8.
+8. **Move to Review and request a verdict.** Once all phases succeed:
    ```
    PUT /1/cards/{cardId}?idList={reviewListId}
    ```
@@ -89,8 +106,8 @@ and report exactly which one — do not select or claim a ticket without them.
 
    The verdict itself is only documented on the card when it is **not**
    positive — a positive review leaves no `review-feedback` comment, only
-   the `pr-opened` comment from step 8.
-8. **On a positive verdict:**
+   the `pr-opened` comment from step 9.
+9. **On a positive verdict:**
    - Bump the version in `app/package.json` and the mirrored `version`
      fields in `app/package-lock.json`, following Semantic Versioning
      (`MAJOR.MINOR.PATCH`):
@@ -108,15 +125,16 @@ and report exactly which one — do not select or claim a ticket without them.
      ```
    - Do not move the card to `Done` — only the user does that, manually,
      typically after merging the PR.
-9. **On a negative verdict:**
-   - Post a workflow comment recording the requested changes:
-     ```
-     [msnet-workflow] phase=review-feedback actor=coordinator at=<ISO-8601 timestamp> outcome=blocked
+10. **On a negative verdict:**
+    - Post a workflow comment recording the requested changes:
+      ```
+      [msnet-workflow] phase=review-feedback actor=coordinator at=<ISO-8601 timestamp> outcome=blocked
 
-     Review requested changes for <MSNET-id>: <feedback, verbatim or summarized>.
-     ```
-   - Move the card back to `In Progress` and resume the relevant agent
-     phase(s) to address the feedback, then return to step 7.
-10. **Summarize the result** for the user: ticket title/URL, branch name,
-    architecture concept file, changed files, test results, and (if opened)
-    the PR URL.
+      Review requested changes for <MSNET-id>: <feedback, verbatim or summarized>.
+      ```
+    - Move the card back to `In Progress` and resume the relevant agent
+      phase(s) to address the feedback, then return to step 7 (AI Review
+      Gate) before step 8.
+11. **Summarize the result** for the user: ticket title/URL, branch name,
+    architecture concept file, changed files, test results, AI review
+    outcome (and review file), and (if opened) the PR URL.
