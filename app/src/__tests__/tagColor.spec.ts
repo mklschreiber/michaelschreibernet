@@ -96,6 +96,24 @@ describe('getTagColor', () => {
     expect(differingPairs.length).toBeGreaterThan(0)
   })
 
+  it('is sensitive to leading, trailing, and internal whitespace', () => {
+    // The hash walks raw char codes with no trimming/normalization, so a
+    // single pair could (rarely) collide after the `% 360` reduction;
+    // checking several pairs keeps this deterministic while still
+    // asserting whitespace sensitivity.
+    const pairs: Array<[string, string]> = [
+      ['React', ' React'],
+      ['React', 'React '],
+      ['Vue.js', 'Vue .js'],
+      ['Node.js', 'Node.js '],
+      ['GraphQL', ' GraphQL '],
+    ]
+
+    const differingPairs = pairs.filter(([a, b]) => getTagColor(a) !== getTagColor(b))
+
+    expect(differingPairs.length).toBeGreaterThan(0)
+  })
+
   it('does not throw for an empty string and still returns a valid hsl(...) string', () => {
     expect(() => getTagColor('')).not.toThrow()
     expect(getTagColor('')).toMatch(HSL_PATTERN)

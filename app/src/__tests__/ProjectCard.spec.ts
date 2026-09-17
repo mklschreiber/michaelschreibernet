@@ -14,8 +14,23 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import ProjectCard from '@/components/ProjectCard.vue'
+import projectCardSource from '@/components/ProjectCard.vue?raw'
 import type { Project } from '@/types/project'
 import { getTagColor } from '@/utils/tagColor'
+
+// jsdom/vitest do not inject scoped SFC <style> blocks into the DOM, so
+// getComputedStyle can't observe the compiled `.tech-badge` CSS rule here.
+// Reading the raw source and asserting on the rule's declaration is what
+// actually exercises AC-02 (the text-color token, not a hardcoded color).
+function extractRuleBody(source: string, selector: string): string {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const match = new RegExp(`${escaped}\\s*\\{([^}]*)\\}`).exec(source)
+  const body = match?.[1]
+  if (body === undefined) {
+    throw new Error(`Could not find CSS rule for selector "${selector}" in ProjectCard.vue`)
+  }
+  return body
+}
 
 const mockProject: Project = {
   id: 1,
@@ -91,5 +106,12 @@ describe('ProjectCard', () => {
     // generated background (AC-02).
     expect(badge.classes()).toContain('tech-badge')
     expect(badge.attributes('style') ?? '').not.toMatch(/(?<!background-)color:/)
+  })
+
+  it('styles .tech-badge text with the standard text-color token, not a hardcoded color', () => {
+    const rule = extractRuleBody(projectCardSource, '.tech-badge')
+
+    expect(rule).toMatch(/color:\s*var\(--color-text-primary\)/)
+    expect(rule).not.toMatch(/color:\s*(white|#fff(?:fff)?)\s*;/i)
   })
 })

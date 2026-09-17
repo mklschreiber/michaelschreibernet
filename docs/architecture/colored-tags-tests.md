@@ -54,12 +54,14 @@ Explicitly not tested:
 | tagColor | produces a hue within the valid [0, 359] range | Unit | ✅ |
 | tagColor | produces different hues for different tag values | Unit | ✅ |
 | tagColor | is case-sensitive, so at least some differently-cased pairs differ | Unit | ✅ |
+| tagColor | is sensitive to leading, trailing, and internal whitespace | Unit | ✅ |
 | tagColor | does not throw for an empty string and still returns a valid hsl(...) string | Unit | ✅ |
 | tagColor | deterministically maps the empty string to the same color every time | Unit | ✅ |
 | ProjectCard | renders one badge per technology | Component | ✅ |
 | ProjectCard | applies the deterministic background color from getTagColor to each badge | Component | ✅ |
 | ProjectCard | gives badges with different tag values different background colors | Component | ✅ |
 | ProjectCard | only binds the background color inline, leaving text color to the static class | Component | ✅ |
+| ProjectCard | styles .tech-badge text with the standard text-color token, not a hardcoded color | Component | ✅ |
 
 ## Untested Areas
 
