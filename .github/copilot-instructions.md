@@ -18,6 +18,7 @@ The Vue 3 + TypeScript + Vite application is located in `app/`.
 | `architect` | [.github/agents/architect.agent.md](agents/architect.agent.md) → [docs/agents/architect.md](../docs/agents/architect.md) |
 | `developer` | [.github/agents/developer.agent.md](agents/developer.agent.md) → [docs/agents/developer.md](../docs/agents/developer.md) |
 | `tester` | [.github/agents/tester.agent.md](agents/tester.agent.md) → [docs/agents/tester.md](../docs/agents/tester.md) |
+| `reviewer` | [.github/agents/reviewer.agent.md](agents/reviewer.agent.md) → [docs/agents/reviewer.md](../docs/agents/reviewer.md) |
 
 ## Skills
 
