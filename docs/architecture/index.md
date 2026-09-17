@@ -18,6 +18,12 @@ material.
   SVG drawing sequence and landing-page integration.
 - [Tests for Animated Landing-Page Logo](animated-logo-tests.md) — records the
   automated coverage and manual visual check for the SVG animation.
+- [Colored Project Tags](colored-tags.md) — defines the deterministic,
+  hash-to-hue HSL color derivation for project technology tags in
+  `ProjectCard.vue`, keeping backgrounds light and text in the regular font
+  color.
+- [Tests for Colored Project Tags](colored-tags-tests.md) — records the unit
+  coverage for `getTagColor` and the `ProjectCard.vue` badge integration.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

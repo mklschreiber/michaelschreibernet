@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import type { Project } from '@/types/project'
+import { getTagColor } from '@/utils/tagColor'
 
 interface Props {
   project: Project
@@ -16,7 +17,12 @@ const { t } = useI18n()
     <h2>{{ t(project.titleKey) }}</h2>
     <p>{{ t(project.descriptionKey) }}</p>
     <div class="technologies">
-      <span v-for="tech in project.technologies" :key="tech" class="tech-badge">
+      <span
+        v-for="tech in project.technologies"
+        :key="tech"
+        class="tech-badge"
+        :style="{ backgroundColor: getTagColor(tech) }"
+      >
         {{ tech }}
       </span>
     </div>
@@ -80,8 +86,7 @@ const { t } = useI18n()
 }
 
 .tech-badge {
-  background-color: var(--color-primary);
-  color: white;
+  color: var(--color-text-primary);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-lg);
   font-size: var(--font-size-sm);
