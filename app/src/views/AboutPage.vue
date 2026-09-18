@@ -128,19 +128,20 @@ function setEntryRef(index: number) {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   margin-bottom: var(--spacing-2xl);
-  overflow: hidden;
 }
 
 .about-page__card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 26px;
-  background: var(--gradient-brand);
-  mask-image: linear-gradient(to bottom, black 0, black 6px, transparent 26px);
-  -webkit-mask-image: linear-gradient(to bottom, black 0, black 6px, transparent 26px);
+  inset: 0;
+  border-radius: inherit;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
+    var(--gradient-brand-horizontal) border-box;
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 46px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 46px);
+  pointer-events: none;
 }
 
 .about-page__avatar {

@@ -57,6 +57,7 @@
   --color-accent-light: #ecfeff;
 
   --gradient-brand: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #06b6d4 100%);
+  --gradient-brand-horizontal: linear-gradient(90deg, #4f46e5 0%, #7c3aed 55%, #06b6d4 100%);
   --gradient-brand-soft: linear-gradient(135deg, rgba(79, 70, 229, 0.12) 0%, rgba(124, 58, 237, 0.1) 55%, rgba(6, 182, 212, 0.12) 100%);
   --gradient-text: linear-gradient(120deg, #4f46e5 0%, #7c3aed 60%, #06b6d4 100%);
 

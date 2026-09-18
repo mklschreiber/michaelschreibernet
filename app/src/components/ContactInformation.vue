@@ -41,22 +41,22 @@ const { t } = useI18n()
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-md);
   padding: var(--spacing-xl);
-  padding-top: calc(var(--spacing-xl) + 4px);
   height: 100%;
-  overflow: hidden;
   box-shadow: var(--shadow-glow);
 }
 
 .contact-info::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 24px;
-  background: var(--gradient-brand);
-  mask-image: linear-gradient(to bottom, black 0, black 4px, transparent 24px);
-  -webkit-mask-image: linear-gradient(to bottom, black 0, black 4px, transparent 24px);
+  inset: 0;
+  border-radius: inherit;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
+    var(--gradient-brand-horizontal) border-box;
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 46px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 46px);
+  pointer-events: none;
 }
 
 .contact-info h2 {
