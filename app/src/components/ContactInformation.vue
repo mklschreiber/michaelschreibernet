@@ -36,11 +36,25 @@ const { t } = useI18n()
 
 <style scoped>
 .contact-info {
-  background: var(--color-bg-secondary);
+  position: relative;
+  background: var(--color-bg-primary);
   border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: var(--spacing-xl);
+  padding-top: calc(var(--spacing-xl) + 4px);
   height: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-glow);
+}
+
+.contact-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-brand);
 }
 
 .contact-info h2 {

@@ -115,10 +115,24 @@ const handleSubmit = async () => {
 
 <style scoped>
 .contact-form {
-  background: var(--color-bg-secondary);
+  position: relative;
+  background: var(--color-bg-primary);
   padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
+  padding-top: calc(var(--spacing-xl) + 4px);
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-border-light);
+  overflow: hidden;
+  box-shadow: var(--shadow-glow);
+}
+
+.contact-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-brand);
 }
 
 .success-message {

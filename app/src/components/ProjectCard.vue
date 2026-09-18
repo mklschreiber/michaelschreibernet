@@ -62,7 +62,7 @@ const { t } = useI18n()
   padding-top: calc(var(--spacing-xl) + 4px);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  box-shadow: var(--shadow-glow);
 }
 
 .project-card::before {
@@ -73,19 +73,6 @@ const { t } = useI18n()
   right: 0;
   height: 4px;
   background: var(--gradient-brand);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-base);
-}
-
-.project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-glow);
-  border-color: transparent;
-}
-
-.project-card:hover::before {
-  transform: scaleX(1);
 }
 
 .project-card h2 {
