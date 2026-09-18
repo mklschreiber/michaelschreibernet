@@ -39,11 +39,15 @@ const projects = ref<Project[]>(projectsData as Project[])
 }
 
 .content h1 {
-  font-size: var(--font-size-4xl);
+  display: inline-block;
+  font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-bold);
-  letter-spacing: -0.01em;
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-sm);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--spacing-md);
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .subtitle {

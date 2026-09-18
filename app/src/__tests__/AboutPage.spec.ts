@@ -152,7 +152,9 @@ describe('AboutPage', () => {
   it('renders title in English when locale is en', () => {
     const wrapper = createWrapper('en')
     expect(wrapper.find('.about-page__name').text()).toBe('Michael Schreiber')
-    // Timeline title should be in English
-    expect(wrapper.find('.about-page__timeline-title').text()).toBe('Professional Experience')
+    // Timeline section's aria-label should be in English (no visible heading)
+    expect(wrapper.find('section[aria-label]').attributes('aria-label')).toBe(
+      'Professional Experience',
+    )
   })
 })

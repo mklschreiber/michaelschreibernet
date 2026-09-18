@@ -35,6 +35,9 @@ function setEntryRef(index: number) {
     <AppNavigation />
 
     <main class="about-page__content">
+      <h1>{{ t('about.title') }}</h1>
+      <p class="subtitle">{{ t('about.subtitle') }}</p>
+
       <section class="about-page__card">
         <div class="about-page__avatar">
           <img
@@ -44,7 +47,7 @@ function setEntryRef(index: number) {
           />
         </div>
         <div class="about-page__info">
-          <h1 class="about-page__name">{{ t('about.businessCard.name') }}</h1>
+          <h2 class="about-page__name">{{ t('about.businessCard.name') }}</h2>
           <p class="about-page__role">{{ t('about.businessCard.role') }}</p>
           <div class="about-page__links">
             <a href="mailto:info@michaelschreiber.net" class="about-page__link">
@@ -84,7 +87,6 @@ function setEntryRef(index: number) {
 
       <!-- Timeline -->
       <section class="about-page__timeline" :aria-label="t('about.timeline.title')">
-        <h2 class="about-page__timeline-title">{{ t('about.timeline.title') }}</h2>
         <div class="timeline">
           <div class="timeline__line" aria-hidden="true"></div>
           <ol class="timeline__list">
@@ -114,6 +116,24 @@ function setEntryRef(index: number) {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: var(--spacing-2xl) var(--spacing-xl);
+}
+
+.about-page__content h1 {
+  display: inline-block;
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--spacing-md);
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.about-page__content .subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2xl);
 }
 
 /* ── Business Card ────────────────────────────────────── */
@@ -219,13 +239,8 @@ function setEntryRef(index: number) {
 }
 
 /* ── Timeline ─────────────────────────────────────────── */
-.about-page__timeline-title {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.01em;
-  color: var(--color-text-primary);
-  text-align: center;
-  margin-bottom: var(--spacing-2xl);
+.about-page__timeline {
+  padding-top: var(--spacing-xl);
 }
 
 .timeline {

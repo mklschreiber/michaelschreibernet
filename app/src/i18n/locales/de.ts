@@ -9,7 +9,7 @@ const de: MessageSchema = {
   },
   landing: {
     title: 'Willkommen',
-    subtitle: 'Entdecken Sie meine Projekte und nehmen Sie Kontakt auf.',
+    subtitle: 'Entdecke meine Projekte und nimm Kontakt auf.',
     logoAlt: 'Animiertes michaelschreiber.net Logo als verbundenes IT-Netzwerk',
     viewProjects: 'Projekte ansehen',
     getInTouch: 'Kontakt aufnehmen',
@@ -51,6 +51,7 @@ const de: MessageSchema = {
   },
   about: {
     title: 'Über mich',
+    subtitle: 'Eine Übersicht über mich und meine Stationen',
     businessCard: {
       name: 'Michael Schreiber',
       role: 'Senior Software Engineer',
