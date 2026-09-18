@@ -63,9 +63,9 @@ const { t } = useI18n()
   height: 16px;
   min-width: 16px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background: var(--gradient-brand);
   border: 3px solid var(--color-bg-primary);
-  box-shadow: 0 0 0 2px var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-light), 0 0 16px rgba(79, 70, 229, 0.35);
   flex-shrink: 0;
   z-index: 1;
   position: relative;
@@ -88,12 +88,32 @@ const { t } = useI18n()
 }
 
 .timeline-entry__card {
+  position: relative;
   background: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-light);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-glow);
   flex: 1;
+}
+
+.timeline-entry__card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-entry__card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
+    var(--gradient-brand-horizontal) border-box;
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  pointer-events: none;
 }
 
 .timeline-entry__date {

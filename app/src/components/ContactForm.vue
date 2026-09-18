@@ -115,9 +115,31 @@ const handleSubmit = async () => {
 
 <style scoped>
 .contact-form {
-  background: var(--color-bg-secondary);
+  position: relative;
+  background: var(--color-bg-primary);
   padding: var(--spacing-xl);
   border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-glow);
+}
+
+.contact-form > * {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-form::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
+    var(--gradient-brand-horizontal) border-box;
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  pointer-events: none;
 }
 
 .success-message {
@@ -157,13 +179,15 @@ const handleSubmit = async () => {
   border-radius: var(--radius-sm);
   font-size: var(--font-size-base);
   font-family: inherit;
-  transition: border-color var(--transition-base);
+  background: var(--color-bg-primary);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
 }
 
 .button-group {
@@ -176,22 +200,26 @@ const handleSubmit = async () => {
   width: 100%;
   padding: var(--spacing-md) var(--spacing-lg);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all var(--transition-base);
-  background-color: var(--color-primary);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+  background: var(--gradient-brand);
   color: white;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
 }
 
 .submit-btn:disabled {
-  background-color: var(--color-primary-light);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 @media (min-width: 640px) {

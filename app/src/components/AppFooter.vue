@@ -12,8 +12,19 @@
 
 <style scoped>
 .app-footer {
-  background-color: var(--color-primary-hover);
+  position: relative;
+  background: linear-gradient(135deg, #312e81 0%, #4f46e5 55%, #0e7490 100%);
   color: var(--color-text-light);
+}
+
+.app-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-brand);
 }
 
 .footer-container {
@@ -32,18 +43,20 @@
 }
 
 .legal-link {
-  color: var(--color-text-light);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-weight: var(--font-weight-semibold);
+  transition: color var(--transition-fast);
 }
 
 .legal-link:hover,
 .legal-link:focus-visible {
+  color: var(--color-text-light);
   text-decoration: underline;
 }
 
 .copyright {
-  color: var(--color-text-light);
+  color: rgba(255, 255, 255, 0.7);
   font-size: var(--font-size-sm);
 }
 

@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import type { Project } from '@/types/project'
 import { getTagColor } from '@/utils/tagColor'
+import IconImagePlaceholder from '@/components/icons/IconImagePlaceholder.vue'
 
 interface Props {
   project: Project
@@ -15,6 +16,11 @@ const { t } = useI18n()
 <template>
   <article class="project-card">
     <h2>{{ t(project.titleKey) }}</h2>
+    <div class="project-images" aria-hidden="true">
+      <div class="project-image-placeholder" v-for="n in 3" :key="n">
+        <IconImagePlaceholder />
+      </div>
+    </div>
     <p>{{ t(project.descriptionKey) }}</p>
     <div class="technologies">
       <span
@@ -55,21 +61,55 @@ const { t } = useI18n()
 
 <style scoped>
 .project-card {
-  background: var(--color-bg-secondary);
+  position: relative;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
   padding: var(--spacing-xl);
   border-radius: var(--radius-md);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  box-shadow: var(--shadow-glow);
 }
 
-.project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
+.project-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
+    var(--gradient-brand-horizontal) border-box;
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  pointer-events: none;
 }
 
 .project-card h2 {
   font-size: var(--font-size-2xl);
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-md);
+}
+
+.project-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.project-image-placeholder {
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20%;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-brand-soft);
+  color: var(--color-primary);
 }
 
 .project-card p {
@@ -88,7 +128,8 @@ const { t } = useI18n()
 .tech-badge {
   color: var(--color-text-primary);
   padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(24, 24, 27, 0.06);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
@@ -111,5 +152,10 @@ const { t } = useI18n()
 .project-link svg {
   width: 16px;
   height: 16px;
+  transition: transform var(--transition-base);
+}
+
+.project-link:hover svg {
+  transform: translate(2px, -2px);
 }
 </style>

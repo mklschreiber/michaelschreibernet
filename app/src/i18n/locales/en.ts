@@ -49,6 +49,7 @@ const en: MessageSchema = {
   },
   about: {
     title: 'About Me',
+    subtitle: 'An overview of me and my career milestones',
     businessCard: {
       name: 'Michael Schreiber',
       role: 'Senior Software Engineer',

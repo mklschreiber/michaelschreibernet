@@ -47,6 +47,7 @@ export interface MessageSchema {
   }
   about: {
     title: string
+    subtitle: string
     businessCard: {
       name: string
       role: string

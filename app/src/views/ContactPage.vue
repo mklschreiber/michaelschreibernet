@@ -26,6 +26,7 @@ const { t } = useI18n()
 <style scoped>
 .contact-page {
   min-height: 100vh;
+  background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-bg-primary) 20rem);
 }
 
 .content {
@@ -35,9 +36,15 @@ const { t } = useI18n()
 }
 
 .content h1 {
-  font-size: var(--font-size-4xl);
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-sm);
+  display: inline-block;
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--spacing-md);
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .subtitle {
