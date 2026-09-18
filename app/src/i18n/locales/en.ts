@@ -29,7 +29,7 @@ const en: MessageSchema = {
     subtitle: "Let's get in touch",
     contactInfo: 'Contact Information',
     email: 'Email',
-    emailValue: "michael.schreiber{'@'}outlook.com",
+    emailValue: "info{'@'}michaelschreiber.net",
     phone: 'Phone',
     phoneValue: '+49 (0) 15679 724718',
     location: 'Location',
@@ -54,6 +54,8 @@ const en: MessageSchema = {
       role: 'Senior Software Engineer',
       email: 'Email',
       xing: 'Xing Profile',
+      github: 'GitHub Profile',
+      linkedin: 'LinkedIn Profile',
       avatarAlt: 'Profile picture of Michael Schreiber',
     },
     timeline: {

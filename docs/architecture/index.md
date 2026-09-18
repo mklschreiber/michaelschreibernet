@@ -39,6 +39,19 @@ material.
 - [Tests for AI Review Gate](msnet-wf-0002-ai-review-gate-tests.md) —
   records the static/manual verification approach for this delivery-tooling
   change, since no Vue application code changed.
+- [Minor Changes — Profile Card Links, Contact Email, Avatar, Flat Icons](minor-changes.md) —
+  adds LinkedIn and GitHub links, standardizes the public contact email on
+  `info@michaelschreiber.net`, replaces the About page's text-initials avatar
+  with the supplied profile photo, replaces emoji link icons with four new
+  solid-fill flat SVG icon components under `components/icons/`, and (Round 2)
+  turns the phone number and email address in Impressum, Kontakt, and Profil
+  into clickable `tel:`/`mailto:` links.
+- [Tests for Minor Changes](minor-changes-tests.md) — records the
+  `AboutPage.vue` business-card coverage for the new LinkedIn/GitHub links,
+  the corrected email, and the photo avatar, plus the four new icon
+  components' shared render contract, and (Round 2) first-time coverage for
+  `ImpressumPage.vue`, `DataProtectionPage.vue`, and `ContactInformation.vue`
+  asserting their new `tel:`/`mailto:` links.
 
 ## Reviews
 
@@ -49,6 +62,13 @@ material.
   renumbering/cross-references, and all index/handbook/CLAUDE.md wiring
   verified correct; one non-blocking wording note left for a future touch of
   `SKILL.md`.
+* [Review for Minor Changes](minor-changes-review.md) -
+  Round 2: positive — Round 1's five ACs (LinkedIn link, GitHub link,
+  consistent `info@michaelschreiber.net` email, circular photo avatar, flat
+  SVG icons) and Round 2's clickable `tel:`/`mailto:` links in Impressum,
+  Kontakt, and Profil (including the verified `tel:+4915679724718` trunk-
+  prefix math and the `DataProtectionPage.vue` drive-by cleanup) all verified
+  in code and tests; unit tests, lint, and build all pass.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

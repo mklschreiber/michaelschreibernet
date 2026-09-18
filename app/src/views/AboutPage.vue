@@ -3,6 +3,10 @@ import type { ComponentPublicInstance } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppNavigation from '@/components/AppNavigation.vue'
 import TimelineEntry from '@/components/TimelineEntry.vue'
+import IconEmail from '@/components/icons/IconEmail.vue'
+import IconXing from '@/components/icons/IconXing.vue'
+import IconGithub from '@/components/icons/IconGithub.vue'
+import IconLinkedin from '@/components/icons/IconLinkedin.vue'
 import { timelineEntries } from '@/data/timeline'
 import { useTimelineAnimation } from '@/composables/useTimelineAnimation'
 
@@ -32,15 +36,19 @@ function setEntryRef(index: number) {
 
     <main class="about-page__content">
       <section class="about-page__card">
-        <div class="about-page__avatar" :aria-label="t('about.businessCard.avatarAlt')">
-          <span class="about-page__initials">MS</span>
+        <div class="about-page__avatar">
+          <img
+            class="about-page__avatar-image"
+            src="/profile-picture.jpeg"
+            :alt="t('about.businessCard.avatarAlt')"
+          />
         </div>
         <div class="about-page__info">
           <h1 class="about-page__name">{{ t('about.businessCard.name') }}</h1>
           <p class="about-page__role">{{ t('about.businessCard.role') }}</p>
           <div class="about-page__links">
-            <a href="mailto:michael.schreiber@outlook.com" class="about-page__link">
-              <span aria-hidden="true">✉️</span>
+            <a href="mailto:info@michaelschreiber.net" class="about-page__link">
+              <span class="about-page__link-icon" aria-hidden="true"><IconEmail /></span>
               {{ t('about.businessCard.email') }}
             </a>
             <a
@@ -49,8 +57,26 @@ function setEntryRef(index: number) {
               rel="noopener noreferrer"
               class="about-page__link"
             >
-              <span aria-hidden="true">💼</span>
+              <span class="about-page__link-icon" aria-hidden="true"><IconXing /></span>
               {{ t('about.businessCard.xing') }}
+            </a>
+            <a
+              href="https://www.linkedin.com/in/mklschreiber"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="about-page__link"
+            >
+              <span class="about-page__link-icon" aria-hidden="true"><IconLinkedin /></span>
+              {{ t('about.businessCard.linkedin') }}
+            </a>
+            <a
+              href="https://github.com/mklschreiber"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="about-page__link"
+            >
+              <span class="about-page__link-icon" aria-hidden="true"><IconGithub /></span>
+              {{ t('about.businessCard.github') }}
             </a>
           </div>
         </div>
@@ -111,13 +137,14 @@ function setEntryRef(index: number) {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
-.about-page__initials {
-  font-size: 2rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-light);
-  user-select: none;
+.about-page__avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .about-page__name {
@@ -151,6 +178,13 @@ function setEntryRef(index: number) {
 
 .about-page__link:hover {
   opacity: 0.8;
+}
+
+.about-page__link-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-flex;
 }
 
 /* ── Timeline ─────────────────────────────────────────── */

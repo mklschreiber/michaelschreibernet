@@ -11,14 +11,14 @@ import AppNavigation from '@/components/AppNavigation.vue'
 
       <section class="section">
         <p>Michael Schreiber</p>
-        <p>Grockelhofen 32a</p>
+        <p>Grockelhofen 32</p>
         <p>89340 Leipheim</p>
       </section>
 
       <section class="section">
         <h2>Kontakt</h2>
-        <p>Telefon: +49 (0) 15679 724718</p>
-        <p>E-Mail: info@michaelschreiber.net</p>
+        <p>Telefon: <a href="tel:+4915679724718">+49 (0) 15679 724718</a></p>
+        <p>E-Mail: <a href="mailto:info@michaelschreiber.net">info@michaelschreiber.net</a></p>
       </section>
     </main>
   </div>
@@ -59,6 +59,11 @@ import AppNavigation from '@/components/AppNavigation.vue'
   color: var(--color-text-secondary);
   font-size: var(--font-size-lg);
   line-height: 1.5;
+}
+
+.section a {
+  color: inherit;
+  text-decoration: underline;
 }
 </style>
 

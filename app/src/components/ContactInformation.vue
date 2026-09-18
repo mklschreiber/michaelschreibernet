@@ -9,11 +9,11 @@ const { t } = useI18n()
     <h2>{{ t('contact.contactInfo') }}</h2>
     <div class="info-item">
       <strong>{{ t('contact.email') }}:</strong>
-      <p>{{ t('contact.emailValue') }}</p>
+      <p><a href="mailto:info@michaelschreiber.net">{{ t('contact.emailValue') }}</a></p>
     </div>
     <div class="info-item">
       <strong>{{ t('contact.phone') }}:</strong>
-      <p>{{ t('contact.phoneValue') }}</p>
+      <p><a href="tel:+4915679724718">{{ t('contact.phoneValue') }}</a></p>
     </div>
     <div class="info-item">
       <strong>{{ t('contact.location') }}:</strong>
@@ -41,5 +41,10 @@ const { t } = useI18n()
 
 .info-item p {
   color: var(--color-text-secondary);
+}
+
+.info-item a {
+  color: inherit;
+  text-decoration: underline;
 }
 </style>
