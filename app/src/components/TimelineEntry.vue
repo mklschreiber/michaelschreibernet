@@ -88,19 +88,25 @@ const { t } = useI18n()
 }
 
 .timeline-entry__card {
+  position: relative;
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
+  padding-top: calc(var(--spacing-lg) + 4px);
+  box-shadow: var(--shadow-glow);
+  overflow: hidden;
   flex: 1;
-  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
 }
 
-.timeline-entry__card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-primary-light);
-  transform: translateY(-2px);
+.timeline-entry__card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-brand);
 }
 
 .timeline-entry__date {
