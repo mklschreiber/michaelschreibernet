@@ -22,7 +22,9 @@ const closeMenu = () => {
   <header class="nav-header">
     <div class="nav-container">
       <RouterLink to="/" class="brand" @click="closeMenu">
-        <span class="brand__mark" aria-hidden="true">MS</span>
+        <span class="brand__mark" aria-hidden="true">
+          <img class="brand__mark-image" src="/logo_simple_white.svg" alt="" />
+        </span>
         <span class="brand__name">michaelschreiber<span class="brand__tld">.net</span></span>
       </RouterLink>
 
@@ -83,12 +85,15 @@ const closeMenu = () => {
   justify-content: center;
   width: 36px;
   height: 36px;
+  padding: 6px;
   border-radius: var(--radius-md);
   background: var(--gradient-brand);
-  color: var(--color-text-light);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.02em;
+}
+
+.brand__mark-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand__name {
