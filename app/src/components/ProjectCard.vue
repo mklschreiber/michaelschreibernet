@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import type { Project } from '@/types/project'
 import { getTagColor } from '@/utils/tagColor'
+import IconImagePlaceholder from '@/components/icons/IconImagePlaceholder.vue'
 
 interface Props {
   project: Project
@@ -15,6 +16,11 @@ const { t } = useI18n()
 <template>
   <article class="project-card">
     <h2>{{ t(project.titleKey) }}</h2>
+    <div class="project-images" aria-hidden="true">
+      <div class="project-image-placeholder" v-for="n in 3" :key="n">
+        <IconImagePlaceholder />
+      </div>
+    </div>
     <p>{{ t(project.descriptionKey) }}</p>
     <div class="technologies">
       <span
@@ -79,6 +85,24 @@ const { t } = useI18n()
   font-size: var(--font-size-2xl);
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-md);
+}
+
+.project-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.project-image-placeholder {
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20%;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-brand-soft);
+  color: var(--color-primary);
 }
 
 .project-card p {

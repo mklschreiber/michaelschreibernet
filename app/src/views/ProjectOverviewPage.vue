@@ -54,7 +54,7 @@ const projects = ref<Project[]>(projectsData as Project[])
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--spacing-xl);
 }
 </style>
