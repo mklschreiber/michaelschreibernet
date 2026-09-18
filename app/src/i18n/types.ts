@@ -52,6 +52,8 @@ export interface MessageSchema {
       role: string
       email: string
       xing: string
+      github: string
+      linkedin: string
       avatarAlt: string
     }
     timeline: {

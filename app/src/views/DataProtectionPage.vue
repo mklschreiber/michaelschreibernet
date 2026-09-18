@@ -1,4 +1,3 @@
-ion
 <script setup lang="ts">
 import AppNavigation from '@/components/AppNavigation.vue'
 </script>
@@ -122,12 +121,12 @@ import AppNavigation from '@/components/AppNavigation.vue'
         <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
         <p>
           Michael Schreiber<br />
-          Grockelhofen 32a<br />
+          Grockelhofen 32<br />
           89340 Leipheim
         </p>
         <p>
-          Telefon: +49 (0) 15679 724718<br />
-          E-Mail: info@michaelschreiber.net
+          Telefon: <a href="tel:+4915679724718">+49 (0) 15679 724718</a><br />
+          E-Mail: <a href="mailto:info@michaelschreiber.net">info@michaelschreiber.net</a>
         </p>
         <p>
           Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder
@@ -479,4 +478,3 @@ import AppNavigation from '@/components/AppNavigation.vue'
   }
 }
 </style>
-t

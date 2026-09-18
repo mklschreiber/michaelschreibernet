@@ -31,7 +31,7 @@ const de: MessageSchema = {
     subtitle: 'Lassen Sie uns in Verbindung treten',
     contactInfo: 'Kontaktinformationen',
     email: 'Email',
-    emailValue: "michael.schreiber{'@'}outlook.com",
+    emailValue: "info{'@'}michaelschreiber.net",
     phone: 'Telefon',
     phoneValue: '+49 (0) 15679 724718',
     location: 'Standort',
@@ -56,6 +56,8 @@ const de: MessageSchema = {
       role: 'Senior Software Engineer',
       email: 'E-Mail',
       xing: 'Xing-Profil',
+      github: 'GitHub-Profil',
+      linkedin: 'LinkedIn-Profil',
       avatarAlt: 'Profilbild von Michael Schreiber',
     },
     timeline: {

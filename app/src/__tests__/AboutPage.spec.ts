@@ -43,11 +43,14 @@ describe('AboutPage', () => {
     expect(wrapper.find('nav').exists()).toBe(true)
   })
 
-  it('renders avatar with initials MS', () => {
+  it('renders avatar with profile picture image', () => {
     const wrapper = createWrapper()
     const avatar = wrapper.find('.about-page__avatar')
     expect(avatar.exists()).toBe(true)
-    expect(avatar.find('.about-page__initials').text()).toBe('MS')
+    const image = avatar.find('.about-page__avatar-image')
+    expect(image.exists()).toBe(true)
+    expect(image.attributes('src')).toBe('/profile-picture.jpeg')
+    expect(image.attributes('alt')).toBe('Profilbild von Michael Schreiber')
   })
 
   it('renders name', () => {
@@ -64,15 +67,55 @@ describe('AboutPage', () => {
     const wrapper = createWrapper()
     const emailLink = wrapper.find('a[href^="mailto:"]')
     expect(emailLink.exists()).toBe(true)
-    expect(emailLink.attributes('href')).toBe('mailto:michael.schreiber@outlook.com')
+    expect(emailLink.attributes('href')).toBe('mailto:info@michaelschreiber.net')
   })
 
-  it('renders Xing link with noopener noreferrer', () => {
+  it('renders Xing link with noopener noreferrer and the localized label', () => {
     const wrapper = createWrapper()
     const xingLink = wrapper.find('a[href*="xing"]')
     expect(xingLink.exists()).toBe(true)
     expect(xingLink.attributes('rel')).toBe('noopener noreferrer')
     expect(xingLink.attributes('target')).toBe('_blank')
+    expect(xingLink.text()).toContain('Xing-Profil')
+  })
+
+  it('renders LinkedIn link with the correct href, target, rel, and localized label', () => {
+    const wrapper = createWrapper()
+    const linkedinLink = wrapper.find('a[href="https://www.linkedin.com/in/mklschreiber"]')
+    expect(linkedinLink.exists()).toBe(true)
+    expect(linkedinLink.attributes('target')).toBe('_blank')
+    expect(linkedinLink.attributes('rel')).toBe('noopener noreferrer')
+    expect(linkedinLink.text()).toContain('LinkedIn-Profil')
+  })
+
+  it('renders LinkedIn link with the English label when locale is en', () => {
+    const wrapper = createWrapper('en')
+    const linkedinLink = wrapper.find('a[href="https://www.linkedin.com/in/mklschreiber"]')
+    expect(linkedinLink.text()).toContain('LinkedIn Profile')
+  })
+
+  it('renders GitHub link with the correct href, target, rel, and localized label', () => {
+    const wrapper = createWrapper()
+    const githubLink = wrapper.find('a[href="https://github.com/mklschreiber"]')
+    expect(githubLink.exists()).toBe(true)
+    expect(githubLink.attributes('target')).toBe('_blank')
+    expect(githubLink.attributes('rel')).toBe('noopener noreferrer')
+    expect(githubLink.text()).toContain('GitHub-Profil')
+  })
+
+  it('renders GitHub link with the English label when locale is en', () => {
+    const wrapper = createWrapper('en')
+    const githubLink = wrapper.find('a[href="https://github.com/mklschreiber"]')
+    expect(githubLink.text()).toContain('GitHub Profile')
+  })
+
+  it('renders exactly four business-card links, each with an icon', () => {
+    const wrapper = createWrapper()
+    const links = wrapper.findAll('.about-page__links > .about-page__link')
+    expect(links).toHaveLength(4)
+    links.forEach((link) => {
+      expect(link.find('.about-page__link-icon svg').exists()).toBe(true)
+    })
   })
 
   it('renders timeline section with aria-label', () => {
