@@ -137,8 +137,8 @@ const handleSubmit = async () => {
   background:
     linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
     var(--gradient-brand-horizontal) border-box;
-  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 46px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 46px);
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
   pointer-events: none;
 }
 
