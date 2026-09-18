@@ -77,8 +77,10 @@ const { t } = useI18n()
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 24px;
   background: var(--gradient-brand);
+  mask-image: linear-gradient(to bottom, black 0, black 4px, transparent 24px);
+  -webkit-mask-image: linear-gradient(to bottom, black 0, black 4px, transparent 24px);
 }
 
 .project-card h2 {

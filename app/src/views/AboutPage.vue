@@ -137,8 +137,10 @@ function setEntryRef(index: number) {
   top: 0;
   left: 0;
   right: 0;
-  height: 6px;
+  height: 26px;
   background: var(--gradient-brand);
+  mask-image: linear-gradient(to bottom, black 0, black 6px, transparent 26px);
+  -webkit-mask-image: linear-gradient(to bottom, black 0, black 6px, transparent 26px);
 }
 
 .about-page__avatar {
