@@ -26,6 +26,7 @@ const { t } = useI18n()
 <style scoped>
 .contact-page {
   min-height: 100vh;
+  background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-bg-primary) 20rem);
 }
 
 .content {
@@ -36,6 +37,8 @@ const { t } = useI18n()
 
 .content h1 {
   font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.01em;
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-sm);
 }

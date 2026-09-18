@@ -117,7 +117,8 @@ const handleSubmit = async () => {
 .contact-form {
   background: var(--color-bg-secondary);
   padding: var(--spacing-xl);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
 }
 
 .success-message {
@@ -157,13 +158,15 @@ const handleSubmit = async () => {
   border-radius: var(--radius-sm);
   font-size: var(--font-size-base);
   font-family: inherit;
-  transition: border-color var(--transition-base);
+  background: var(--color-bg-primary);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
 }
 
 .button-group {
@@ -176,22 +179,26 @@ const handleSubmit = async () => {
   width: 100%;
   padding: var(--spacing-md) var(--spacing-lg);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all var(--transition-base);
-  background-color: var(--color-primary);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+  background: var(--gradient-brand);
   color: white;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
 }
 
 .submit-btn:disabled {
-  background-color: var(--color-primary-light);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 @media (min-width: 640px) {

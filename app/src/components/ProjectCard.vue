@@ -55,15 +55,37 @@ const { t } = useI18n()
 
 <style scoped>
 .project-card {
-  background: var(--color-bg-secondary);
+  position: relative;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
   padding: var(--spacing-xl);
+  padding-top: calc(var(--spacing-xl) + 4px);
   border-radius: var(--radius-md);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-brand);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
 }
 
 .project-card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-glow);
+  border-color: transparent;
+}
+
+.project-card:hover::before {
+  transform: scaleX(1);
 }
 
 .project-card h2 {
@@ -88,7 +110,8 @@ const { t } = useI18n()
 .tech-badge {
   color: var(--color-text-primary);
   padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(24, 24, 27, 0.06);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
@@ -111,5 +134,10 @@ const { t } = useI18n()
 .project-link svg {
   width: 16px;
   height: 16px;
+  transition: transform var(--transition-base);
+}
+
+.project-link:hover svg {
+  transform: translate(2px, -2px);
 }
 </style>

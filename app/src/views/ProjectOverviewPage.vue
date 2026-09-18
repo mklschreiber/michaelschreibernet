@@ -29,6 +29,7 @@ const projects = ref<Project[]>(projectsData as Project[])
 <style scoped>
 .project-overview {
   min-height: 100vh;
+  background: linear-gradient(180deg, var(--color-accent-light) 0%, var(--color-bg-primary) 20rem);
 }
 
 .content {
@@ -39,6 +40,8 @@ const projects = ref<Project[]>(projectsData as Project[])
 
 .content h1 {
   font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.01em;
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-sm);
 }

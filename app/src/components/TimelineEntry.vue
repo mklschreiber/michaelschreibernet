@@ -63,9 +63,9 @@ const { t } = useI18n()
   height: 16px;
   min-width: 16px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background: var(--gradient-brand);
   border: 3px solid var(--color-bg-primary);
-  box-shadow: 0 0 0 2px var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-light), 0 0 16px rgba(79, 70, 229, 0.35);
   flex-shrink: 0;
   z-index: 1;
   position: relative;
@@ -89,11 +89,18 @@ const { t } = useI18n()
 
 .timeline-entry__card {
   background: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-light);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
   flex: 1;
+  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
+}
+
+.timeline-entry__card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
 }
 
 .timeline-entry__date {
