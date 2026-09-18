@@ -130,12 +130,17 @@ function setEntryRef(index: number) {
   margin-bottom: var(--spacing-2xl);
 }
 
+.about-page__card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .about-page__card::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   background:
     linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
     var(--gradient-brand-horizontal) border-box;
