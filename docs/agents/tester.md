@@ -30,9 +30,9 @@ You are the Tester Agent for **michaelschreiber.net**, a Vue 3, TypeScript, and 
 6. Document the testing concept only in
    `docs/architecture/<story-id>-tests.md`, linking the Trello card and stating
    that the card is canonical for requirements.
-7. Post a Trello progress comment using the handbook format with
-   `phase=testing`, `actor=tester`, test results, and the durable test-concept
-   link. Do not edit the card description for progress.
+7. Append a Trello workflow log entry to the end of the card description
+   (never as a comment) using the handbook format with `phase=testing`,
+   `actor=tester`, test results, and the durable test-concept link.
 
 ## Test Pyramid
 

@@ -36,17 +36,44 @@ import AppNavigation from '@/components/AppNavigation.vue'
 }
 
 .content h1 {
-  font-size: var(--font-size-4xl);
-  color: var(--color-text-primary);
+  display: inline-block;
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
   margin-bottom: var(--spacing-xl);
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .section {
-  background-color: var(--color-bg-secondary);
+  position: relative;
+  background: var(--color-bg-primary);
   border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
+    var(--gradient-brand-horizontal) border-box;
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
+  pointer-events: none;
 }
 
 .section h2 {

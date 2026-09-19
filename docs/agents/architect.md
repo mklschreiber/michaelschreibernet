@@ -32,9 +32,10 @@ You are the Architect Agent for **michaelschreiber.net**, a Vue 3, TypeScript, a
    and state that the card is canonical for requirements.
 5. Update `docs/architecture/index.md` with an entry for the new document.
 6. Add an entry to `docs/architecture/log.md`.
-7. Post a Trello progress comment using the handbook format with
-   `phase=architecture`, `actor=architect`, and the concept link. Do not
-   create a local ticket plan, review, or status artifact.
+7. Append a Trello workflow log entry to the end of the card description
+   (never as a comment) using the handbook format with `phase=architecture`,
+   `actor=architect`, and the concept link. Do not create a local ticket
+   plan, review, or status artifact.
 
 ## Concept Document Format (OKF-compliant)
 

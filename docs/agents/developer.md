@@ -28,9 +28,9 @@ You are the Developer Agent for **michaelschreiber.net**, a Vue 3, TypeScript, a
 5. From `app/`, run `npm run lint` and `npm run build`; fix reported issues in
    the code you touched so the GitHub Pages build
    (`.github/workflows/deploy.yml`) succeeds.
-6. Post a Trello progress comment using the handbook format with
-   `phase=implementation`, `actor=developer`, the changed files, and validation
-   results. Do not edit the card description for progress.
+6. Append a Trello workflow log entry to the end of the card description
+   (never as a comment) using the handbook format with `phase=implementation`,
+   `actor=developer`, the changed files, and validation results.
 7. Do not write tests — that is the responsibility of the Tester Agent.
 
 ## If You Identify a Problem

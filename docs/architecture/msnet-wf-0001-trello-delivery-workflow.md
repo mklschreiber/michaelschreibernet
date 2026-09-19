@@ -52,6 +52,15 @@ file. A Trello template card containing this format may live in a
 `Templates` list; that list is not a delivery status and is excluded from
 ticket queries.
 
+**Superseded 2026-09-19** by
+[`msnet-wf-0003-relaxed-tickets-and-description-log.md`](msnet-wf-0003-relaxed-tickets-and-description-log.md):
+the `MSNET-XXXX:` title prefix and this fixed description template are no
+longer required — no card on the real board actually followed them.
+Readiness is now judged on content (a user story and acceptance criteria
+evident in the description, in whatever structure it uses) rather than
+format, and dependencies reference cards by link rather than a required ID
+scheme.
+
 ### Card lists define status; readiness is derived
 
 The board must contain exactly one list with each of these names:
@@ -130,9 +139,15 @@ actor=<role> at=<ISO-8601 timestamp> outcome=<success|blocked|failed>
 <concise result, changed files/test command results, and durable-document link if applicable>
 ```
 
+**Superseded 2026-09-19** by
+[`msnet-wf-0003-relaxed-tickets-and-description-log.md`](msnet-wf-0003-relaxed-tickets-and-description-log.md):
+the connected Trello MCP tools have no comment-write action, so every
+`[msnet-workflow]` entry (not only the phases listed above) is appended to
+the card description instead of posted as a comment.
+
 Phase plans, architecture-review findings, test concepts, code reviews, and
 change logs are no longer created in `app/.ai-docs/tickets/`. Their useful
-concise result belongs in the corresponding card comment. A detailed,
+concise result belongs in the corresponding workflow log entry. A detailed,
 durable architecture decision remains an OKF concept in
 `docs/architecture/`, and a test concept remains there when the Tester Agent
 needs one; both link to the Trello card URL and state that the card is
@@ -288,8 +303,10 @@ GET  /1/cards/{cardId}
 PUT  /1/cards/{cardId}?idList={targetListId}
      -> card status transition
 
-POST /1/cards/{cardId}/actions/comments?text={workflowComment}
-     -> durable workflow progress event
+PUT  /1/cards/{cardId}?desc={fullUpdatedDescription}
+     -> durable workflow progress event, appended to the existing
+        description (superseded 2026-09-19, see below: no comment-write
+        endpoint is used, since the connected Trello MCP tools have none)
 ```
 
 Every request authenticates from `TRELLO_API_KEY` and `TRELLO_TOKEN` without
@@ -299,8 +316,8 @@ persisting credentials. Skills must model at least this parsed data:
 TicketCard {
   id: string
   idList: string
-  name: string              // must start with MSNET-XXXX:
-  desc: string              // canonical requirement template
+  name: string              // no required prefix (superseded 2026-09-19)
+  desc: string              // requirement content + appended workflow log
   pos: number
   url: string
 }
@@ -324,9 +341,15 @@ with a complete description.
    `Backlog`/`Blocked`. The board (not this document's original assumption)
    is authoritative; the list contract above and the two Trello skills were
    updated to match it.
-2. Do all discovered open cards already have unique MSNET prefixes, complete
-   descriptions, and explicit dependency links? Any missing data must be
-   corrected on Trello before it is selected as ready.
+2. ~~Do all discovered open cards already have unique MSNET prefixes,
+   complete descriptions, and explicit dependency links? Any missing data
+   must be corrected on Trello before it is selected as ready.~~ **Resolved
+   2026-09-19**: no — no card on the board actually carried an MSNET prefix.
+   Per
+   [`msnet-wf-0003-relaxed-tickets-and-description-log.md`](msnet-wf-0003-relaxed-tickets-and-description-log.md),
+   the prefix is no longer required; only a user story and acceptance
+   criteria evident in the description, plus resolvable dependency links,
+   are.
 3. ~~Who is authorized to perform the explicit final review and move an
    `In Progress` card to `Done`?~~ **Resolved 2026-09-14**: the user reviews
    in chat when the coordinator requests it at the `Review` stage, and the

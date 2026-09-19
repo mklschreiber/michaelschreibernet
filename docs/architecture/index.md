@@ -14,6 +14,11 @@ material.
 - [Trello-Backed Delivery Workflow](msnet-wf-0001-trello-delivery-workflow.md) —
   makes Trello the authoritative ticket, dependency, and delivery-progress
   system, replacing local ticket files.
+- [Relaxed Ticket Naming and Description-Based Workflow Log](msnet-wf-0003-relaxed-tickets-and-description-log.md) —
+  drops the mandatory `MSNET-XXXX:` card-naming/template convention
+  project-wide and moves all `[msnet-workflow]` log entries from Trello
+  comments to the card description, since the connected Trello MCP tools
+  have no comment-write action.
 - [Animated Landing-Page Logo](animated-logo.md) — defines the self-contained
   SVG drawing sequence and landing-page integration.
 - [Tests for Animated Landing-Page Logo](animated-logo-tests.md) — records the
@@ -52,6 +57,14 @@ material.
   components' shared render contract, and (Round 2) first-time coverage for
   `ImpressumPage.vue`, `DataProtectionPage.vue`, and `ContactInformation.vue`
   asserting their new `tel:`/`mailto:` links.
+- [Styling Improvements — Imprint and Data Protection Header/Card
+  Alignment](styling-improvements.md) — aligns `ImpressumPage.vue`'s and
+  `DataProtectionPage.vue`'s `.content h1` page headers with the
+  gradient-text heading recipe already used by `ContactPage.vue` and
+  `ProjectOverviewPage.vue`, and their `.section` content cards with
+  `AboutPage.vue`'s bordered, shadowed, gradient-trimmed
+  `.about-page__card` recipe. CSS-only change in two view files' `<style
+  scoped>` blocks; no new shared component or design token.
 
 ## Reviews
 
@@ -69,6 +82,17 @@ material.
   Kontakt, and Profil (including the verified `tel:+4915679724718` trunk-
   prefix math and the `DataProtectionPage.vue` drive-by cleanup) all verified
   in code and tests; unit tests, lint, and build all pass.
+* [Review for Styling Improvements](styling-improvements-review.md) -
+  Round 1: positive — the `.content h1` and `.section`/`.section > *`/
+  `.section::before` rules added to `ImpressumPage.vue` and
+  `DataProtectionPage.vue` verified byte-for-byte against the
+  `ContactPage.vue`/`ProjectOverviewPage.vue` header recipe and
+  `AboutPage.vue`'s `.about-page__card` recipe; diff confined to the two
+  `<style scoped>` blocks with no template/script fallout; the no-new-tests
+  judgment call for this CSS-only change is sound; unit tests (70/70), lint,
+  and build all pass. One non-blocking note: this "Current Concepts" entry
+  is missing its usual paired "Tests for ..." bullet linking
+  `styling-improvements-tests.md`, unlike every other ticket in this index.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the
