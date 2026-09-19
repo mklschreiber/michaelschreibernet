@@ -59,8 +59,8 @@ const { t } = useI18n()
   background:
     linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
     var(--gradient-brand-horizontal) border-box;
-  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 50%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
   pointer-events: none;
 }
 

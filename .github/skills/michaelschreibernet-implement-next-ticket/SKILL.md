@@ -35,44 +35,50 @@ and report exactly which one — do not select or claim a ticket without them.
    Re-fetch the card to confirm the move succeeded. If the re-fetch shows a
    different list or an unexpected existing claim, stop and ask the user to
    resolve it manually rather than duplicating work.
-3. **Post a claim comment** in the workflow format:
+3. **Append a claim log entry** to the end of the card's description (never
+   as a comment), separated from the existing content by a `---` line:
    ```
    [msnet-workflow] phase=claim actor=coordinator at=<ISO-8601 timestamp> outcome=success
 
-   Claimed <MSNET-id>: <title> — starting Architect → Developer → Tester → Reviewer workflow.
+   Claimed <title> — starting Architect → Developer → Tester → Reviewer workflow.
    ```
 4. **Create a git branch** in the format `<label>/<ticket-name>`:
    - **`<label>`**: the card's first Trello label name, lowercased (e.g.
      `FEATURE` → `feature`, `BUG` → `bug`). If the card has no label, ask the
      user which prefix to use instead of guessing.
-   - **`<ticket-name>`**: the card's title (without the `MSNET-XXXX:` prefix),
-     slugified — lowercase, non-alphanumeric characters replaced with `-`,
-     repeated `-` collapsed, leading/trailing `-` trimmed.
+   - **`<ticket-name>`**: the card's title (with any leading `MSNET-XXXX:`
+     prefix removed, if the card happens to have one), slugified — lowercase,
+     non-alphanumeric characters replaced with `-`, repeated `-` collapsed,
+     leading/trailing `-` trimmed.
    - Ensure the working tree is clean, check out the repo's default branch,
      pull the latest changes, then create and check out the new branch
      (`git checkout -b <branch-name>`). If the branch already exists locally
      or remotely, check it out instead and inform the user.
 5. **Use the card's description as the canonical user story and acceptance
-   criteria** — it already follows the required template
-   (`## User story`, `## Acceptance criteria`, `## Scope and technical
-   context`, `## Dependencies`). Include the card URL for traceability.
+   criteria.** Cards are not required to follow a fixed template — extract
+   the story and acceptance criteria from whatever structure the description
+   uses, and ask the user only if they are genuinely missing or ambiguous.
+   Include the card URL for traceability.
 6. **Run the agent workflow** described in `docs/agent-handbook.md`, using
    `docs/agents/architect.md`, `docs/agents/developer.md`, and
    `docs/agents/tester.md`:
    1. Invoke the **architect** agent with the card URL and description to
-      produce/update an architecture concept under `docs/architecture/`. It
-      posts a `phase=architecture` comment linking the concept.
+      produce/update an architecture concept under `docs/architecture/`. Then
+      append a `phase=architecture` workflow log entry linking the concept
+      to the card description.
    2. Invoke the **developer** agent with the story and the architecture
       concept to implement the code. Route any architecture question back to
-      the architect, apply the answer, then resume the developer. It posts a
-      `phase=implementation` comment.
+      the architect, apply the answer, then resume the developer. Then
+      append a `phase=implementation` workflow log entry to the card
+      description.
    3. Invoke the **tester** agent with the story and the implemented code to
       create the testing concept and tests, then run the test suite as
-      described in `docs/agents/tester.md`. It posts a `phase=testing`
-      comment.
-   4. On any phase failure, keep the card in its current list and post a
-      `phase=blocked` or a failed-outcome comment with the next action.
-      There is no `Blocked` list to move it to — surface the stall to the
+      described in `docs/agents/tester.md`. Then append a `phase=testing`
+      workflow log entry to the card description.
+   4. On any phase failure, keep the card in its current list and append a
+      `phase=blocked` or a failed-outcome workflow log entry to the
+      description with the next action. There is no `Blocked` list to move
+      it to — surface the stall to the
       user in chat instead.
 7. **Run the AI Review Gate**, per "AI Review Gate" in
    `docs/agent-handbook.md`, using `docs/agents/reviewer.md`:
@@ -80,11 +86,12 @@ and report exactly which one — do not select or claim a ticket without them.
       and the implemented code and tests. It documents the round in
       `docs/architecture/<story-id>-review.md` and reports a verdict of
       `positive` or `findings`.
-   2. **Regardless of verdict**, post a workflow comment:
+   2. **Regardless of verdict**, append a workflow log entry to the card
+      description:
       ```
       [msnet-workflow] phase=ai-review actor=coordinator at=<ISO-8601 timestamp> outcome=success
 
-      Round <N> for <MSNET-id>: <positive, no findings | findings summary>. Review: <path>.
+      Round <N> for <title>: <positive, no findings | findings summary>. Review: <path>.
       ```
    3. **If `findings`:** route each finding to the responsible agent —
       architect for concept gaps, developer for implementation bugs, tester
@@ -95,18 +102,18 @@ and report exactly which one — do not select or claim a ticket without them.
    ```
    PUT /1/cards/{cardId}?idList={reviewListId}
    ```
-   Post the closing comment:
+   Append the closing log entry to the card description:
    ```
    [msnet-workflow] phase=ready-for-review actor=coordinator at=<ISO-8601 timestamp> outcome=success
 
-   Architecture, implementation, and tests complete for <MSNET-id>. Branch: <branch-name>.
+   Architecture, implementation, and tests complete for <title>. Branch: <branch-name>.
    ```
    Then ask the user directly in the chat session for a review verdict —
    this is an in-conversation gate, not a Trello automation.
 
    The verdict itself is only documented on the card when it is **not**
-   positive — a positive review leaves no `review-feedback` comment, only
-   the `pr-opened` comment from step 9.
+   positive — a positive review leaves no `review-feedback` log entry, only
+   the `pr-opened` entry from step 9.
 9. **On a positive verdict:**
    - Bump the version in `app/package.json` and the mirrored `version`
      fields in `app/package-lock.json`, following Semantic Versioning
@@ -117,20 +124,20 @@ and report exactly which one — do not select or claim a ticket without them.
      Classify the change from the ticket/diff; ask the user if it is
      genuinely ambiguous rather than guessing.
    - Open a GitHub pull request for the ticket branch with `gh pr create`.
-   - Post a workflow comment recording the PR URL:
+   - Append a workflow log entry recording the PR URL:
      ```
      [msnet-workflow] phase=pr-opened actor=coordinator at=<ISO-8601 timestamp> outcome=success
 
-     Review approved for <MSNET-id>. Version bumped to <version>. PR: <PR URL>.
+     Review approved for <title>. Version bumped to <version>. PR: <PR URL>.
      ```
    - Do not move the card to `Done` — only the user does that, manually,
      typically after merging the PR.
 10. **On a negative verdict:**
-    - Post a workflow comment recording the requested changes:
+    - Append a workflow log entry recording the requested changes:
       ```
       [msnet-workflow] phase=review-feedback actor=coordinator at=<ISO-8601 timestamp> outcome=blocked
 
-      Review requested changes for <MSNET-id>: <feedback, verbatim or summarized>.
+      Review requested changes for <title>: <feedback, verbatim or summarized>.
       ```
     - Move the card back to `In Progress` and resume the relevant agent
       phase(s) to address the feedback, then return to step 7 (AI Review

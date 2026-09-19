@@ -27,10 +27,10 @@ fall back to local files.
 2. **Validate board setup.** The board must contain exactly one list each
    named `TBD`, `Open`, `In Progress`, `Review`, and `Done`. Fail with a
    clear message if a required list is missing or duplicated, or if any card
-   in scope has duplicate IDs or a name that does not start with an
-   `MSNET-XXXX:` prefix. Exclude the `TBD` list entirely from the results
-   below — it holds ideas that are not yet ready for implementation, the
-   same way a `Templates` list would be excluded.
+   in scope has a duplicate ID. Cards are not required to carry an
+   `MSNET-XXXX:` title prefix. Exclude the `TBD` list entirely from the
+   results below — it holds ideas that are not yet ready for implementation,
+   the same way a `Templates` list would be excluded.
 3. **Derive readiness.** For every card in `Open`, parse its `Dependencies`
    section from `desc`. A card is **ready** only if it is in `Open`, has a
    valid description (user story + acceptance criteria present), and every
@@ -41,7 +41,7 @@ fall back to local files.
    and `Review` (i.e. everything except `TBD` and `Done`), in board-list
    order (`Open` → `In Progress` → `Review`) and each list's Trello `pos`
    order within that list.
-5. **Display as a table** with columns: Ticket (MSNET id + title), List,
-   Ready?, Dependencies, URL.
+5. **Display as a table** with columns: Ticket (title), List, Ready?,
+   Dependencies, URL.
 6. If no cards are found in `Open`, `In Progress`, or `Review`, report:
    "No open tickets on the michaelschreiber.net Trello board."

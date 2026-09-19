@@ -31,8 +31,10 @@ and delivery progress. Do not use Git, `app/.ai-docs/`, or any local file as a
 fallback backlog, ticket specification, dependency graph, or phase-status
 record.
 
-Each work card is named `MSNET-XXXX: <title>` and its description is the
-canonical requirements record:
+A card's title and description are the canonical requirements record. Cards
+are **not** required to carry an `MSNET-XXXX:` title prefix or follow a fixed
+description template — write whatever title and description make the work
+clear. The structured template below is a useful default, not a requirement:
 
 ```markdown
 ## User story
@@ -46,12 +48,12 @@ As ... I want ... so that ...
 
 ## Dependencies
 - None
-<!-- or: - MSNET-0007 — https://trello.com/c/... -->
+<!-- or: - <card title> — https://trello.com/c/... -->
 ```
 
-The user story and acceptance criteria are mandatory. Dependencies are either
-`None` or unique MSNET IDs linked to their cards. Requirement changes are made
-on the Trello card, never in a local ticket file.
+A user story and acceptance criteria — in whatever form the card actually
+uses — are mandatory. Dependencies are either `None` or links to their cards.
+Requirement changes are made on the Trello card, never in a local ticket file.
 
 The approved board has exactly one active list named `TBD`, `Open`,
 `In Progress`, `Review`, and `Done`. `TBD` holds ideas that are not yet ready
@@ -70,7 +72,10 @@ manager, do not commit, print, put in `.env` files, or include them in prompts
 or Trello comments. The token needs board read/write access. The workflow
 skills validate the board and fail rather than using stale local data.
 
-Workflow comments, not the description, record claims and progress:
+Workflow log entries record claims and progress. Each entry is **appended to
+the end of the card's description** (never posted as a Trello comment),
+separated from the existing content by a `---` line, so every prior entry
+survives as a running changelog below the requirements:
 
 ```text
 [msnet-workflow] phase=<claim|architecture|implementation|testing|ai-review|blocked|ready-for-review|review-feedback|pr-opened>
@@ -93,11 +98,11 @@ and the user is asked for a manual review, the coordinator invokes the
    from `app/`, and documents the round in
    `docs/architecture/<story-id>-review.md`, ending with a verdict of
    `positive` or `findings`.
-2. **Record on the card, every round.** The coordinator posts a
-   `phase=ai-review` workflow comment with the round's verdict and findings
-   (or "No findings." if positive). Unlike the user-review outcome below,
-   every AI review round is recorded, regardless of verdict, for
-   traceability.
+2. **Record on the card, every round.** The coordinator appends a
+   `phase=ai-review` workflow log entry to the card description with the
+   round's verdict and findings (or "No findings." if positive). Unlike the
+   user-review outcome below, every AI review round is recorded, regardless
+   of verdict, for traceability.
 3. **On `findings`:** the coordinator routes each finding to the responsible
    agent — architect for concept gaps, developer for implementation bugs,
    tester for coverage gaps — has it addressed, then re-invokes the reviewer
@@ -108,27 +113,27 @@ and the user is asked for a manual review, the coordinator invokes the
 The reviewer has no Trello access; the coordinator is responsible for
 mirroring its verdict into the workflow log.
 
-On success, the coordinator moves the card to `Review`, posts a
-`ready-for-review` comment, and asks the user directly in chat for a review
-verdict.
+On success, the coordinator moves the card to `Review`, appends a
+`ready-for-review` workflow log entry to the description, and asks the user
+directly in chat for a review verdict.
 
 The review verdict itself is only ever documented on the card when it is
-**not** positive: a positive verdict gets no `review-feedback` comment at
-all, only the `pr-opened` comment described below — successful reviews leave
+**not** positive: a positive verdict gets no `review-feedback` log entry at
+all, only the `pr-opened` entry described below — successful reviews leave
 no trace on the card beyond the version bump and PR link. A negative verdict
-is recorded as a `phase=review-feedback` comment with the requested changes,
-and the card moves back to `In Progress` while the relevant phase is
-resumed.
+is recorded as a `phase=review-feedback` log entry with the requested
+changes, and the card moves back to `In Progress` while the relevant phase
+is resumed.
 
 A positive verdict bumps the version in `app/package.json` (and the mirrored
 fields in `app/package-lock.json`) following Semantic Versioning — MAJOR for
 a breaking change, MINOR for a backward-compatible feature, PATCH for a bug
 fix only — classified from the ticket/diff, asking the user when it is
 genuinely ambiguous, and opens a GitHub pull request for the ticket branch
-(`gh pr create`), recorded in a `phase=pr-opened` comment. The coordinator
+(`gh pr create`), recorded in a `phase=pr-opened` log entry. The coordinator
 never moves a card to `Done`; only the user does that, manually, after
 reviewing and typically merging the pull request. On a failed phase, keep
-the card in its current list and post a failure comment — there is no
+the card in its current list and append a failure log entry — there is no
 `Blocked` list to move it to.
 
 Use the root Trello skills for ticket discovery and implementation:

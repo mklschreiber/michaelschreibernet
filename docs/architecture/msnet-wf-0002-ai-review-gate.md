@@ -18,11 +18,12 @@ are caught and fixed before they reach me.
 
 Trello card: https://trello.com/c/54ANUoSd/10-improve-ai-setup
 
-The Trello card description is canonical for requirements. Note: this card
-predates the project's `MSNET-XXXX:` naming/template convention (no ticket
-ID prefix, no `## User story` / `## Acceptance criteria` / `## Scope and
-technical context` / `## Dependencies` sections). The user explicitly
-approved treating it as ready and working from its plain description.
+The Trello card description is canonical for requirements. Cards are not
+required to carry an `MSNET-XXXX:` title prefix or a fixed description
+template (see
+[`msnet-wf-0003-relaxed-tickets-and-description-log.md`](msnet-wf-0003-relaxed-tickets-and-description-log.md),
+which relaxes that requirement project-wide); this card's plain description
+was worked from directly.
 `improve-ai-setup` is used as this document's Trello-facing story reference;
 the durable concept itself is filed under the `MSNET-WF-0002` workflow-doc
 numbering established by
@@ -78,6 +79,14 @@ project's existing, more structured comment vocabulary — keeping a single
 log format instead of two competing ones. Every round (positive or findings)
 is logged, matching myStandby's "every round documented" rule and unlike the
 user-review outcome, which stays undocumented on a positive verdict.
+
+**Superseded 2026-09-19** by
+[`msnet-wf-0003-relaxed-tickets-and-description-log.md`](msnet-wf-0003-relaxed-tickets-and-description-log.md):
+the "comment format" premise above no longer holds — the connected Trello
+MCP tools have no comment-write action, so this and every other
+`[msnet-workflow]` phase entry is appended to the card description instead,
+for all phases, not just `ai-review`. The phase enum itself (`ai-review`
+inserted between `testing` and `blocked`/`ready-for-review`) is unchanged.
 
 **5. The gate sits strictly between the Tester phase and the `Review` list
 move; a `findings` verdict routes back into the existing Architect →
@@ -151,10 +160,18 @@ architect/developer/tester.
    4). This project has no volume of tickets yet to know whether that is a
    practical concern here; no mitigation beyond the existing "loop until
    positive" rule is adopted now.
-2. **Review-doc file limit.** Trello card descriptions have a 2048-character
-   limit (encountered while logging the `improve-ci-cd-setup` ticket via the
-   Trello MCP tools, which lack a comment-write action in this environment —
-   an unrelated, already-worked-around transport gap, not part of this
-   ticket's scope). Multi-round `phase=ai-review` comments should stay
-   concise (verdict + one-line findings summary + review-file link) rather
-   than inlining full finding text, to avoid repeating that constraint.
+2. ~~**Review-doc file limit.** Trello card descriptions have a
+   2048-character limit (encountered while logging the `improve-ci-cd-setup`
+   ticket via the Trello MCP tools, which lack a comment-write action in
+   this environment — an unrelated, already-worked-around transport gap, not
+   part of this ticket's scope). Multi-round `phase=ai-review` comments
+   should stay concise (verdict + one-line findings summary + review-file
+   link) rather than inlining full finding text, to avoid repeating that
+   constraint.~~ **Resolved 2026-09-19**: the "transport gap" is not
+   unrelated or scoped to this ticket — per
+   [`msnet-wf-0003-relaxed-tickets-and-description-log.md`](msnet-wf-0003-relaxed-tickets-and-description-log.md),
+   description-based logging is now the permanent design for every phase,
+   not a workaround. The observed working limit on the connected Trello MCP
+   tool's `desc` field is 16384 characters, not 2048. The conciseness
+   guidance (verdict + one-line summary + document link, not inlined detail)
+   still stands and is generalized to every phase, not just `ai-review`.
