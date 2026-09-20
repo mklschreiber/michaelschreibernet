@@ -23,6 +23,11 @@ const en: MessageSchema = {
     projectTitleMichaelSchreiberNet: 'michaelschreiber.net',
     projectDescriptionMichaelSchreiberNet: 'A Vue application that lists my personal projects.',
     projectLinkTextGithub: 'View on GitHub',
+    screenshotMacbookAlt: 'Home page of michaelschreiber.net shown on a MacBook',
+    screenshotPhoneAlt: 'Home page of michaelschreiber.net shown on a smartphone',
+    screenshotMyStandbyLockScreenAlt: 'myStandby lock screen widget showing the time and next task',
+    screenshotMyStandbyCalendarAlt: 'myStandby calendar view with appointments and a month overview',
+    screenshotMyStandbyLockScreenCloseUpAlt: 'Close-up of the myStandby lock screen widget',
   },
   contact: {
     title: 'Contact',

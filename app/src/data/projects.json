@@ -5,7 +5,12 @@
     "descriptionKey": "projects.projectDescription",
     "technologies": ["Android", "Kotlin", "GitHub CI/CD"],
     "link": "https://play.google.com/store/apps/details?id=io.software_lab.mystandby",
-    "linkTextKey": "projects.projectLinkText"
+    "linkTextKey": "projects.projectLinkText",
+    "images": [
+      { "base": "/mystandby_1_phone", "altKey": "projects.screenshotMyStandbyLockScreenAlt" },
+      { "base": "/mystandby_2_phone", "altKey": "projects.screenshotMyStandbyCalendarAlt" },
+      { "base": "/mystandby_3_phone", "altKey": "projects.screenshotMyStandbyLockScreenCloseUpAlt" }
+    ]
   },
   {
     "id": 2,
@@ -13,6 +18,10 @@
     "descriptionKey": "projects.projectDescriptionMichaelSchreiberNet",
     "technologies": ["Vue.js", "GitHub CI/CD", "GitHub Pages"],
     "link": "https://github.com/mklschreiber/michaelschreibernet",
-    "linkTextKey": "projects.projectLinkTextGithub"
+    "linkTextKey": "projects.projectLinkTextGithub",
+    "images": [
+      { "base": "/page_macbook", "altKey": "projects.screenshotMacbookAlt" },
+      { "base": "/page_phone", "altKey": "projects.screenshotPhoneAlt" }
+    ]
   }
 ]

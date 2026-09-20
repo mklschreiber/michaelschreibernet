@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import VueEasyLightbox from 'vue-easy-lightbox'
 import type { Project } from '@/types/project'
 import { getTagColor } from '@/utils/tagColor'
 import IconImagePlaceholder from '@/components/icons/IconImagePlaceholder.vue'
@@ -8,19 +10,91 @@ interface Props {
   project: Project
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const { t } = useI18n()
+
+/** Widths the responsive image variants were generated at, smallest first. */
+const IMAGE_WIDTHS = [320, 640, 960, 1280, 1600, 1920]
+const IMAGE_DEFAULT_WIDTH = 960
+const IMAGE_FULL_WIDTH = 1920
+const IMAGE_MIN_WIDTH = 220
+/** Horizontal space the row never has available: --container-max-width's page
+ *  padding, the card's own padding, and the gaps between images. */
+const CONTAINER_MAX_WIDTH = 1200
+const FIXED_HORIZONTAL_SPACING = 64 /* .content padding */ + 64 /* .project-card padding */
+const IMAGE_GAP = 8
+
+function srcsetFor(base: string): string {
+  return IMAGE_WIDTHS.map((width) => `${base}-${width}.jpg ${width}w`).join(', ')
+}
+
+/** Mirrors the project-images row: it grows to fill `count` columns until images hit
+ *  their min-width, then the row scrolls horizontally instead of shrinking further. */
+function sizesFor(count: number): string {
+  const fixedWidth = FIXED_HORIZONTAL_SPACING + IMAGE_GAP * (count - 1)
+  const scrollBreakpoint = IMAGE_MIN_WIDTH * count + fixedWidth
+  const maxImageWidth = Math.round((CONTAINER_MAX_WIDTH - fixedWidth) / count)
+  return (
+    `(max-width: ${scrollBreakpoint}px) ${IMAGE_MIN_WIDTH}px, ` +
+    `(max-width: ${CONTAINER_MAX_WIDTH}px) calc((100vw - ${fixedWidth}px) / ${count}), ` +
+    `${maxImageWidth}px`
+  )
+}
+
+const lightboxVisible = ref(false)
+const lightboxIndex = ref(0)
+
+const lightboxImgs = computed(
+  () =>
+    props.project.images?.map((image) => ({
+      src: `${image.base}-${IMAGE_FULL_WIDTH}.jpg`,
+      alt: t(image.altKey),
+      title: t(image.altKey),
+    })) ?? [],
+)
+
+function openLightbox(index: number) {
+  lightboxIndex.value = index
+  lightboxVisible.value = true
+}
 </script>
 
 <template>
   <article class="project-card">
     <h2>{{ t(project.titleKey) }}</h2>
-    <div class="project-images" aria-hidden="true">
+    <div v-if="project.images?.length" class="project-images project-images--gallery">
+      <img
+        v-for="(image, index) in project.images"
+        :key="image.base"
+        class="project-image"
+        :src="`${image.base}-${IMAGE_DEFAULT_WIDTH}.jpg`"
+        :srcset="srcsetFor(image.base)"
+        :sizes="sizesFor(project.images!.length)"
+        :alt="t(image.altKey)"
+        loading="lazy"
+        decoding="async"
+        role="button"
+        tabindex="0"
+        @click="openLightbox(index)"
+        @keydown.enter="openLightbox(index)"
+        @keydown.space.prevent="openLightbox(index)"
+      />
+    </div>
+    <div v-else class="project-images project-images--placeholder" aria-hidden="true">
       <div class="project-image-placeholder" v-for="n in 3" :key="n">
         <IconImagePlaceholder />
       </div>
     </div>
+    <VueEasyLightbox
+      :visible="lightboxVisible"
+      :imgs="lightboxImgs"
+      :index="lightboxIndex"
+      teleport="body"
+      loop
+      rotate-disabled
+      @hide="lightboxVisible = false"
+    />
     <p>{{ t(project.descriptionKey) }}</p>
     <div class="technologies">
       <span
@@ -95,10 +169,23 @@ const { t } = useI18n()
 }
 
 .project-images {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
+}
+
+.project-images--placeholder {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.project-images--gallery {
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  /* keep the scrollbar from visually overlapping the images */
+  padding-bottom: var(--spacing-xs);
 }
 
 .project-image-placeholder {
@@ -110,6 +197,25 @@ const { t } = useI18n()
   border-radius: var(--radius-sm);
   background: var(--gradient-brand-soft);
   color: var(--color-primary);
+}
+
+.project-image {
+  /* fills the row like a grid column, but stops shrinking at 220px so the
+     row scrolls horizontally instead of squeezing the screenshots further */
+  flex: 1 1 220px;
+  min-width: 220px;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  display: block;
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.project-image:hover,
+.project-image:focus-visible {
+  transform: scale(1.02);
 }
 
 .project-card p {

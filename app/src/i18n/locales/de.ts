@@ -25,6 +25,11 @@ const de: MessageSchema = {
     projectDescriptionMichaelSchreiberNet:
       'Eine Vue-Applikation zur Auflistung meiner persönlichen Projekte.',
     projectLinkTextGithub: 'Auf GitHub ansehen',
+    screenshotMacbookAlt: 'Startseite von michaelschreiber.net dargestellt auf einem MacBook',
+    screenshotPhoneAlt: 'Startseite von michaelschreiber.net dargestellt auf einem Smartphone',
+    screenshotMyStandbyLockScreenAlt: 'myStandby-Sperrbildschirm-Widget mit Uhrzeit und nächster Aufgabe',
+    screenshotMyStandbyCalendarAlt: 'myStandby-Kalenderansicht mit Terminen und Monatsübersicht',
+    screenshotMyStandbyLockScreenCloseUpAlt: 'Nahaufnahme des myStandby-Sperrbildschirm-Widgets',
   },
   contact: {
     title: 'Kontakt',

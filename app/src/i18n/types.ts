@@ -21,6 +21,11 @@ export interface MessageSchema {
     projectLinkTextGithub: string
     projectTitleMichaelSchreiberNet: string
     projectDescriptionMichaelSchreiberNet: string
+    screenshotMacbookAlt: string
+    screenshotPhoneAlt: string
+    screenshotMyStandbyLockScreenAlt: string
+    screenshotMyStandbyCalendarAlt: string
+    screenshotMyStandbyLockScreenCloseUpAlt: string
   }
   contact: {
     title: string
