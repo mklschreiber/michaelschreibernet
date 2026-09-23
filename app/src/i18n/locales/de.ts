@@ -30,6 +30,9 @@ const de: MessageSchema = {
     screenshotMyStandbyLockScreenAlt: 'myStandby-Sperrbildschirm-Widget mit Uhrzeit und nächster Aufgabe',
     screenshotMyStandbyCalendarAlt: 'myStandby-Kalenderansicht mit Terminen und Monatsübersicht',
     screenshotMyStandbyLockScreenCloseUpAlt: 'Nahaufnahme des myStandby-Sperrbildschirm-Widgets',
+    previousScreenshot: 'Vorheriger Screenshot',
+    nextScreenshot: 'Nächster Screenshot',
+    screenshotPosition: 'Screenshot {current} von {total}',
   },
   contact: {
     title: 'Kontakt',

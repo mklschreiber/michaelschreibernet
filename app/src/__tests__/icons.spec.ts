@@ -4,12 +4,16 @@ import IconEmail from '@/components/icons/IconEmail.vue'
 import IconXing from '@/components/icons/IconXing.vue'
 import IconGithub from '@/components/icons/IconGithub.vue'
 import IconLinkedin from '@/components/icons/IconLinkedin.vue'
+import IconChevronLeft from '@/components/icons/IconChevronLeft.vue'
+import IconChevronRight from '@/components/icons/IconChevronRight.vue'
 
 describe.each([
   ['IconEmail', IconEmail],
   ['IconXing', IconXing],
   ['IconGithub', IconGithub],
   ['IconLinkedin', IconLinkedin],
+  ['IconChevronLeft', IconChevronLeft],
+  ['IconChevronRight', IconChevronRight],
 ])('%s', (_name, component) => {
   it('renders exactly one flat, solid-fill svg with a 0 0 24 24 viewBox', () => {
     const wrapper = mount(component)
