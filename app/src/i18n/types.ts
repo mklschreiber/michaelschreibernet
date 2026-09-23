@@ -26,6 +26,9 @@ export interface MessageSchema {
     screenshotMyStandbyLockScreenAlt: string
     screenshotMyStandbyCalendarAlt: string
     screenshotMyStandbyLockScreenCloseUpAlt: string
+    previousScreenshot: string
+    nextScreenshot: string
+    screenshotPosition: string
   }
   contact: {
     title: string

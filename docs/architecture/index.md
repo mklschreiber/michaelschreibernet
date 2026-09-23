@@ -65,6 +65,20 @@ material.
   `AboutPage.vue`'s bordered, shadowed, gradient-trimmed
   `.about-page__card` recipe. CSS-only change in two view files' `<style
   scoped>` blocks; no new shared component or design token.
+- [Mobile Project Screenshot Carousel](mobile-project-screenshot-carousel.md) —
+  fixes the project card overflowing the viewport on phones and portrait
+  tablets. The root cause is the `1fr` grid track growing to the gallery row's
+  min-content width, and the fix is `min-width: 0` plus `minmax(0, 1fr)`.
+  At `max-width: 768px`, the card shows one screenshot at a time, switched by
+  CSS from a `currentIndex` ref, with looping prev/next arrows styled like the
+  `vue-easy-lightbox` arrows, localized `aria-label`s, and a polite live
+  position status.
+- [Tests for Mobile Project Screenshot Carousel](mobile-project-screenshot-carousel-tests.md) —
+  records the `ProjectCard.vue` component coverage for the active image,
+  looping arrows, localized labels and live status, lightbox index, and mobile
+  `sizes` entry. It also records the raw-source checks for the overflow CSS
+  (`min-width: 0`, `minmax(0, 1fr)`, the 768px media query), the two new
+  chevron icons, and the manual phone-width browser check.
 
 ## Reviews
 
@@ -93,6 +107,13 @@ material.
   and build all pass. One non-blocking note: this "Current Concepts" entry
   is missing its usual paired "Tests for ..." bullet linking
   `styling-improvements-tests.md`, unlike every other ticket in this index.
+* [Review for Scaling but on mobile phones (project page)](mobile-project-screenshot-carousel-review.md) -
+  Round 2: positive. Round 1's title-overflow finding is fixed with
+  `overflow-wrap: anywhere` on `.project-card h2` and a source-level test. In
+  headless Chrome at 280-1024px the title wraps inside the card, and the
+  project card causes no page overflow. Lint, unit tests (106/106), and build
+  pass. Non-blocking note: a pre-existing 1px overflow below 301px comes from
+  the navigation hamburger, which is out of scope for this ticket.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

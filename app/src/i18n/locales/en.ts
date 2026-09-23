@@ -28,6 +28,9 @@ const en: MessageSchema = {
     screenshotMyStandbyLockScreenAlt: 'myStandby lock screen widget showing the time and next task',
     screenshotMyStandbyCalendarAlt: 'myStandby calendar view with appointments and a month overview',
     screenshotMyStandbyLockScreenCloseUpAlt: 'Close-up of the myStandby lock screen widget',
+    previousScreenshot: 'Previous screenshot',
+    nextScreenshot: 'Next screenshot',
+    screenshotPosition: 'Screenshot {current} of {total}',
   },
   contact: {
     title: 'Contact',

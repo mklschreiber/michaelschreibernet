@@ -5,6 +5,8 @@ import VueEasyLightbox from 'vue-easy-lightbox'
 import type { Project } from '@/types/project'
 import { getTagColor } from '@/utils/tagColor'
 import IconImagePlaceholder from '@/components/icons/IconImagePlaceholder.vue'
+import IconChevronLeft from '@/components/icons/IconChevronLeft.vue'
+import IconChevronRight from '@/components/icons/IconChevronRight.vue'
 
 interface Props {
   project: Project
@@ -24,6 +26,8 @@ const IMAGE_MIN_WIDTH = 220
 const CONTAINER_MAX_WIDTH = 1200
 const FIXED_HORIZONTAL_SPACING = 64 /* .content padding */ + 64 /* .project-card padding */
 const IMAGE_GAP = 8
+/** Keep in sync with the `@media (max-width: 768px)` block in <style>. */
+const MOBILE_BREAKPOINT = 768
 
 function srcsetFor(base: string): string {
   return IMAGE_WIDTHS.map((width) => `${base}-${width}.jpg ${width}w`).join(', ')
@@ -36,6 +40,7 @@ function sizesFor(count: number): string {
   const scrollBreakpoint = IMAGE_MIN_WIDTH * count + fixedWidth
   const maxImageWidth = Math.round((CONTAINER_MAX_WIDTH - fixedWidth) / count)
   return (
+    `(max-width: ${MOBILE_BREAKPOINT}px) calc(100vw - ${FIXED_HORIZONTAL_SPACING}px), ` +
     `(max-width: ${scrollBreakpoint}px) ${IMAGE_MIN_WIDTH}px, ` +
     `(max-width: ${CONTAINER_MAX_WIDTH}px) calc((100vw - ${fixedWidth}px) / ${count}), ` +
     `${maxImageWidth}px`
@@ -58,28 +63,64 @@ function openLightbox(index: number) {
   lightboxIndex.value = index
   lightboxVisible.value = true
 }
+
+const currentIndex = ref(0)
+const imageCount = computed(() => props.project.images?.length ?? 0)
+
+function showPrevious(): void {
+  if (imageCount.value < 2) return
+  currentIndex.value = (currentIndex.value - 1 + imageCount.value) % imageCount.value
+}
+
+function showNext(): void {
+  if (imageCount.value < 2) return
+  currentIndex.value = (currentIndex.value + 1) % imageCount.value
+}
 </script>
 
 <template>
   <article class="project-card">
     <h2>{{ t(project.titleKey) }}</h2>
-    <div v-if="project.images?.length" class="project-images project-images--gallery">
-      <img
-        v-for="(image, index) in project.images"
-        :key="image.base"
-        class="project-image"
-        :src="`${image.base}-${IMAGE_DEFAULT_WIDTH}.jpg`"
-        :srcset="srcsetFor(image.base)"
-        :sizes="sizesFor(project.images!.length)"
-        :alt="t(image.altKey)"
-        loading="lazy"
-        decoding="async"
-        role="button"
-        tabindex="0"
-        @click="openLightbox(index)"
-        @keydown.enter="openLightbox(index)"
-        @keydown.space.prevent="openLightbox(index)"
-      />
+    <div v-if="project.images?.length" class="project-gallery">
+      <button
+        v-if="imageCount > 1"
+        type="button"
+        class="gallery-nav gallery-nav--prev"
+        :aria-label="t('projects.previousScreenshot')"
+        @click="showPrevious"
+      >
+        <span class="gallery-nav__icon"><IconChevronLeft /></span>
+      </button>
+      <div class="project-images project-images--gallery">
+        <img
+          v-for="(image, index) in project.images"
+          :key="image.base"
+          :class="['project-image', { 'project-image--active': index === currentIndex }]"
+          :src="`${image.base}-${IMAGE_DEFAULT_WIDTH}.jpg`"
+          :srcset="srcsetFor(image.base)"
+          :sizes="sizesFor(project.images!.length)"
+          :alt="t(image.altKey)"
+          loading="lazy"
+          decoding="async"
+          role="button"
+          tabindex="0"
+          @click="openLightbox(index)"
+          @keydown.enter="openLightbox(index)"
+          @keydown.space.prevent="openLightbox(index)"
+        />
+      </div>
+      <button
+        v-if="imageCount > 1"
+        type="button"
+        class="gallery-nav gallery-nav--next"
+        :aria-label="t('projects.nextScreenshot')"
+        @click="showNext"
+      >
+        <span class="gallery-nav__icon"><IconChevronRight /></span>
+      </button>
+      <p v-if="imageCount > 1" class="gallery-status" aria-live="polite">
+        {{ t('projects.screenshotPosition', { current: currentIndex + 1, total: imageCount }) }}
+      </p>
     </div>
     <div v-else class="project-images project-images--placeholder" aria-hidden="true">
       <div class="project-image-placeholder" v-for="n in 3" :key="n">
@@ -141,6 +182,7 @@ function openLightbox(index: number) {
   padding: var(--spacing-xl);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-glow);
+  min-width: 0;
 }
 
 .project-card > * {
@@ -166,16 +208,27 @@ function openLightbox(index: number) {
   font-size: var(--font-size-2xl);
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-md);
+  overflow-wrap: anywhere;
 }
 
 .project-images {
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
 }
 
 .project-images--placeholder {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  margin-bottom: var(--spacing-lg);
+}
+
+.project-gallery {
+  position: relative;
+  margin-bottom: var(--spacing-lg);
+}
+
+.gallery-nav,
+.gallery-status {
+  display: none;
 }
 
 .project-images--gallery {
@@ -216,6 +269,81 @@ function openLightbox(index: number) {
 .project-image:hover,
 .project-image:focus-visible {
   transform: scale(1.02);
+}
+
+/* Keep in sync with MOBILE_BREAKPOINT in <script>. */
+@media (max-width: 768px) {
+  .project-images--gallery {
+    overflow: hidden;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+  }
+
+  .project-image {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .project-image:not(.project-image--active) {
+    display: none;
+  }
+
+  .gallery-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    opacity: 0.6;
+    cursor: pointer;
+    transition: opacity var(--transition-fast);
+  }
+
+  .gallery-nav:hover,
+  .gallery-nav:focus-visible {
+    opacity: 1;
+  }
+
+  .gallery-nav:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .gallery-nav--prev {
+    left: var(--spacing-xs);
+  }
+
+  .gallery-nav--next {
+    right: var(--spacing-xs);
+  }
+
+  .gallery-nav__icon {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+  }
+
+  .gallery-status {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }
 
 .project-card p {
