@@ -7,6 +7,10 @@ timestamp: 2026-09-19T00:00:00Z
 status: approved
 ---
 
+> **Superseded (2026-10-04, MYS-44):** The ticket workflow moved from Trello to Jira
+> (project MS) and the AI setup moved to the shared ai-base submodule (`.ai-base/handbook.md`,
+> `docs/ai-project.md`). This document is kept for history.
+
 ## Story
 
 As a maintainer of michaelschreiber.net, I want the Trello delivery workflow

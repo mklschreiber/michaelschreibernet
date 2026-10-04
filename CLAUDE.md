@@ -1,31 +1,37 @@
 # michaelschreiber.net — Instructions for Claude
 
-The complete agent handbook (including the Trello-backed ticket workflow,
-documentation structure, and important files) is located in
-[docs/agent-handbook.md](docs/agent-handbook.md). Read it before working on
-this project. Trello is the authoritative ticket, requirement, dependency, and
-delivery-progress system; do not use local ticket artifacts as a fallback.
+This project uses the shared AI workflow from [ai-base](https://github.com/mklschreiber/ai-base),
+included as a git submodule in `.ai-base/`. If `.ai-base/` is empty, run
+`git submodule update --init` first.
+
+Read before working on this project:
+
+1. [docs/ai-project.md](docs/ai-project.md) — project profile (tech stack, Jira project,
+   checks, versioning, project-specific agent rules). It takes precedence over the generic files.
+2. [.ai-base/handbook.md](.ai-base/handbook.md) — generic multi-agent workflow (Jira, AI
+   Review Gate, review and release).
 
 The Vue 3 + TypeScript + Vite application is located in `app/`.
 
 ## Agent Definitions (Claude)
 
-`.claude/agents/*.md` are symlinks to the canonical definitions in
-[docs/agents/](docs/agents/) (shared with Copilot).
+`.claude/agents/*.md` are symlinks into [.ai-base/agents/](.ai-base/agents/) (shared with
+Copilot). Project rules per agent: `docs/ai-project.md` → `## Agent: <role>`.
 
 | Agent | Definition |
 |-------|------------|
-| `architect` | [.claude/agents/architect.md](.claude/agents/architect.md) → [docs/agents/architect.md](docs/agents/architect.md) |
-| `developer` | [.claude/agents/developer.md](.claude/agents/developer.md) → [docs/agents/developer.md](docs/agents/developer.md) |
-| `tester` | [.claude/agents/tester.md](.claude/agents/tester.md) → [docs/agents/tester.md](docs/agents/tester.md) |
-| `reviewer` | [.claude/agents/reviewer.md](.claude/agents/reviewer.md) → [docs/agents/reviewer.md](docs/agents/reviewer.md) |
+| `architect` | [.claude/agents/architect.md](.claude/agents/architect.md) → [.ai-base/agents/architect.md](.ai-base/agents/architect.md) |
+| `developer` | [.claude/agents/developer.md](.claude/agents/developer.md) → [.ai-base/agents/developer.md](.ai-base/agents/developer.md) |
+| `tester` | [.claude/agents/tester.md](.claude/agents/tester.md) → [.ai-base/agents/tester.md](.ai-base/agents/tester.md) |
+| `reviewer` | [.claude/agents/reviewer.md](.claude/agents/reviewer.md) → [.ai-base/agents/reviewer.md](.ai-base/agents/reviewer.md) |
 
 ## Skills
 
-`.claude/commands/*.md` point to the canonical skill definitions in
-[.github/skills/](.github/skills/) (shared with Copilot).
+`.claude/skills/<name>/SKILL.md` are symlinks into [.ai-base/skills/](.ai-base/skills/)
+(shared with Copilot).
 
 | Skill | Definition |
 |-------|------------|
-| `michaelschreibernet-open-tickets` | [.claude/commands/michaelschreibernet-open-tickets.md](.claude/commands/michaelschreibernet-open-tickets.md) → [.github/skills/michaelschreibernet-open-tickets/SKILL.md](.github/skills/michaelschreibernet-open-tickets/SKILL.md) |
-| `michaelschreibernet-implement-next-ticket` | [.claude/commands/michaelschreibernet-implement-next-ticket.md](.claude/commands/michaelschreibernet-implement-next-ticket.md) → [.github/skills/michaelschreibernet-implement-next-ticket/SKILL.md](.github/skills/michaelschreibernet-implement-next-ticket/SKILL.md) |
+| `/open-tickets` | [.claude/skills/open-tickets/SKILL.md](.claude/skills/open-tickets/SKILL.md) → [.ai-base/skills/open-tickets/SKILL.md](.ai-base/skills/open-tickets/SKILL.md) |
+| `/implement-next-ticket` | [.claude/skills/implement-next-ticket/SKILL.md](.claude/skills/implement-next-ticket/SKILL.md) → [.ai-base/skills/implement-next-ticket/SKILL.md](.ai-base/skills/implement-next-ticket/SKILL.md) |
+| `/tag-releases` | [.claude/skills/tag-releases/SKILL.md](.claude/skills/tag-releases/SKILL.md) → [.ai-base/skills/tag-releases/SKILL.md](.ai-base/skills/tag-releases/SKILL.md) |

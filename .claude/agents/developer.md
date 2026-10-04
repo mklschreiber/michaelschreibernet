@@ -1,1 +1,1 @@
-../../docs/agents/developer.md
+../../.ai-base/agents/developer.md

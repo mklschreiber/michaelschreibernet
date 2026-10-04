@@ -1,1 +1,1 @@
-../../docs/agents/tester.md
+../../.ai-base/agents/tester.md

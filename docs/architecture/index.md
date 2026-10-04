@@ -13,12 +13,12 @@ material.
 
 - [Trello-Backed Delivery Workflow](msnet-wf-0001-trello-delivery-workflow.md) —
   makes Trello the authoritative ticket, dependency, and delivery-progress
-  system, replacing local ticket files.
+  system, replacing local ticket files. *(superseded by MYS-44: Jira + ai-base)*
 - [Relaxed Ticket Naming and Description-Based Workflow Log](msnet-wf-0003-relaxed-tickets-and-description-log.md) —
   drops the mandatory `MSNET-XXXX:` card-naming/template convention
   project-wide and moves all `[msnet-workflow]` log entries from Trello
   comments to the card description, since the connected Trello MCP tools
-  have no comment-write action.
+  have no comment-write action. *(superseded by MYS-44: Jira + ai-base)*
 - [Animated Landing-Page Logo](animated-logo.md) — defines the self-contained
   SVG drawing sequence and landing-page integration.
 - [Tests for Animated Landing-Page Logo](animated-logo-tests.md) — records the
