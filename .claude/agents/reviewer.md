@@ -1,1 +1,1 @@
-../../docs/agents/reviewer.md
+../../.ai-base/agents/reviewer.md

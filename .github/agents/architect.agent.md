@@ -1,1 +1,1 @@
-../../docs/agents/architect.md
+../../.ai-base/agents/architect.md

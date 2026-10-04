@@ -1,0 +1,1 @@
+../../../.ai-base/skills/open-tickets/SKILL.md

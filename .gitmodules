@@ -1,0 +1,3 @@
+[submodule ".ai-base"]
+	path = .ai-base
+	url = ../ai-base.git

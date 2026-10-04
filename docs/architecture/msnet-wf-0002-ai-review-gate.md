@@ -7,6 +7,11 @@ timestamp: 2026-09-17T01:30:00Z
 status: approved
 ---
 
+> **Superseded (2026-10-04, MYS-44):** The Trello parts of this document are superseded: the
+> ticket workflow moved from Trello to Jira (project MS) and the AI setup moved to the shared
+> ai-base submodule (`.ai-base/handbook.md`, `docs/ai-project.md`). The reviewer role itself is
+> still in place. This document is kept for history.
+
 ## Story
 
 As a maintainer of michaelschreiber.net, I want an independent AI review of
