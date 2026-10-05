@@ -5,12 +5,18 @@ export interface ProjectImage {
   altKey: string
 }
 
+export interface ProjectLink {
+  /** Absolute external URL; opened in a new tab. */
+  url: string
+  /** i18n key of the link text. */
+  textKey: string
+}
+
 export interface Project {
   id: number
   titleKey: string
   descriptionKey: string
   technologies: string[]
-  link?: string
-  linkTextKey?: string
+  links?: ProjectLink[]
   images?: ProjectImage[]
 }

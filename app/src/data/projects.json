@@ -4,8 +4,12 @@
     "titleKey": "projects.projectTitle",
     "descriptionKey": "projects.projectDescription",
     "technologies": ["Android", "Kotlin", "GitHub CI/CD"],
-    "link": "https://play.google.com/store/apps/details?id=io.software_lab.mystandby",
-    "linkTextKey": "projects.projectLinkText",
+    "links": [
+      {
+        "url": "https://play.google.com/store/apps/details?id=io.software_lab.mystandby",
+        "textKey": "projects.projectLinkText"
+      }
+    ],
     "images": [
       { "base": "/mystandby_1_phone", "altKey": "projects.screenshotMyStandbyLockScreenAlt" },
       { "base": "/mystandby_2_phone", "altKey": "projects.screenshotMyStandbyCalendarAlt" },
@@ -13,12 +17,33 @@
     ]
   },
   {
+    "id": 3,
+    "titleKey": "projects.projectTitleMyStandbyLandingPage",
+    "descriptionKey": "projects.projectDescriptionMyStandbyLandingPage",
+    "technologies": ["Vue.js", "GitHub CI/CD", "GitHub Pages"],
+    "links": [
+      { "url": "https://www.mystandby.app", "textKey": "projects.projectLinkTextWebsite" },
+      {
+        "url": "https://github.com/mklschreiber/myStandby-LandingPage",
+        "textKey": "projects.projectLinkTextGithub"
+      }
+    ],
+    "images": [
+      { "base": "/mystandby_landing_macbook", "altKey": "projects.screenshotMyStandbyLandingMacbookAlt" },
+      { "base": "/mystandby_landing_phone", "altKey": "projects.screenshotMyStandbyLandingPhoneAlt" }
+    ]
+  },
+  {
     "id": 2,
     "titleKey": "projects.projectTitleMichaelSchreiberNet",
     "descriptionKey": "projects.projectDescriptionMichaelSchreiberNet",
     "technologies": ["Vue.js", "GitHub CI/CD", "GitHub Pages"],
-    "link": "https://github.com/mklschreiber/michaelschreibernet",
-    "linkTextKey": "projects.projectLinkTextGithub",
+    "links": [
+      {
+        "url": "https://github.com/mklschreiber/michaelschreibernet",
+        "textKey": "projects.projectLinkTextGithub"
+      }
+    ],
     "images": [
       { "base": "/page_macbook", "altKey": "projects.screenshotMacbookAlt" },
       { "base": "/page_phone", "altKey": "projects.screenshotPhoneAlt" }
