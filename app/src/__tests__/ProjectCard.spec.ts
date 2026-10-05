@@ -1,4 +1,17 @@
 /**
+ * Testing concept — MS-1 myStandby - LandingPage (ProjectCard links)
+ *
+ * Jira: https://mklschreiber.atlassian.net/browse/MS-1
+ * Architecture: docs/architecture/MS-1-mystandby-landingpage.md (D1).
+ * Test concept: docs/architecture/MS-1-tests.md.
+ * `Project.link`/`linkTextKey` became `links?: ProjectLink[]`. Component
+ * tests check one `a.project-link` per entry, in order, inside a single
+ * `.project-links` wrapper, each with href, `target="_blank"`,
+ * `rel="noopener noreferrer"`, the external-link icon and the localized text;
+ * and no wrapper when `links` is missing or empty. The raw source confirms
+ * the top margin moved from `.project-link` to `.project-links`.
+ */
+/**
  * Testing concept — Colored Tags (ProjectCard integration)
  *
  * Trello card: https://trello.com/c/u1IyHIJw/8-colored-tags
@@ -65,8 +78,7 @@ const mockProject: Project = {
   titleKey: 'projects.mock.title',
   descriptionKey: 'projects.mock.description',
   technologies: ['Vue.js', 'TypeScript'],
-  link: 'https://example.com',
-  linkTextKey: 'projects.mock.linkText',
+  links: [{ url: 'https://example.com', textKey: 'projects.mock.linkText' }],
 }
 
 // jsdom normalizes an inline `background-color: hsl(...)` style to `rgb(...)`
@@ -439,5 +451,140 @@ describe('ProjectCard mobile overflow CSS contract (raw source)', () => {
 
   it('keeps the TypeScript breakpoint in sync with the CSS media query', () => {
     expect(projectCardSource).toMatch(/const MOBILE_BREAKPOINT = 768\b/)
+  })
+})
+
+const twoLinkProject: Project = {
+  ...mockProject,
+  links: [
+    { url: 'https://example.com', textKey: 'projects.mock.linkText' },
+    { url: 'https://github.com/example/repo', textKey: 'projects.mock.repoLinkText' },
+  ],
+}
+
+function createLinkWrapper(project: Project, locale: 'de' | 'en' = 'de') {
+  const i18n = createI18n({
+    legacy: false,
+    locale,
+    messages: {
+      de: {
+        projects: {
+          mock: {
+            title: 'Mock-Projekt',
+            description: 'Eine Mock-Projektbeschreibung.',
+            linkText: 'Projekt ansehen',
+            repoLinkText: 'Code ansehen',
+          },
+        },
+      },
+      en: {
+        projects: {
+          mock: {
+            title: 'Mock project',
+            description: 'A mock project description.',
+            linkText: 'View project',
+            repoLinkText: 'View code',
+          },
+        },
+      },
+    },
+  })
+  return mount(ProjectCard, { props: { project }, global: { plugins: [i18n] } })
+}
+
+describe('ProjectCard links', () => {
+  it('renders one link per entry', () => {
+    const wrapper = createLinkWrapper(twoLinkProject)
+
+    expect(wrapper.findAll('a.project-link')).toHaveLength(2)
+  })
+
+  it('renders all links inside a single .project-links wrapper', () => {
+    const wrapper = createLinkWrapper(twoLinkProject)
+
+    expect(wrapper.findAll('.project-links > a.project-link')).toHaveLength(2)
+  })
+
+  it('renders the links in data order with their URLs', () => {
+    const wrapper = createLinkWrapper(twoLinkProject)
+
+    expect(wrapper.findAll('a.project-link').map((link) => link.attributes('href'))).toEqual([
+      'https://example.com',
+      'https://github.com/example/repo',
+    ])
+  })
+
+  it('opens every link in a new tab', () => {
+    const wrapper = createLinkWrapper(twoLinkProject)
+
+    expect(wrapper.findAll('a.project-link').map((link) => link.attributes('target'))).toEqual([
+      '_blank',
+      '_blank',
+    ])
+  })
+
+  it('sets rel="noopener noreferrer" on every link', () => {
+    const wrapper = createLinkWrapper(twoLinkProject)
+
+    expect(wrapper.findAll('a.project-link').map((link) => link.attributes('rel'))).toEqual([
+      'noopener noreferrer',
+      'noopener noreferrer',
+    ])
+  })
+
+  it('shows the German link texts', () => {
+    const wrapper = createLinkWrapper(twoLinkProject, 'de')
+
+    expect(wrapper.findAll('a.project-link').map((link) => link.text())).toEqual([
+      'Projekt ansehen',
+      'Code ansehen',
+    ])
+  })
+
+  it('shows the English link texts', () => {
+    const wrapper = createLinkWrapper(twoLinkProject, 'en')
+
+    expect(wrapper.findAll('a.project-link').map((link) => link.text())).toEqual([
+      'View project',
+      'View code',
+    ])
+  })
+
+  it('keeps the external-link icon in every link', () => {
+    const wrapper = createLinkWrapper(twoLinkProject)
+
+    expect(wrapper.findAll('a.project-link > svg')).toHaveLength(2)
+  })
+
+  it('renders a single link for a project with one link', () => {
+    const wrapper = createLinkWrapper(mockProject)
+
+    expect(wrapper.find('a.project-link').attributes('href')).toBe('https://example.com')
+  })
+
+  it('renders no link wrapper when links is missing', () => {
+    const wrapper = createLinkWrapper({ ...mockProject, links: undefined })
+
+    expect(wrapper.find('.project-links').exists()).toBe(false)
+  })
+
+  it('renders no link wrapper when links is empty', () => {
+    const wrapper = createLinkWrapper({ ...mockProject, links: [] })
+
+    expect(wrapper.find('.project-links').exists()).toBe(false)
+  })
+
+  it('puts the top margin on the .project-links wrapper', () => {
+    expect(extractRuleBody(projectCardSource, '.project-links')).toMatch(
+      /margin-top:\s*var\(--spacing-md\);/,
+    )
+  })
+
+  it('lets the links wrap on narrow screens', () => {
+    expect(extractRuleBody(projectCardSource, '.project-links')).toMatch(/flex-wrap:\s*wrap;/)
+  })
+
+  it('no longer puts a top margin on each .project-link', () => {
+    expect(extractRuleBody(projectCardSource, '.project-link')).not.toMatch(/margin-top/)
   })
 })

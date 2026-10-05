@@ -19,6 +19,9 @@ export interface MessageSchema {
     projectDescription: string
     projectLinkText: string
     projectLinkTextGithub: string
+    projectTitleMyStandbyLandingPage: string
+    projectDescriptionMyStandbyLandingPage: string
+    projectLinkTextWebsite: string
     projectTitleMichaelSchreiberNet: string
     projectDescriptionMichaelSchreiberNet: string
     screenshotMacbookAlt: string
@@ -26,6 +29,8 @@ export interface MessageSchema {
     screenshotMyStandbyLockScreenAlt: string
     screenshotMyStandbyCalendarAlt: string
     screenshotMyStandbyLockScreenCloseUpAlt: string
+    screenshotMyStandbyLandingMacbookAlt: string
+    screenshotMyStandbyLandingPhoneAlt: string
     previousScreenshot: string
     nextScreenshot: string
     screenshotPosition: string

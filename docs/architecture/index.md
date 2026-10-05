@@ -79,6 +79,18 @@ material.
   `sizes` entry. It also records the raw-source checks for the overflow CSS
   (`min-width: 0`, `minmax(0, 1fr)`, the 768px media query), the two new
   chevron icons, and the manual phone-width browser check.
+- [myStandby - LandingPage Project Entry](MS-1-mystandby-landingpage.md) —
+  adds the myStandby landing page as the second project card. It has a
+  short de/en description, a website link and a GitHub link, and two
+  screenshots as `sips`-generated 320–1920px JPEG variants (quality 80). The
+  project model changes from a single `link`/`linkTextKey` to a
+  `links: ProjectLink[]` list.
+- [Tests for myStandby - LandingPage Project Entry](MS-1-tests.md) —
+  records the data tests for the new entry (position, id, links, tags,
+  images), the `link` → `links` migration, an existence and real-pixel-width
+  check for every `<base>-<w>.jpg` variant of every project, the de/en key
+  resolution, the `ProjectCard` link-list component tests, and the rendered
+  second card on `ProjectOverviewPage`.
 
 ## Reviews
 
@@ -114,6 +126,14 @@ material.
   project card causes no page overflow. Lint, unit tests (106/106), and build
   pass. Non-blocking note: a pre-existing 1px overflow below 301px comes from
   the navigation hamburger, which is out of scope for this ticket.
+* [Review for myStandby - LandingPage Project Entry](MS-1-review.md) -
+  Round 3: positive. The concept entry in this index now says "a short
+  de/en description". Nothing else changed since round 2. Unit tests
+  (259/259), lint and build pass. Round 2: findings. The user-requested
+  description was correct in the locales, tests, concept D4 and log, but this
+  index still called it "AI-written". Round 1: positive. The second project card
+  (id 3), the `link` → `links: ProjectLink[]` migration, the de/en texts,
+  and the 12 `sips` width variants matched the concept.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

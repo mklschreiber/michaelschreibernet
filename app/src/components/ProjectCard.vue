@@ -147,30 +147,33 @@ function showNext(): void {
         {{ tech }}
       </span>
     </div>
-    <a
-      v-if="project.link"
-      :href="project.link"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="project-link"
-    >
-      {{ t(project.linkTextKey!) }}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+    <div v-if="project.links?.length" class="project-links">
+      <a
+        v-for="link in project.links"
+        :key="link.url"
+        :href="link.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="project-link"
       >
-        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-        <polyline points="15 3 21 3 21 9"></polyline>
-        <line x1="10" y1="14" x2="21" y2="3"></line>
-      </svg>
-    </a>
+        {{ t(link.textKey) }}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </a>
+    </div>
   </article>
 </template>
 
@@ -368,6 +371,13 @@ function showNext(): void {
   font-weight: var(--font-weight-medium);
 }
 
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
 .project-link {
   display: inline-flex;
   align-items: center;
@@ -376,7 +386,6 @@ function showNext(): void {
   text-decoration: none;
   font-weight: var(--font-weight-semibold);
   transition: color var(--transition-base);
-  margin-top: var(--spacing-md);
 }
 
 .project-link:hover {
