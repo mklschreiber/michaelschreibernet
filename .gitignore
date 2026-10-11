@@ -63,3 +63,6 @@ __screenshots__/
 # OS files
 Thumbs.db
 
+
+# Local ticket progress of the AI workflow (ai-base)
+.progress.md
