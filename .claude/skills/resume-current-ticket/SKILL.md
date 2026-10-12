@@ -1,0 +1,1 @@
+../../../.ai-base/skills/resume-current-ticket/SKILL.md
