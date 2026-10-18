@@ -58,5 +58,8 @@ coverage directories are ignored.
 
 GitHub Pages deployment is defined in `.github/workflows/deploy.yml`. On pushes
 to `main` (and on manual dispatch), the workflow runs from `app/`, uses Node
-20, installs with `npm ci`, builds with `npm run build`, and deploys
-`app/dist`. The deployment workflow supplies `VITE_BASE_URL=/`.
+24, installs with `npm ci`, builds with `npm run build`, and deploys
+`app/dist`. The deployment workflow supplies `VITE_BASE_URL=/`. The CI
+workflow (`.github/workflows/ci.yml`) uses the same Node version. All actions
+are on their Node 24 majors (`checkout@v7`, `setup-node@v7`,
+`configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`).
