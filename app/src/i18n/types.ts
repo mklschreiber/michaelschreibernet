@@ -26,6 +26,9 @@ export interface MessageSchema {
     projectDescriptionMichaelSchreiberNet: string
     screenshotMacbookAlt: string
     screenshotPhoneAlt: string
+    screenshotMyStandbyDeskAlt: string
+    screenshotMyStandbyBedroomAlt: string
+    screenshotMyStandbyKitchenAlt: string
     screenshotMyStandbyLockScreenAlt: string
     screenshotMyStandbyCalendarAlt: string
     screenshotMyStandbyLockScreenCloseUpAlt: string

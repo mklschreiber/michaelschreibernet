@@ -408,6 +408,65 @@ describe('ProjectCard mobile screenshot carousel', () => {
   })
 })
 
+/**
+ * Testing concept — MS-14 myStandby - New Marketing Images (ProjectCard sizes)
+ *
+ * Jira: https://mklschreiber.atlassian.net/browse/MS-14
+ * Architecture: docs/architecture/MS-14-mystandby-new-images.md (D5).
+ * Test concept: docs/architecture/MS-14-tests.md.
+ * Galleries whose min-width row can never fit the 1200px container (5 or more
+ * images) always scroll on desktop, so `sizes` advertises only the mobile
+ * entry and the 220px min-width. 4 images is the last count that keeps the
+ * full four-entry hint; the 3-image case above stays unchanged.
+ */
+function projectWithImages(count: number): Project {
+  return {
+    ...galleryProject,
+    images: Array.from({ length: count }, (_, index) => ({
+      base: `/shot_${index}`,
+      altKey: 'projects.screenshotMyStandbyLockScreenAlt',
+    })),
+  }
+}
+
+describe('ProjectCard sizes for always-scrolling galleries (MS-14)', () => {
+  it('advertises only the mobile width and the 220px min-width for six images', () => {
+    const wrapper = createGalleryWrapper(projectWithImages(6))
+
+    expect(wrapper.find('img.project-image').attributes('sizes')).toBe(
+      '(max-width: 768px) calc(100vw - 128px), 220px',
+    )
+  })
+
+  it('gives every image of a six-image gallery the same sizes value', () => {
+    const wrapper = createGalleryWrapper(projectWithImages(6))
+    const sizes = new Set(
+      wrapper.findAll('img.project-image').map((image) => image.attributes('sizes')),
+    )
+
+    expect([...sizes]).toEqual(['(max-width: 768px) calc(100vw - 128px), 220px'])
+  })
+
+  it('switches to the short sizes value from five images on', () => {
+    const wrapper = createGalleryWrapper(projectWithImages(5))
+
+    expect(wrapper.find('img.project-image').attributes('sizes')).toBe(
+      '(max-width: 768px) calc(100vw - 128px), 220px',
+    )
+  })
+
+  it('keeps the full desktop sizes value for four images', () => {
+    const wrapper = createGalleryWrapper(projectWithImages(4))
+
+    expect(wrapper.find('img.project-image').attributes('sizes')).toBe(
+      '(max-width: 768px) calc(100vw - 128px), ' +
+        '(max-width: 1032px) 220px, ' +
+        '(max-width: 1200px) calc((100vw - 152px) / 4), ' +
+        '262px',
+    )
+  })
+})
+
 // jsdom does not apply scoped SFC styles, so the layout contract that fixes
 // the overflow (AC-1) and shows one image at a time is asserted on the source.
 describe('ProjectCard mobile overflow CSS contract (raw source)', () => {

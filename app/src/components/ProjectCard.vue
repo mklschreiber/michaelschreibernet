@@ -38,9 +38,14 @@ function srcsetFor(base: string): string {
 function sizesFor(count: number): string {
   const fixedWidth = FIXED_HORIZONTAL_SPACING + IMAGE_GAP * (count - 1)
   const scrollBreakpoint = IMAGE_MIN_WIDTH * count + fixedWidth
+  const mobileSize = `(max-width: ${MOBILE_BREAKPOINT}px) calc(100vw - ${FIXED_HORIZONTAL_SPACING}px)`
+  if (scrollBreakpoint >= CONTAINER_MAX_WIDTH) {
+    // Too many images to ever fit: the row always scrolls and every image stays at its min-width.
+    return `${mobileSize}, ${IMAGE_MIN_WIDTH}px`
+  }
   const maxImageWidth = Math.round((CONTAINER_MAX_WIDTH - fixedWidth) / count)
   return (
-    `(max-width: ${MOBILE_BREAKPOINT}px) calc(100vw - ${FIXED_HORIZONTAL_SPACING}px), ` +
+    `${mobileSize}, ` +
     `(max-width: ${scrollBreakpoint}px) ${IMAGE_MIN_WIDTH}px, ` +
     `(max-width: ${CONTAINER_MAX_WIDTH}px) calc((100vw - ${fixedWidth}px) / ${count}), ` +
     `${maxImageWidth}px`

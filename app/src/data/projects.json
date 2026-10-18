@@ -11,6 +11,9 @@
       }
     ],
     "images": [
+      { "base": "/mystandby_desk", "altKey": "projects.screenshotMyStandbyDeskAlt" },
+      { "base": "/mystandby_bedroom", "altKey": "projects.screenshotMyStandbyBedroomAlt" },
+      { "base": "/mystandby_kitchen", "altKey": "projects.screenshotMyStandbyKitchenAlt" },
       { "base": "/mystandby_1_phone", "altKey": "projects.screenshotMyStandbyLockScreenAlt" },
       { "base": "/mystandby_2_phone", "altKey": "projects.screenshotMyStandbyCalendarAlt" },
       { "base": "/mystandby_3_phone", "altKey": "projects.screenshotMyStandbyLockScreenCloseUpAlt" }
