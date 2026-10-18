@@ -1,4 +1,23 @@
 /**
+ * Testing concept — MS-14 myStandby - New Marketing Images (projects data module)
+ *
+ * Jira: https://mklschreiber.atlassian.net/browse/MS-14
+ * Architecture: docs/architecture/MS-14-mystandby-new-images.md.
+ * Test concept: docs/architecture/MS-14-tests.md.
+ *
+ * - Data level (`projects.json`): the myStandby entry (id 1) lists exactly
+ *   Desk, Bedroom, Kitchen first (AC-1 to AC-3) and the three old screenshots
+ *   behind them in their old order (AC-4, D1).
+ * - Asset level (Node `fs`): the existing data-driven variant tests pick up the
+ *   three new bases (existence + real pixel width, AC-5). New cases check the
+ *   committed unsuffixed originals (D4).
+ * - i18n level: the three new alt keys have the exact de/en texts from D6.
+ * - Page level (Vue Test Utils): the first card on `ProjectOverviewPage`
+ *   renders six images whose `src` follow the data order, the first image
+ *   carries the localized Desk alt text, and the carousel status starts at
+ *   "Screenshot 1 of 6".
+ */
+/**
  * Testing concept — MS-1 myStandby - LandingPage (projects data module)
  *
  * Jira: https://mklschreiber.atlassian.net/browse/MS-1
@@ -32,6 +51,18 @@ import type { MessageSchema } from '@/i18n/types'
 import type { Project } from '@/types/project'
 
 const projects = projectsData as Project[]
+
+const MY_STANDBY_IMAGES = [
+  { base: '/mystandby_desk', altKey: 'projects.screenshotMyStandbyDeskAlt' },
+  { base: '/mystandby_bedroom', altKey: 'projects.screenshotMyStandbyBedroomAlt' },
+  { base: '/mystandby_kitchen', altKey: 'projects.screenshotMyStandbyKitchenAlt' },
+  { base: '/mystandby_1_phone', altKey: 'projects.screenshotMyStandbyLockScreenAlt' },
+  { base: '/mystandby_2_phone', altKey: 'projects.screenshotMyStandbyCalendarAlt' },
+  { base: '/mystandby_3_phone', altKey: 'projects.screenshotMyStandbyLockScreenCloseUpAlt' },
+]
+const NEW_MY_STANDBY_BASES = ['/mystandby_desk', '/mystandby_bedroom', '/mystandby_kitchen']
+
+const myStandby = projects.find((project) => project.id === 1)
 
 const LANDING_PAGE_TITLE_KEY = 'projects.projectTitleMyStandbyLandingPage'
 const WEBSITE_URL = 'https://www.mystandby.app'
@@ -265,5 +296,135 @@ describe('ProjectOverviewPage — myStandby - LandingPage card', () => {
       '/mystandby_landing_macbook-960.jpg',
       '/mystandby_landing_phone-960.jpg',
     ])
+  })
+})
+
+describe('projects data — myStandby marketing images (MS-14)', () => {
+  it('keeps the myStandby app as the first entry', () => {
+    expect(projects[0]?.id).toBe(1)
+  })
+
+  it('lists Desk, Bedroom and Kitchen first, then the old screenshots in their old order', () => {
+    expect(myStandby?.images).toEqual(MY_STANDBY_IMAGES)
+  })
+
+  it('shows the Desk image first', () => {
+    expect(myStandby?.images?.[0]?.base).toBe('/mystandby_desk')
+  })
+
+  it('shows the Bedroom image second', () => {
+    expect(myStandby?.images?.[1]?.base).toBe('/mystandby_bedroom')
+  })
+
+  it('shows the Kitchen image third', () => {
+    expect(myStandby?.images?.[2]?.base).toBe('/mystandby_kitchen')
+  })
+
+  it('keeps all old screenshots behind the new images', () => {
+    expect(myStandby?.images?.slice(3).map((image) => image.base)).toEqual([
+      '/mystandby_1_phone',
+      '/mystandby_2_phone',
+      '/mystandby_3_phone',
+    ])
+  })
+
+  it.each(NEW_MY_STANDBY_BASES)('commits the unsuffixed original %s.jpg', (base) => {
+    expect(existsSync(publicFile(`${base}.jpg`))).toBe(true)
+  })
+
+  it.each(NEW_MY_STANDBY_BASES)(
+    'keeps the original %s.jpg wider than the largest variant',
+    (base) => {
+      expect(jpegWidth(publicFile(`${base}.jpg`))).toBeGreaterThan(1920)
+    },
+  )
+})
+
+describe('projects data — myStandby marketing image alt texts (MS-14)', () => {
+  it('describes the Desk image in English', () => {
+    expect(en.projects.screenshotMyStandbyDeskAlt).toBe(
+      'myStandby on a smartphone in a charging stand on a desk, showing a flip clock and a photo stack',
+    )
+  })
+
+  it('describes the Desk image in German', () => {
+    expect(de.projects.screenshotMyStandbyDeskAlt).toBe(
+      'myStandby auf einem Smartphone in einer Ladestation auf dem Schreibtisch, mit Klappuhr und Fotostapel',
+    )
+  })
+
+  it('describes the Bedroom image in English', () => {
+    expect(en.projects.screenshotMyStandbyBedroomAlt).toBe(
+      'myStandby on a smartphone on a bedside table at night, showing the time and date',
+    )
+  })
+
+  it('describes the Bedroom image in German', () => {
+    expect(de.projects.screenshotMyStandbyBedroomAlt).toBe(
+      'myStandby auf einem Smartphone auf dem Nachttisch bei Nacht, mit Uhrzeit und Datum',
+    )
+  })
+
+  it('describes the Kitchen image in English', () => {
+    expect(en.projects.screenshotMyStandbyKitchenAlt).toBe(
+      'myStandby on a smartphone in a charging stand on a kitchen counter, showing a photo stack',
+    )
+  })
+
+  it('describes the Kitchen image in German', () => {
+    expect(de.projects.screenshotMyStandbyKitchenAlt).toBe(
+      'myStandby auf einem Smartphone in einer Ladestation auf der Küchenarbeitsplatte, mit Fotostapel',
+    )
+  })
+})
+
+function firstCard(locale: 'de' | 'en') {
+  return mountPage(locale).findAll('.project-card')[0]
+}
+
+describe('ProjectOverviewPage — myStandby card with marketing images (MS-14)', () => {
+  it('renders the six images in data order on the first card', () => {
+    const sources = firstCard('en')
+      ?.findAll('img.project-image')
+      .map((image) => image.attributes('src'))
+
+    expect(sources).toEqual([
+      '/mystandby_desk-960.jpg',
+      '/mystandby_bedroom-960.jpg',
+      '/mystandby_kitchen-960.jpg',
+      '/mystandby_1_phone-960.jpg',
+      '/mystandby_2_phone-960.jpg',
+      '/mystandby_3_phone-960.jpg',
+    ])
+  })
+
+  it('makes the Desk image the active carousel image on the first card', () => {
+    expect(firstCard('en')?.find('.project-image--active').attributes('src')).toBe(
+      '/mystandby_desk-960.jpg',
+    )
+  })
+
+  it('shows the English Desk alt text on the first image', () => {
+    expect(firstCard('en')?.find('img.project-image').attributes('alt')).toBe(
+      en.projects.screenshotMyStandbyDeskAlt,
+    )
+  })
+
+  it('shows the German Desk alt text on the first image', () => {
+    expect(firstCard('de')?.find('img.project-image').attributes('alt')).toBe(
+      de.projects.screenshotMyStandbyDeskAlt,
+    )
+  })
+
+  it('offers width-suffixed variants of the Desk image', () => {
+    expect(firstCard('en')?.find('img.project-image').attributes('srcset')).toBe(
+      '/mystandby_desk-320.jpg 320w, /mystandby_desk-640.jpg 640w, ' +
+        '/mystandby_desk-960.jpg 960w, /mystandby_desk-1280.jpg 1280w, ' +
+        '/mystandby_desk-1600.jpg 1600w, /mystandby_desk-1920.jpg 1920w',
+    )
+  })
+
+  it('starts the carousel status at screenshot 1 of 6', () => {
+    expect(firstCard('en')?.find('.gallery-status').text()).toBe('Screenshot 1 of 6')
   })
 })

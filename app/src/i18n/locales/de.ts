@@ -30,6 +30,11 @@ const de: MessageSchema = {
     projectLinkTextWebsite: 'Website besuchen',
     screenshotMacbookAlt: 'Startseite von michaelschreiber.net dargestellt auf einem MacBook',
     screenshotPhoneAlt: 'Startseite von michaelschreiber.net dargestellt auf einem Smartphone',
+    screenshotMyStandbyDeskAlt:
+      'myStandby auf einem Smartphone in einer Ladestation auf dem Schreibtisch, mit Klappuhr und Fotostapel',
+    screenshotMyStandbyBedroomAlt: 'myStandby auf einem Smartphone auf dem Nachttisch bei Nacht, mit Uhrzeit und Datum',
+    screenshotMyStandbyKitchenAlt:
+      'myStandby auf einem Smartphone in einer Ladestation auf der Küchenarbeitsplatte, mit Fotostapel',
     screenshotMyStandbyLockScreenAlt: 'myStandby-Sperrbildschirm-Widget mit Uhrzeit und nächster Aufgabe',
     screenshotMyStandbyCalendarAlt: 'myStandby-Kalenderansicht mit Terminen und Monatsübersicht',
     screenshotMyStandbyLockScreenCloseUpAlt: 'Nahaufnahme des myStandby-Sperrbildschirm-Widgets',

@@ -91,6 +91,18 @@ material.
   check for every `<base>-<w>.jpg` variant of every project, the de/en key
   resolution, the `ProjectCard` link-list component tests, and the rendered
   second card on `ProjectOverviewPage`.
+- [myStandby - New Marketing Images](MS-14-mystandby-new-images.md) —
+  puts the three new myStandby photos (Desk, Bedroom, Kitchen) in front of
+  the existing screenshots of the myStandby card, as `sips`-generated
+  320–1920px JPEG variants (quality 80) with committed originals and de/en
+  alt texts. It reads "scaled to different aspect ratios" as responsive width
+  variants, not crops, and fixes `sizesFor` for galleries of 5 or more images,
+  which always scroll on desktop.
+- [Tests for myStandby - New Marketing Images](MS-14-tests.md) — records
+  the data tests for the new myStandby image order (Desk, Bedroom, Kitchen,
+  then the old screenshots), the committed originals and their variants, the
+  de/en alt texts, the rendered first card on `ProjectOverviewPage`, and the
+  `ProjectCard` `sizes` value for galleries of 4, 5 and 6 images.
 
 ## Reviews
 
@@ -134,6 +146,14 @@ material.
   index still called it "AI-written". Round 1: positive. The second project card
   (id 3), the `link` → `links: ProjectLink[]` migration, the de/en texts,
   and the 12 `sips` width variants matched the concept.
+* [Review for myStandby - New Marketing Images](MS-14-review.md) -
+  Round 1: positive. The myStandby card lists Desk, Bedroom and Kitchen
+  first and the old screenshots behind them, the 21 new files are byte copies
+  of the Jira attachments plus `sips` variants matching the D3 table,
+  `sizesFor` returns the short hint for 5 or more images, and the de/en alt
+  texts match D6. Unit tests (329/329), lint and build pass. Non-blocking
+  note: the user should confirm the D3 reading of AC-5 (width variants, not
+  crops).
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the
