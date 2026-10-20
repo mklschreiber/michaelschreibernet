@@ -37,8 +37,8 @@ describe('DataProtectionPage', () => {
     const phoneLink = wrapper.find('a[href^="tel:"]')
 
     expect(phoneLink.exists()).toBe(true)
-    expect(phoneLink.attributes('href')).toBe('tel:+4915679724718')
-    expect(phoneLink.text()).toBe('+49 (0) 15679 724718')
+    expect(phoneLink.attributes('href')).toBe('tel:+491624337334')
+    expect(phoneLink.text()).toBe('+49 (0) 162 4337334')
   })
 
   it('renders the responsible-party email address as a mailto: link with the unchanged display text', () => {

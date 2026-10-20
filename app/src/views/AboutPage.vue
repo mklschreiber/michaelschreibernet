@@ -4,9 +4,11 @@ import { useI18n } from 'vue-i18n'
 import AppNavigation from '@/components/AppNavigation.vue'
 import TimelineEntry from '@/components/TimelineEntry.vue'
 import IconEmail from '@/components/icons/IconEmail.vue'
-import IconXing from '@/components/icons/IconXing.vue'
+import IconPhone from '@/components/icons/IconPhone.vue'
 import IconGithub from '@/components/icons/IconGithub.vue'
 import IconLinkedin from '@/components/icons/IconLinkedin.vue'
+import IconFacebook from '@/components/icons/IconFacebook.vue'
+import IconInstagram from '@/components/icons/IconInstagram.vue'
 import { timelineEntries } from '@/data/timeline'
 import { useTimelineAnimation } from '@/composables/useTimelineAnimation'
 
@@ -54,14 +56,9 @@ function setEntryRef(index: number) {
               <span class="about-page__link-icon" aria-hidden="true"><IconEmail /></span>
               {{ t('about.businessCard.email') }}
             </a>
-            <a
-              href="https://www.xing.com/profile/Michael_Schreiber94/web_profiles?nwt_nav=profile"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="about-page__link"
-            >
-              <span class="about-page__link-icon" aria-hidden="true"><IconXing /></span>
-              {{ t('about.businessCard.xing') }}
+            <a href="tel:+491624337334" class="about-page__link">
+              <span class="about-page__link-icon" aria-hidden="true"><IconPhone /></span>
+              {{ t('about.businessCard.phone') }}
             </a>
             <a
               href="https://www.linkedin.com/in/mklschreiber"
@@ -80,6 +77,24 @@ function setEntryRef(index: number) {
             >
               <span class="about-page__link-icon" aria-hidden="true"><IconGithub /></span>
               {{ t('about.businessCard.github') }}
+            </a>
+            <a
+              href="https://www.facebook.com/mklschreiber"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="about-page__link"
+            >
+              <span class="about-page__link-icon" aria-hidden="true"><IconFacebook /></span>
+              {{ t('about.businessCard.facebook') }}
+            </a>
+            <a
+              href="https://www.instagram.com/mklschreiber/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="about-page__link"
+            >
+              <span class="about-page__link-icon" aria-hidden="true"><IconInstagram /></span>
+              {{ t('about.businessCard.instagram') }}
             </a>
           </div>
         </div>

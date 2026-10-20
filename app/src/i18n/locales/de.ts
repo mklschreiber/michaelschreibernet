@@ -51,7 +51,7 @@ const de: MessageSchema = {
     email: 'Email',
     emailValue: "info{'@'}michaelschreiber.net",
     phone: 'Telefon',
-    phoneValue: '+49 (0) 15679 724718',
+    phoneValue: '+49 (0) 162 4337334',
     location: 'Standort',
     locationValue: 'Leipheim',
     form: {
@@ -74,9 +74,11 @@ const de: MessageSchema = {
       name: 'Michael Schreiber',
       role: 'Senior Software Engineer',
       email: 'E-Mail',
-      xing: 'Xing-Profil',
+      phone: 'Telefon',
       github: 'GitHub-Profil',
       linkedin: 'LinkedIn-Profil',
+      facebook: 'Facebook-Profil',
+      instagram: 'Instagram-Profil',
       avatarAlt: 'Profilbild von Michael Schreiber',
     },
     timeline: {
