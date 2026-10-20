@@ -103,6 +103,17 @@ material.
   then the old screenshots), the committed originals and their variants, the
   de/en alt texts, the rendered first card on `ProjectOverviewPage`, and the
   `ProjectCard` `sizes` value for galleries of 4, 5 and 6 images.
+- [Update Profile](MS-15-update-profile.md) — removes the Xing link and
+  `IconXing.vue`, adds Facebook, Instagram (new Simple Icons-based icon SFCs)
+  and a `tel:` chip to the About page, replaces the old phone number with
+  +49 (0) 162 4337334 (`tel:+491624337334`) everywhere, and confirms that all
+  mail references already use `info@michaelschreiber.net`.
+- [Tests for Update Profile](MS-15-tests.md) — records the `AboutPage`
+  coverage for the removed Xing link, the new phone, Facebook and Instagram
+  chips (href, `target`/`rel`, de/en labels) and their order, the icon render
+  contract for `IconPhone`, `IconFacebook` and `IconInstagram` (plus a
+  single-path, no-stroke check) and the removal of `IconXing`, and the new
+  phone number on the Contact, Impressum and Datenschutz pages.
 
 ## Reviews
 
@@ -154,6 +165,12 @@ material.
   texts match D6. Unit tests (329/329), lint and build pass. Non-blocking
   note: the user should confirm the D3 reading of AC-5 (width variants, not
   crops).
+* [Review for Update Profile](MS-15-review.md) - Round 1: positive. Xing
+  (link, key, `IconXing.vue`) is removed. The Facebook, Instagram and `tel:`
+  chips match the hrefs, `target`/`rel`, labels and order in the concept. The
+  new number `+49 (0) 162 4337334` replaces the old one in all four places,
+  and every mail reference uses `info@michaelschreiber.net`. Unit tests
+  (353/353), lint and build pass.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

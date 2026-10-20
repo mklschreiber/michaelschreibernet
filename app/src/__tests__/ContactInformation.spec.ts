@@ -45,7 +45,15 @@ describe('ContactInformation', () => {
     const phoneLink = wrapper.find('a[href^="tel:"]')
 
     expect(phoneLink.exists()).toBe(true)
-    expect(phoneLink.attributes('href')).toBe('tel:+4915679724718')
+    expect(phoneLink.attributes('href')).toBe('tel:+491624337334')
     expect(phoneLink.text()).toBe(t('contact.phoneValue'))
+  })
+
+  it('shows the new phone number as the German phone display text (MS-15)', () => {
+    expect(de.contact.phoneValue).toBe('+49 (0) 162 4337334')
+  })
+
+  it('shows the same new phone number as the English phone display text (MS-15)', () => {
+    expect(en.contact.phoneValue).toBe('+49 (0) 162 4337334')
   })
 })

@@ -21,7 +21,7 @@ const { t } = useI18n()
       <span class="info-item__icon" aria-hidden="true"><IconPhone /></span>
       <div>
         <strong>{{ t('contact.phone') }}:</strong>
-        <p><a href="tel:+4915679724718">{{ t('contact.phoneValue') }}</a></p>
+        <p><a href="tel:+491624337334">{{ t('contact.phoneValue') }}</a></p>
       </div>
     </div>
     <div class="info-item">

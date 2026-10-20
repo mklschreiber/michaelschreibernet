@@ -1,3 +1,19 @@
+/**
+ * Testing concept — MS-15 Update Profile (business-card link row)
+ *
+ * Jira: https://mklschreiber.atlassian.net/browse/MS-15
+ * Concept: docs/architecture/MS-15-update-profile.md
+ *
+ * Component level (Vue Test Utils, jsdom), because the change is static
+ * markup plus i18n labels:
+ * - Xing is gone: no `a[href*="xing"]` and no "Xing" text in the card.
+ * - New phone chip: `tel:+491624337334`, no `target`/`rel` (local handler,
+ *   like `mailto:`), label "Telefon" / "Phone" (label, not the number — §5).
+ * - New Facebook and Instagram chips: exact href (Instagram with trailing
+ *   slash), `target="_blank"`, `rel="noopener noreferrer"`, de and en label.
+ * - Link order: Email, Phone, LinkedIn, GitHub, Facebook, Instagram (§4).
+ * Icon render contract is covered in icons.spec.ts.
+ */
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
@@ -70,13 +86,79 @@ describe('AboutPage', () => {
     expect(emailLink.attributes('href')).toBe('mailto:info@michaelschreiber.net')
   })
 
-  it('renders Xing link with noopener noreferrer and the localized label', () => {
+  it('renders no Xing link', () => {
     const wrapper = createWrapper()
-    const xingLink = wrapper.find('a[href*="xing"]')
-    expect(xingLink.exists()).toBe(true)
-    expect(xingLink.attributes('rel')).toBe('noopener noreferrer')
-    expect(xingLink.attributes('target')).toBe('_blank')
-    expect(xingLink.text()).toContain('Xing-Profil')
+    expect(wrapper.find('a[href*="xing"]').exists()).toBe(false)
+  })
+
+  it('renders no Xing label in the business card', () => {
+    const wrapper = createWrapper()
+    expect(wrapper.find('.about-page__links').text()).not.toMatch(/xing/i)
+  })
+
+  it('renders the phone link with the new tel: href and the German label', () => {
+    const wrapper = createWrapper()
+    const phoneLink = wrapper.find('.about-page__links a[href^="tel:"]')
+    expect(phoneLink.attributes('href')).toBe('tel:+491624337334')
+    expect(phoneLink.text()).toBe('Telefon')
+  })
+
+  it('renders the phone link with the English label when locale is en', () => {
+    const wrapper = createWrapper('en')
+    const phoneLink = wrapper.find('.about-page__links a[href="tel:+491624337334"]')
+    expect(phoneLink.text()).toBe('Phone')
+  })
+
+  it('renders the phone link without target and rel', () => {
+    const wrapper = createWrapper()
+    const phoneLink = wrapper.find('.about-page__links a[href="tel:+491624337334"]')
+    expect(phoneLink.attributes()).not.toHaveProperty('target')
+    expect(phoneLink.attributes()).not.toHaveProperty('rel')
+  })
+
+  it('renders Facebook link with the correct href, target, rel, and localized label', () => {
+    const wrapper = createWrapper()
+    const facebookLink = wrapper.find('a[href="https://www.facebook.com/mklschreiber"]')
+    expect(facebookLink.exists()).toBe(true)
+    expect(facebookLink.attributes('target')).toBe('_blank')
+    expect(facebookLink.attributes('rel')).toBe('noopener noreferrer')
+    expect(facebookLink.text()).toBe('Facebook-Profil')
+  })
+
+  it('renders Facebook link with the English label when locale is en', () => {
+    const wrapper = createWrapper('en')
+    const facebookLink = wrapper.find('a[href="https://www.facebook.com/mklschreiber"]')
+    expect(facebookLink.text()).toBe('Facebook Profile')
+  })
+
+  it('renders Instagram link with the correct href, target, rel, and localized label', () => {
+    const wrapper = createWrapper()
+    const instagramLink = wrapper.find('a[href="https://www.instagram.com/mklschreiber/"]')
+    expect(instagramLink.exists()).toBe(true)
+    expect(instagramLink.attributes('target')).toBe('_blank')
+    expect(instagramLink.attributes('rel')).toBe('noopener noreferrer')
+    expect(instagramLink.text()).toBe('Instagram-Profil')
+  })
+
+  it('renders Instagram link with the English label when locale is en', () => {
+    const wrapper = createWrapper('en')
+    const instagramLink = wrapper.find('a[href="https://www.instagram.com/mklschreiber/"]')
+    expect(instagramLink.text()).toBe('Instagram Profile')
+  })
+
+  it('renders the business-card links in the order Email, Phone, LinkedIn, GitHub, Facebook, Instagram', () => {
+    const wrapper = createWrapper()
+    const hrefs = wrapper
+      .findAll('.about-page__links > .about-page__link')
+      .map((link) => link.attributes('href'))
+    expect(hrefs).toEqual([
+      'mailto:info@michaelschreiber.net',
+      'tel:+491624337334',
+      'https://www.linkedin.com/in/mklschreiber',
+      'https://github.com/mklschreiber',
+      'https://www.facebook.com/mklschreiber',
+      'https://www.instagram.com/mklschreiber/',
+    ])
   })
 
   it('renders LinkedIn link with the correct href, target, rel, and localized label', () => {
@@ -109,10 +191,10 @@ describe('AboutPage', () => {
     expect(githubLink.text()).toContain('GitHub Profile')
   })
 
-  it('renders exactly four business-card links, each with an icon', () => {
+  it('renders exactly six business-card links, each with an icon', () => {
     const wrapper = createWrapper()
     const links = wrapper.findAll('.about-page__links > .about-page__link')
-    expect(links).toHaveLength(4)
+    expect(links).toHaveLength(6)
     links.forEach((link) => {
       expect(link.find('.about-page__link-icon svg').exists()).toBe(true)
     })

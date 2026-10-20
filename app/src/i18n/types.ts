@@ -68,9 +68,11 @@ export interface MessageSchema {
       name: string
       role: string
       email: string
-      xing: string
+      phone: string
       github: string
       linkedin: string
+      facebook: string
+      instagram: string
       avatarAlt: string
     }
     timeline: {

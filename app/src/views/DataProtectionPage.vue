@@ -125,7 +125,7 @@ import AppNavigation from '@/components/AppNavigation.vue'
           89340 Leipheim
         </p>
         <p>
-          Telefon: <a href="tel:+4915679724718">+49 (0) 15679 724718</a><br />
+          Telefon: <a href="tel:+491624337334">+49 (0) 162 4337334</a><br />
           E-Mail: <a href="mailto:info@michaelschreiber.net">info@michaelschreiber.net</a>
         </p>
         <p>
