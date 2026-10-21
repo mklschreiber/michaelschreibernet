@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import AnimatedLogo from '@/components/AnimatedLogo.vue'
 import AppNavigation from '@/components/AppNavigation.vue'
 import MdFilledButton from '@/components/MdFilledButton.vue'
 import MdOutlinedButton from '@/components/MdOutlinedButton.vue'
@@ -16,11 +17,7 @@ const { t } = useI18n()
       <div class="hero__glow hero__glow--two" aria-hidden="true"></div>
 
       <div class="hero__content">
-        <img
-          class="hero__logo"
-          src="/logo_anim.gif"
-          :alt="t('landing.logoAlt')"
-        >
+        <AnimatedLogo class="hero__logo" />
         <h1>{{ t('landing.title') }}</h1>
         <p>{{ t('landing.subtitle') }}</p>
         <div class="cta-buttons">

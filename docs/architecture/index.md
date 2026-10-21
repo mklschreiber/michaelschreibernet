@@ -20,9 +20,10 @@ material.
   comments to the card description, since the connected Trello MCP tools
   have no comment-write action. *(superseded by MYS-44: Jira + ai-base)*
 - [Animated Landing-Page Logo](animated-logo.md) — defines the self-contained
-  SVG drawing sequence and landing-page integration.
+  SVG drawing sequence and landing-page integration. *(superseded by MS-17)*
 - [Tests for Animated Landing-Page Logo](animated-logo-tests.md) — records the
   automated coverage and manual visual check for the SVG animation.
+  *(superseded by MS-17)*
 - [Colored Project Tags](colored-tags.md) — defines the deterministic,
   hash-to-hue HSL color derivation for project technology tags in
   `ProjectCard.vue`, keeping backgrounds light and text in the regular font
@@ -114,6 +115,35 @@ material.
   contract for `IconPhone`, `IconFacebook` and `IconInstagram` (plus a
   single-path, no-stroke check) and the removal of `IconXing`, and the new
   phone number on the Contact, Impressum and Datenschutz pages.
+- [Animated SVG Logo Instead of GIF](MS-17-animated-svg-logo.md) — replaces
+  the 160 KB `logo_anim.gif` on the landing page with a new inline
+  `AnimatedLogo.vue` SVG (`role="img"`, `landing.logoAlt`, `currentColor`).
+  The wordmark is outlined paths from the design input. CSS draws the nine
+  traces with `pathLength="1"` and `stroke-dashoffset` as a tree from the
+  root dot. As in the GIF, a circle rides every trace tip (`translate`
+  keyframes): six of them become the end dots, and three head circles vanish.
+  A mask cuts the ring holes out of the traces, so lines dock cleanly onto the
+  rings. After the circuit, a blinking block cursor follows the 20 glyphs,
+  typed in a hand-set rhythm with word pauses (5.0–9.18 s), and is gone at
+  10.68 s. `prefers-reduced-motion` sets `animation: none` on an end-state
+  base style. The GIF is deleted.
+- [Tests for Animated SVG Logo Instead of GIF](MS-17-tests.md) — records the
+  `AnimatedLogo` coverage: de/en `aria-label`, outlined wordmark without
+  `<text>`, `currentColor` paint, and trace timing per the concept tables.
+  It covers the travelling dot and head circles: each uses its trace's
+  timing, and its `logo-move-*` keyframes lie on the trace vertices at the
+  trace tip's time. The round 3 merge is covered as well: the P4 head and the
+  D5 circle meet at the junction J at 1.487 s and continue together to D5. The
+  round 2 hole mask is covered too: one hole per ring with the same centre
+  and animation, and only the traces masked. The joint geometry checks that
+  ring centres lie on their trace axis and that trace ends are 5.976–13.69
+  from the centre. It also covers the D4 typing rhythm and the blinking
+  cursor in sync with it, ending at 10.68 s. Geometry is compared to
+  `logo-outlined.svg`. The raw-source CSS contract includes
+  `prefers-reduced-motion` as the last rule block and a `steps(1, start)`
+  regression guard for the glyph and dot reveals. It also records the
+  `LandingPage` integration without the GIF and the browser checks for the
+  joints and playback.
 
 ## Reviews
 
@@ -171,6 +201,16 @@ material.
   new number `+49 (0) 162 4337334` replaces the old one in all four places,
   and every mail reference uses `info@michaelschreiber.net`. Unit tests
   (353/353), lint and build pass.
+* [Review for Animated SVG Logo Instead of GIF](MS-17-review.md) - Round 4:
+  positive. This round covers the user review round 3 request: the P4 and
+  D5 circles reach the bottom-right junction J together at 1.487 s, merge,
+  and run on as one ring to D5. The P4 head hides under D5 at 2.00 s
+  without a visible pop. Every keyframe stop matches an independent
+  tip-timing recomputation. In a real-time Chrome screencast from page load,
+  no frame shows a line inside a ring hole, and the end state and reduced
+  motion are clean. Unit tests (631/631), lint and build pass. Non-blocking:
+  the manual Safari and Firefox check of the animated mask is still the gate,
+  and `docs/design/MS-17/` must be committed. Rounds 1–3: positive.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the
