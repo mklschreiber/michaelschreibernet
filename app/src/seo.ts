@@ -24,11 +24,11 @@ export const pageMetadata = {
     description:
       'Nehmen Sie Kontakt mit Michael Schreiber, Senior Software Engineer, auf.',
   },
-  impressum: {
+  imprint: {
     title: 'Impressum | michaelschreiber.net',
     description: 'Impressum von michaelschreiber.net.',
   },
-  dataProtection: {
+  privacy: {
     title: 'Datenschutz | michaelschreiber.net',
     description: 'Datenschutzerklärung von michaelschreiber.net.',
   },

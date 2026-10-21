@@ -34,17 +34,20 @@ const router = createRouter({
       meta: { seo: pageMetadata.contact },
     },
     {
-      path: '/impressum',
-      name: 'impressum',
+      path: '/imprint',
+      name: 'imprint',
       component: ImpressumPage,
-      meta: { seo: pageMetadata.impressum },
+      meta: { seo: pageMetadata.imprint },
     },
     {
-      path: '/datenschutz',
-      name: 'datenschutz',
+      path: '/privacy',
+      name: 'privacy',
       component: DataProtectionPage,
-      meta: { seo: pageMetadata.dataProtection },
+      meta: { seo: pageMetadata.privacy },
     },
+    // Legacy German paths (MS-16): keep old bookmarks working.
+    { path: '/impressum', redirect: '/imprint' },
+    { path: '/datenschutz', redirect: '/privacy' },
   ],
 })
 
