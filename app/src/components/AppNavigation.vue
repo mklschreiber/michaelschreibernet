@@ -2,8 +2,13 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { BRAND_SEGMENTS, BRAND_TITLE, useBrandTitle } from '@/composables/useBrandTitle'
 
 const { t } = useI18n()
+const { first, strong, tld, phase, onPointerEnter, onPointerLeave } = useBrandTitle()
+const fullFirst = BRAND_TITLE.slice(...BRAND_SEGMENTS.first)
+const fullStrong = BRAND_TITLE.slice(...BRAND_SEGMENTS.strong)
+const fullTld = BRAND_TITLE.slice(...BRAND_SEGMENTS.tld)
 
 // State for the hamburger menu
 const isMenuOpen = ref(false)
@@ -21,11 +26,36 @@ const closeMenu = () => {
 <template>
   <header class="nav-header">
     <div class="nav-container">
-      <RouterLink to="/" class="brand" @click="closeMenu">
+      <RouterLink
+        to="/"
+        class="brand"
+        @click="closeMenu"
+        @pointerenter="onPointerEnter"
+        @pointerleave="onPointerLeave"
+      >
         <span class="brand__mark" aria-hidden="true">
           <img class="brand__mark-image" src="/logo_simple_white.svg" alt="" />
         </span>
-        <span class="brand__name">michaelschreiber<span class="brand__tld">.net</span></span>
+        <span class="brand__name">
+          <span class="brand__sr">{{ BRAND_TITLE }}</span>
+          <span class="brand__title" aria-hidden="true" :data-phase="phase">
+            <span class="brand__ghost"
+              ><span class="brand__first">{{ fullFirst }}</span
+              ><span class="brand__strong">{{ fullStrong }}</span
+              ><span class="brand__tld">{{ fullTld }}</span
+              ><span class="brand__cursor"></span
+            ></span>
+            <span class="brand__typed"
+              ><span class="brand__first">{{ first }}</span
+              ><span class="brand__strong">{{ strong }}</span
+              ><span class="brand__tld">{{ tld }}</span
+              ><span
+                class="brand__cursor"
+                :class="{ 'brand__cursor--blinking': phase === 'idle' }"
+              ></span
+            ></span>
+          </span>
+        </span>
       </RouterLink>
 
       <button
@@ -97,14 +127,76 @@ const closeMenu = () => {
 }
 
 .brand__name {
-  font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-lg);
   color: var(--color-text-primary);
   white-space: nowrap;
 }
 
+.brand__first,
 .brand__tld {
-  color: var(--color-primary);
+  font-weight: var(--font-weight-normal);
+}
+
+.brand__strong {
+  font-weight: var(--font-weight-bold);
+}
+
+.brand__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.brand__title {
+  display: inline-grid;
+}
+
+.brand__ghost,
+.brand__typed {
+  grid-area: 1 / 1;
+}
+
+.brand__ghost {
+  visibility: hidden;
+}
+
+.brand__typed {
+  justify-self: start;
+}
+
+.brand__cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: max(2px, 0.1em);
+  margin-left: 0.06em;
+  background-color: currentColor;
+  vertical-align: baseline;
+}
+
+.brand__cursor--blinking {
+  animation: brand-cursor-blink 1s steps(1, end) infinite;
+}
+
+@keyframes brand-cursor-blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand__cursor--blinking {
+    animation: none;
+  }
 }
 
 /* Hamburger Icon Design */

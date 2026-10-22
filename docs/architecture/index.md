@@ -126,7 +126,8 @@ material.
   rings. After the circuit, a blinking block cursor follows the 20 glyphs,
   typed in a hand-set rhythm with word pauses (5.0–9.18 s), and is gone at
   10.68 s. `prefers-reduced-motion` sets `animation: none` on an end-state
-  base style. The GIF is deleted.
+  base style. The GIF is deleted. *(wordmark and cursor moved to the header
+  by MS-18)*
 - [Tests for Animated SVG Logo Instead of GIF](MS-17-tests.md) — records the
   `AnimatedLogo` coverage: de/en `aria-label`, outlined wordmark without
   `<text>`, `currentColor` paint, and trace timing per the concept tables.
@@ -144,6 +145,28 @@ material.
   regression guard for the glyph and dot reveals. It also records the
   `LandingPage` integration without the GIF and the browser checks for the
   joints and playback.
+- [Animated Header Title](MS-18-animated-header-title.md) — moves the
+  "michaelschreiber.net" typing animation from `AnimatedLogo.vue` (now only
+  the circuit, viewBox `0 32 512 376`) into the `AppNavigation.vue` brand link
+  as real text with a CSS underscore cursor that blinks when idle. A generic
+  `useTypewriter` composable (one timer, reversible typing/deleting, cleanup
+  on scope dispose) is wrapped by `useBrandTitle` (MS-17 typing rhythm, intro
+  once per page load, delete on mouse/pen hover of the brand link, retype
+  from the current character on leave, touch and focus ignored, static title
+  under `prefers-reduced-motion`). A visually hidden span keeps the accessible
+  name, and a hidden ghost copy prevents layout shift.
+- [Tests for Animated Header Title](MS-18-tests.md) — records the
+  fake-timer coverage of `useTypewriter` (typing/deleting steps, the idle lead
+  phase, reversals, one timer, scope cleanup) and `useBrandTitle` (D4 rhythm,
+  blinking lead then typing from 800 ms, intro once per page load, the
+  `michael`/`schreiber`/`.net` segment split, touch filter, reduced motion),
+  the `AppNavigation` brand contract (stable `.brand__sr` accessible name,
+  ghost, three segments without whitespace nodes, `schreiber` bold and no
+  `.net` colour at source level, one underscore cursor blinking only when
+  idle, hover delete and retype from the current character, unchanged
+  navigation and hamburger), and the `AnimatedLogo` suite updated to the
+  circuit-only `0 32 512 376` viewBox. The round 1 cursor-lead finding is
+  resolved.
 
 ## Reviews
 
@@ -211,6 +234,18 @@ material.
   motion are clean. Unit tests (631/631), lint and build pass. Non-blocking:
   the manual Safari and Firefox check of the animated mask is still the gate,
   and `docs/design/MS-17/` must be committed. Rounds 1–3: positive.
+* [Review for Animated Header Title](MS-18-review.md) - Round 1: positive.
+  The header typewriter (`useTypewriter` + `useBrandTitle`) matches D2a–D8:
+  CSS underscore cursor that blinks only when idle (also during the 800 ms
+  lead), delete on mouse/pen hover from the current character, retype from
+  the current character on leave, intro once per page load, touch, focus and
+  reduced motion handled, stable `.brand__sr` accessible name, ghost with
+  the same bold/normal segments, `.net` uncoloured. `AnimatedLogo` is
+  circuit-only with viewBox `0 32 512 376`. Unit tests (824/824), lint and
+  build pass. Non-blocking: a stale comment in `useBrandTitle.spec.ts`
+  (lines 130–132) still describes the pre-fix solid-cursor lead; the manual
+  browser checks and Open Question 1 (hover target) remain for the user
+  review.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

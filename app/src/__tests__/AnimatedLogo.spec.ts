@@ -1,19 +1,21 @@
 /**
- * Testing concept — MS-17 Animated SVG Logo Instead of GIF (AnimatedLogo)
+ * Testing concept — AnimatedLogo (MS-17, updated by MS-18)
  *
- * Jira: https://mklschreiber.atlassian.net/browse/MS-17
- * Architecture: docs/architecture/MS-17-animated-svg-logo.md (incl. sections
- * "User Review Round 1" — travelling circles, blinking block cursor — and
- * "User Review Round 2" — hole mask, snapped ring centres, typing rhythm).
- * Design input: docs/design/MS-17/README.md, logo-outlined.svg,
- * ring-geometry.py. Test concept: docs/architecture/MS-17-tests.md.
+ * Jira: https://mklschreiber.atlassian.net/browse/MS-17 and
+ * https://mklschreiber.atlassian.net/browse/MS-18
+ * Architecture: docs/architecture/MS-17-animated-svg-logo.md (circuit, rings,
+ * hole mask, merge) and docs/architecture/MS-18-animated-header-title.md (D1:
+ * the wordmark and the cursor moved to the header, viewBox cropped).
+ * Design input: docs/design/MS-17/README.md, logo-outlined.svg.
+ * Test concepts: docs/architecture/MS-17-tests.md, docs/architecture/MS-18-tests.md.
  *
  * - Component level (Vue Test Utils + real de/en locales): one root `svg`
- *   with the 512 viewBox, `role="img"` and the localized `landing.logoAlt`
- *   label (AC 5). The wordmark is 20 glyph paths spelling
- *   `michaelschreiber.net` with the design weights and no `<text>`/`<image>`
- *   (AC 1). Strokes, the wordmark fill and the cursor use `currentColor`;
- *   only the mask uses literal black/white (D6).
+ *   with the cropped `0 32 512 376` viewBox (CSS `aspect-ratio: 512 / 376`),
+ *   `role="img"` and the localized `landing.logoAlt` label.
+ * - MS-18 D1: no wordmark group, no glyph paths, no cursor, no `<rect>`
+ *   outside the mask, no glyph/cursor CSS or `logo-cursor-*` keyframes; every
+ *   ring (centre ± outer radius 14.312) and every trace vertex lies inside the
+ *   cropped viewBox.
  * - Rings (D2, D3, D3a): 7 root-level dots and 3 heads, 10 rings outside the
  *   mask, with the round 2 centres and the timing of their trace.
  * - Hole mask (D3b): `mask#animated-logo-holes` with a white full-size rect
@@ -22,19 +24,17 @@
  * - Joint geometry (D3b): each moving dot centre lies on the axis of its
  *   trace's last segment, D3 on the P4 and P7 axes; each trace end / start is
  *   within [5.976, 13.69] of its ring centre (nothing in the hole, no notch).
- * - Geometry against the design (`logo-outlined.svg` via DOMParser): traces,
- *   glyph outlines, wordmark transforms identical; ring radius and stroke
- *   width are the scaled design values; heads on their trace end points.
+ * - Geometry against the design (`logo-outlined.svg` via DOMParser): trace
+ *   polylines and transforms identical; ring radius and stroke width are the
+ *   scaled design values; heads on their trace end points.
  * - Motion paths and CSS (raw SFC via `?raw`, jsdom applies no scoped CSS):
  *   `logo-move-*` stops on the trace vertices, length-proportional, ending at
- *   `translate(0px, 0px)`; holes share their ring's animation; typing
- *   rhythm per D4 and the cursor keyframes in sync with it (D4a); the
- *   `prefers-reduced-motion` block sets `animation: none` for all animated
- *   classes and is the last rule block (D5). Regression guard: glyph, dot and
- *   dot-hole reveals use `steps(1, start)` (with `steps(1, end)` Chrome left
- *   m/i/c invisible). The cursor intentionally uses `steps(1, end)` with fill
- *   `none` on a base `opacity: 0`.
- * - Rendering (holes really empty, joints, playback) stays a browser check.
+ *   `translate(0px, 0px)`; holes share their ring's animation; the
+ *   `prefers-reduced-motion` block sets `animation: none` for traces, dots,
+ *   heads and holes and is the last rule block (D5). Regression guard: dot and
+ *   dot-hole reveals use `steps(1, start)`.
+ * - Rendering (holes really empty, joints, playback, no clipping after the
+ *   crop) stays a browser check.
  */
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
@@ -55,6 +55,10 @@ type Point = [number, number]
 const RING_RADIUS = 10.144
 const HOLE_INNER_EDGE = 5.976
 const NOTCH_LIMIT = 13.69
+/** MS-18 D1: ring radius + half the ring stroke width (10.144 + 8.336 / 2). */
+const RING_OUTER_RADIUS = 14.312
+/** MS-18 D1: cropped viewBox [minX, minY, width, height]. */
+const VIEWBOX = [0, 32, 512, 376] as const
 
 const TRACES = [
   { name: 'P1', d: 'M793.161,888.192L663.676,1017.676L555,909', delay: '1.55s', duration: '1.75s' },
@@ -122,23 +126,6 @@ const ROOT_BRANCHES = [
   { traceName: 'P4', trace: 3 },
   { traceName: 'P7', trace: 6 },
 ]
-
-/** D4 typing rhythm. */
-const GLYPH_DELAYS = [
-  '5.00s', '5.17s', '5.38s', '5.57s', '5.80s', '5.98s', '6.18s',
-  '6.63s', '6.82s', '6.99s', '7.21s', '7.39s', '7.55s', '7.79s', '7.98s', '8.18s',
-  '8.58s', '8.80s', '8.98s', '9.18s',
-]
-
-const CURSOR_OFFSETS = [
-  42.86, 54.66, 84.6, 113.19, 142.86, 172.03, 181.98, 212.34, 240.99, 270.29, 291.98, 318.61,
-  330.67, 362.99, 391.69, 411.92, 420.57, 451.52, 481.27, 499.23,
-]
-
-const CURSOR_APPEARS_SECONDS = 3.8
-const CURSOR_MOVE_START_SECONDS = 5
-const CURSOR_BLINK_TIMES = [3.8, 4.3, 4.8, 9.68, 10.18, 10.68]
-const ANIMATION_END_SECONDS = 10.68
 
 function mountLogo(locale: 'de' | 'en' = 'de') {
   const i18n = createI18n<[MessageSchema], 'de' | 'en'>({
@@ -251,22 +238,6 @@ function translateStops(name: string): { percent: number; x: number; y: number }
   )
 }
 
-function translateXStops(name: string): { percent: number; x: number }[] {
-  const block = extractBlock(styleSource, `@keyframes ${name} {`)
-  return Array.from(block.matchAll(/([\d.]+)%\s*\{\s*transform:\s*translateX\(([-\d.]+)px\);/g), (match) => ({
-    percent: Number(match[1]),
-    x: Number(match[2]),
-  }))
-}
-
-function opacityStops(name: string): { percent: number; opacity: number }[] {
-  const block = extractBlock(styleSource, `@keyframes ${name} {`)
-  return Array.from(block.matchAll(/([\d.]+)%\s*\{\s*opacity:\s*([\d.]+);/g), (match) => ({
-    percent: Number(match[1]),
-    opacity: Number(match[2]),
-  }))
-}
-
 // --- Design file and rendered geometry ---------------------------------------
 
 const designDocument = new DOMParser().parseFromString(
@@ -275,7 +246,6 @@ const designDocument = new DOMParser().parseFromString(
 )
 const designCircles = Array.from(designDocument.querySelectorAll('circle'))
 const designTraces = Array.from(designDocument.querySelectorAll('path:not([data-char])'))
-const designGlyphs = Array.from(designDocument.querySelectorAll('path[data-char]'))
 const designCircleScale = parseMatrix(designCircles[0]!.parentElement?.getAttribute('transform'))[0]!
 
 const renderedTraceVertices = Array.from(
@@ -284,11 +254,24 @@ const renderedTraceVertices = Array.from(
 )
 
 describe('AnimatedLogo — root and accessibility', () => {
-  it('renders a single svg root with the 512 viewBox', () => {
+  it('renders an svg root', () => {
     const wrapper = mountLogo()
 
     expect(wrapper.element.tagName.toLowerCase()).toBe('svg')
-    expect(wrapper.attributes('viewBox')).toBe('0 0 512 512')
+  })
+
+  it('crops the viewBox to the circuit: 0 32 512 376 (MS-18 D1)', () => {
+    const wrapper = mountLogo()
+
+    expect(wrapper.attributes('viewBox')).toBe(VIEWBOX.join(' '))
+  })
+
+  it('sets the matching aspect-ratio 512 / 376 in the component CSS (MS-18 D1)', () => {
+    expect(extractBlock(styleSource, '.animated-logo {')).toMatch(/aspect-ratio:\s*512 \/ 376;/)
+  })
+
+  it('no longer uses the square aspect-ratio 1', () => {
+    expect(styleSource).not.toMatch(/aspect-ratio:\s*1;/)
   })
 
   it('exposes the logo as an image to assistive technology', () => {
@@ -325,7 +308,7 @@ describe('AnimatedLogo — root and accessibility', () => {
   })
 })
 
-describe('AnimatedLogo — outlined wordmark (AC 1)', () => {
+describe('AnimatedLogo — circuit only, wordmark and cursor moved to the header (MS-18 D1)', () => {
   it('contains no text element', () => {
     const wrapper = mountLogo()
 
@@ -338,34 +321,43 @@ describe('AnimatedLogo — outlined wordmark (AC 1)', () => {
     expect(wrapper.findAll('image')).toHaveLength(0)
   })
 
-  it('renders 20 glyph paths inside the wordmark group', () => {
+  it('renders no wordmark group', () => {
     const wrapper = mountLogo()
 
-    expect(wrapper.findAll('g.animated-logo__wordmark path.animated-logo__glyph')).toHaveLength(20)
+    expect(wrapper.findAll('g.animated-logo__wordmark')).toHaveLength(0)
   })
 
-  it('spells michaelschreiber.net with the glyph data-char values in order', () => {
+  it('renders no glyph paths', () => {
     const wrapper = mountLogo()
-    const chars = wrapper.findAll('.animated-logo__glyph').map((glyph) => glyph.attributes('data-char'))
 
-    expect(chars.join('')).toBe('michaelschreiber.net')
+    expect(wrapper.findAll('.animated-logo__glyph, [data-char]')).toHaveLength(0)
   })
 
-  it('uses light for michael and .net and medium for schreiber', () => {
+  it('renders no cursor', () => {
     const wrapper = mountLogo()
-    const weights = wrapper.findAll('.animated-logo__glyph').map((glyph) => glyph.attributes('data-weight'))
 
-    expect(weights).toEqual([
-      ...Array<string>(7).fill('light'),
-      ...Array<string>(9).fill('medium'),
-      ...Array<string>(4).fill('light'),
-    ])
+    expect(wrapper.findAll('.animated-logo__cursor')).toHaveLength(0)
   })
 
-  it('fills the wordmark with currentColor', () => {
+  it('renders no rect outside the mask', () => {
     const wrapper = mountLogo()
+    const rects = Array.from(wrapper.element.querySelectorAll('rect'), (rect: Element) => rect).filter(
+      (rect) => rect.closest('mask') === null,
+    )
 
-    expect(wrapper.get('g.animated-logo__wordmark').attributes('fill')).toBe('currentColor')
+    expect(rects).toHaveLength(0)
+  })
+
+  it('has no glyph or cursor rules left in the style', () => {
+    expect(styleSource).not.toMatch(/animated-logo__glyph|animated-logo__cursor|animated-logo__wordmark/)
+  })
+
+  it('has no logo-cursor-* keyframes left in the style', () => {
+    expect(styleSource).not.toMatch(/logo-cursor-/)
+  })
+
+  it('no longer uses the index-based --logo-glyph property', () => {
+    expect(animatedLogoSource).not.toMatch(/--logo-glyph|--logo-typing-start/)
   })
 })
 
@@ -461,7 +453,7 @@ describe('AnimatedLogo — rings: dots and heads (D2, D3, D3a)', () => {
     expect(rings).toEqual(Array<string>(10).fill('10.144|none|currentColor|8.336'))
   })
 
-  it('orders the root children: mask defs, masked traces, dots, heads, wordmark', () => {
+  it('orders the root children: mask defs, masked traces, dots, heads (no wordmark)', () => {
     const wrapper = mountLogo()
     const order = Array.from(
       wrapper.element.children,
@@ -473,7 +465,6 @@ describe('AnimatedLogo — rings: dots and heads (D2, D3, D3a)', () => {
       'animated-logo__traces',
       ...Array<string>(7).fill('animated-logo__dot'),
       ...Array<string>(3).fill('animated-logo__head'),
-      'animated-logo__wordmark',
     ])
   })
 
@@ -514,24 +505,31 @@ describe('AnimatedLogo — rings: dots and heads (D2, D3, D3a)', () => {
   it('starts only the root dot at 0s and nothing earlier', () => {
     const wrapper = mountLogo()
     const startingAtOrBeforeZero = wrapper
-      .findAll('.animated-logo__trace, .animated-logo__dot, .animated-logo__head, .animated-logo__glyph')
+      .findAll('.animated-logo__trace, .animated-logo__dot, .animated-logo__head')
       .filter((element) => seconds(customProperty(element.element, '--logo-delay')) <= 0)
       .map((element) => element.element)
 
     expect(startingAtOrBeforeZero).toEqual([wrapper.get('.animated-logo__dot--d3').element])
   })
 
-  it('completes the circuit before the cursor appears (3.8 s)', () => {
+  it.each(RINGS)('keeps ring $modifier with its outer radius 14.312 inside the cropped viewBox (MS-18 D1)', ({ selector }) => {
     const wrapper = mountLogo()
-    const ends = wrapper
-      .findAll('.animated-logo__trace, .animated-logo__dot, .animated-logo__head')
-      .map(
-        (element) =>
-          seconds(customProperty(element.element, '--logo-delay')) +
-          (seconds(customProperty(element.element, '--logo-duration')) || 0),
-      )
+    const [cx, cy] = centre(wrapper.get(selector).element)
 
-    expect(Math.max(...ends)).toBeLessThanOrEqual(CURSOR_APPEARS_SECONDS)
+    expect([
+      cx - RING_OUTER_RADIUS >= VIEWBOX[0],
+      cx + RING_OUTER_RADIUS <= VIEWBOX[0] + VIEWBOX[2],
+      cy - RING_OUTER_RADIUS >= VIEWBOX[1],
+      cy + RING_OUTER_RADIUS <= VIEWBOX[1] + VIEWBOX[3],
+    ]).toEqual([true, true, true, true])
+  })
+
+  it.each(TRACES)('keeps every vertex of trace $name inside the cropped viewBox (MS-18 D1)', ({ index }) => {
+    const outside = renderedTraceVertices[index]!.filter(
+      ([x, y]) => x < VIEWBOX[0] || x > VIEWBOX[0] + VIEWBOX[2] || y < VIEWBOX[1] || y > VIEWBOX[1] + VIEWBOX[3],
+    )
+
+    expect(outside).toEqual([])
   })
 })
 
@@ -667,81 +665,6 @@ describe('AnimatedLogo — joint geometry (D3b)', () => {
   })
 })
 
-describe('AnimatedLogo — wordmark, typing rhythm and cursor markup (D4, D4a)', () => {
-  it('reveals the glyphs at the D4 times', () => {
-    const wrapper = mountLogo()
-    const delays = wrapper
-      .findAll('.animated-logo__glyph')
-      .map((glyph) => customProperty(glyph.element, '--logo-delay'))
-
-    expect(delays).toEqual(GLYPH_DELAYS)
-  })
-
-  it('reveals the glyphs in strictly increasing order', () => {
-    const wrapper = mountLogo()
-    const times = wrapper
-      .findAll('.animated-logo__glyph')
-      .map((glyph) => seconds(customProperty(glyph.element, '--logo-delay')))
-    const gaps = times.slice(1).map((time, index) => time - times[index]!)
-
-    expect(Math.min(...gaps)).toBeGreaterThan(0)
-  })
-
-  it('pauses longer before schreiber and .net than between any two letters of a word', () => {
-    const times = GLYPH_DELAYS.map(seconds)
-    const gaps = times.slice(1).map((time, index) => time - times[index]!)
-    const wordPauses = [gaps[6]!, gaps[15]!]
-    const letterGaps = gaps.filter((_, index) => index !== 6 && index !== 15)
-
-    expect(Math.min(...wordPauses)).toBeGreaterThan(Math.max(...letterGaps))
-  })
-
-  it('no longer uses the index-based --logo-glyph property', () => {
-    expect(animatedLogoSource).not.toMatch(/--logo-glyph|--logo-typing-start/)
-  })
-
-  it('renders exactly one cursor rect inside the wordmark', () => {
-    const wrapper = mountLogo()
-
-    expect(wrapper.findAll('g.animated-logo__wordmark rect.animated-logo__cursor')).toHaveLength(1)
-  })
-
-  it('renders no rect outside the mask except the cursor', () => {
-    const wrapper = mountLogo()
-    const rects = Array.from(wrapper.element.querySelectorAll('rect'), (rect: Element) => rect).filter(
-      (rect) => rect.closest('mask') === null,
-    )
-
-    expect(rects).toEqual([wrapper.get('.animated-logo__cursor').element])
-  })
-
-  it('shares the glyph coordinate system with the cursor', () => {
-    const wrapper = mountLogo()
-
-    expect(wrapper.get('.animated-logo__cursor').element.parentElement).toBe(
-      wrapper.get('.animated-logo__glyph').element.parentElement,
-    )
-  })
-
-  it('sizes the cursor as a block from the baseline to the ascender', () => {
-    const wrapper = mountLogo()
-    const cursor = wrapper.get('.animated-logo__cursor')
-
-    expect(['x', 'y', 'width', 'height'].map((name) => cursor.attributes(name))).toEqual([
-      '566.19',
-      '1218.66',
-      '22',
-      '41.26',
-    ])
-  })
-
-  it('fills the cursor with currentColor', () => {
-    const wrapper = mountLogo()
-
-    expect(wrapper.get('.animated-logo__cursor').attributes('fill')).toBe('currentColor')
-  })
-})
-
 describe('AnimatedLogo — geometry matches the design end state (AC 3)', () => {
   it('keeps the trace group transforms from logo-outlined.svg', () => {
     const wrapper = mountLogo()
@@ -766,31 +689,6 @@ describe('AnimatedLogo — geometry matches the design end state (AC 3)', () => 
 
   it.each(TRAIL_HEADS)('puts head $modifier on the end point of trace $traceName', ({ cx, cy, trace }) => {
     expect(distance(last(renderedTraceVertices[trace]!), [Number(cx), Number(cy)])).toBeLessThan(0.01)
-  })
-
-  it('keeps the wordmark fitting transform of the design', () => {
-    const wrapper = mountLogo()
-
-    expect(wrapper.get('g.animated-logo__wordmark').attributes('transform')).toBe(
-      designGlyphs[0]!.parentElement!.parentElement!.getAttribute('transform'),
-    )
-  })
-
-  it('keeps the inner wordmark transform of the design', () => {
-    const wrapper = mountLogo()
-    const glyph = wrapper.get('.animated-logo__glyph').element
-
-    expect(glyph.parentElement?.getAttribute('transform')).toBe(
-      designGlyphs[0]!.parentElement!.getAttribute('transform'),
-    )
-  })
-
-  it('keeps every glyph outline of logo-outlined.svg', () => {
-    const wrapper = mountLogo()
-
-    expect(wrapper.findAll('.animated-logo__glyph').map((glyph) => glyph.attributes('d'))).toEqual(
-      designGlyphs.map((glyph) => glyph.getAttribute('d')),
-    )
   })
 })
 
@@ -1006,77 +904,6 @@ describe('AnimatedLogo — holes animate with their rings (D3b, source level)', 
   })
 })
 
-describe('AnimatedLogo — cursor animation (D4a, source level)', () => {
-  const cursorAnimation = animationDeclaration('.animated-logo__cursor')
-  const moveStops = translateXStops('logo-cursor-move')
-  const blinkStops = opacityStops('logo-cursor-blink')
-
-  it('hides the cursor in its base style (end state: no cursor)', () => {
-    expect(ruleBody('.animated-logo__cursor')).toMatch(/opacity:\s*0;/)
-  })
-
-  it('blinks the cursor for 6.88s from 3.8s with steps(1, end), fill none', () => {
-    expect(cursorAnimation).toContain('logo-cursor-blink 6.88s steps(1, end) 3.8s none')
-  })
-
-  it('moves the cursor for 5.68s from 5s with steps(1, end), fill none', () => {
-    expect(cursorAnimation).toContain('logo-cursor-move 5.68s steps(1, end) 5s none')
-  })
-
-  it('ends blink and move together at 10.68 s', () => {
-    const blinkDuration = seconds(cursorAnimation.match(/logo-cursor-blink ([\d.]+s)/)?.[1] ?? 'NaN')
-    const moveDuration = seconds(cursorAnimation.match(/logo-cursor-move ([\d.]+s)/)?.[1] ?? 'NaN')
-
-    expect([CURSOR_APPEARS_SECONDS + blinkDuration, CURSOR_MOVE_START_SECONDS + moveDuration]).toEqual([
-      expect.closeTo(ANIMATION_END_SECONDS, 5),
-      expect.closeTo(ANIMATION_END_SECONDS, 5),
-    ])
-  })
-
-  it('alternates the cursor on and off, starting on and ending off', () => {
-    expect(blinkStops.map((stop) => stop.opacity)).toEqual([1, 0, 1, 0, 1, 0])
-  })
-
-  it('switches the blink at 3.8, 4.3, 4.8, 9.68, 10.18 and 10.68 s', () => {
-    const deviations = blinkStops.map((stop, index) =>
-      Math.abs(CURSOR_APPEARS_SECONDS + (stop.percent / 100) * 6.88 - CURSOR_BLINK_TIMES[index]!),
-    )
-
-    expect(Math.max(...deviations)).toBeLessThan(0.001)
-  })
-
-  it('keeps the cursor on from its second on-phase until after the last glyph', () => {
-    expect([CURSOR_BLINK_TIMES[2]!, CURSOR_BLINK_TIMES[3]!]).toEqual([
-      expect.closeTo(seconds(GLYPH_DELAYS[0]!) - 0.2, 5),
-      expect.closeTo(seconds(last(GLYPH_DELAYS)) + 0.5, 5),
-    ])
-  })
-
-  it('steps the cursor through the 20 glyph offsets from the concept', () => {
-    expect(moveStops.map((stop) => stop.x)).toEqual([...CURSOR_OFFSETS, 499.23])
-  })
-
-  it('jumps the cursor right of glyph j exactly when glyph j appears', () => {
-    const deviations = moveStops
-      .slice(0, 20)
-      .map((stop, index) =>
-        Math.abs(CURSOR_MOVE_START_SECONDS + (stop.percent / 100) * 5.68 - seconds(GLYPH_DELAYS[index]!)),
-      )
-
-    expect(Math.max(...deviations)).toBeLessThan(0.001)
-  })
-
-  it('ends logo-cursor-move at translateX(499.23px)', () => {
-    expect(last(moveStops)).toEqual({ percent: 100, x: 499.23 })
-  })
-
-  it('only ever moves the cursor to the right', () => {
-    const offsets = moveStops.map((stop) => stop.x)
-
-    expect(offsets).toEqual([...offsets].sort((a, b) => a - b))
-  })
-})
-
 describe('AnimatedLogo — CSS animation contract (source level)', () => {
   it('draws traces with a stroke-dashoffset keyframe starting outside the path (AC 2)', () => {
     expect(styleSource).toMatch(/@keyframes logo-draw\s*\{\s*from\s*\{\s*stroke-dashoffset:\s*1\.01;\s*\}\s*\}/)
@@ -1092,18 +919,10 @@ describe('AnimatedLogo — CSS animation contract (source level)', () => {
     expect(ruleBody('.animated-logo__trace')).toMatch(/stroke-dasharray:\s*1 2;[\s\S]*stroke-dashoffset:\s*0;/)
   })
 
-  it('reveals glyphs with logo-show steps(1, start) at their own delay (AC 2)', () => {
-    expect(animationDeclaration('.animated-logo__glyph')).toBe('logo-show 1ms steps(1, start) var(--logo-delay) both')
-  })
-
   it('defines logo-show from opacity 0 to opacity 1', () => {
     expect(styleSource).toMatch(
       /@keyframes logo-show\s*\{\s*from\s*\{\s*opacity:\s*0;\s*\}\s*to\s*\{\s*opacity:\s*1;\s*\}\s*\}/,
     )
-  })
-
-  it('does not use a jump-end timing for the glyph reveal (Chrome left the first glyphs hidden)', () => {
-    expect(animationDeclaration('.animated-logo__glyph')).not.toMatch(/steps\(1(?:,\s*(?:end|jump-end))?\)|step-end/)
   })
 
   it.each(MOVING_DOTS)('does not use a jump-end timing for the reveal of dot and hole $modifier', ({ modifier }) => {
@@ -1112,10 +931,9 @@ describe('AnimatedLogo — CSS animation contract (source level)', () => {
     ).not.toMatch(/steps\(1(?:,\s*(?:end|jump-end))?\)|step-end/)
   })
 
-  it('hides traces, glyphs and dots only in keyframes, never in their base rules', () => {
+  it('hides traces and dots only in keyframes, never in their base rules', () => {
     const baseRules = [
       '.animated-logo__trace',
-      '.animated-logo__glyph',
       '.animated-logo__dot',
       ...DOTS.map((dot) => `.animated-logo__dot--${dot.modifier}`),
     ]
@@ -1129,10 +947,14 @@ describe('AnimatedLogo — CSS animation contract (source level)', () => {
     expect(reducedMotionBlock).not.toBe('')
   })
 
-  it('disables the animation of traces, dots, heads, holes, glyphs and cursor under reduced motion (AC 4)', () => {
+  it('disables the animation of traces, dots, heads and holes under reduced motion (AC 4)', () => {
     expect(reducedMotionBlock).toMatch(
-      /\.animated-logo__trace,\s*\.animated-logo__dot,\s*\.animated-logo__head,\s*\.animated-logo__hole,\s*\.animated-logo__glyph,\s*\.animated-logo__cursor\s*\{\s*animation:\s*none;\s*\}/,
+      /\.animated-logo__trace,\s*\.animated-logo__dot,\s*\.animated-logo__head,\s*\.animated-logo__hole\s*\{\s*animation:\s*none;\s*\}/,
     )
+  })
+
+  it('no longer lists glyph or cursor selectors in the reduced-motion block (MS-18 D1)', () => {
+    expect(reducedMotionBlock).not.toMatch(/glyph|cursor/)
   })
 
   it('places the reduced-motion block after every other animation declaration (D5)', () => {
