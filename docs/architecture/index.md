@@ -145,6 +145,17 @@ material.
   `LandingPage` integration without the GIF and the browser checks for the
   joints and playback.
 
+- [Consistent Routing — English Route Paths](MS-16-consistent-routing.md) —
+  moves `/impressum` and `/datenschutz` to `/imprint` and `/privacy`. Route
+  names and `pageMetadata` keys follow the paths; the old paths stay as
+  Vue Router redirects so bookmarks keep working. Component file names, the
+  German footer labels and page content are unchanged.
+- [Tests for Consistent Routing — English Route Paths](MS-16-tests.md) —
+  records the router coverage: only English page paths, name, SEO metadata
+  and component of `/imprint` and `/privacy`, and the `/impressum` and
+  `/datenschutz` redirects with the new title and canonical URL. It also
+  covers the footer link targets in `App.spec.ts`.
+
 ## Reviews
 
 <!-- New entries will be added here by the Reviewer Agent -->
@@ -211,6 +222,13 @@ material.
   motion are clean. Unit tests (631/631), lint and build pass. Non-blocking:
   the manual Safari and Firefox check of the animated mask is still the gate,
   and `docs/design/MS-17/` must be committed. Rounds 1–3: positive.
+* [Review for Consistent Routing](MS-16-review.md) - Round 1: positive.
+  `/imprint` and `/privacy` replace `/impressum` and `/datenschutz`. Route
+  names and `pageMetadata` keys follow the new paths. The old paths are
+  unnamed redirects, and the canonical URL uses the new path. The footer
+  links are updated and the German labels and component files are
+  unchanged. No old route name or key is left in `app/`. Unit tests
+  (647/647), lint and build pass.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

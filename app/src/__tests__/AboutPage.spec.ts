@@ -46,8 +46,8 @@ function createWrapper(locale: 'de' | 'en' = 'de') {
       { path: '/about', component: { template: '<div />' } },
       { path: '/projects', component: { template: '<div />' } },
       { path: '/contact', component: { template: '<div />' } },
-      { path: '/impressum', component: { template: '<div />' } },
-      { path: '/datenschutz', component: { template: '<div />' } },
+      { path: '/imprint', component: { template: '<div />' } },
+      { path: '/privacy', component: { template: '<div />' } },
     ],
   })
   return mount(AboutPage, { global: { plugins: [i18n, router] } })
