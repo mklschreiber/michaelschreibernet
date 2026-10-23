@@ -1,37 +1,28 @@
 <template>
   <footer class="app-footer">
     <div class="footer-container">
-      <div class="legal-links">
+      <nav class="legal-links" aria-label="Rechtliches">
         <RouterLink class="legal-link" to="/imprint">Impressum</RouterLink>
         <RouterLink class="legal-link" to="/privacy">Datenschutz</RouterLink>
-      </div>
-      <p class="copyright">Copyright 2026 - michaelschreiber.net</p>
+      </nav>
+      <p class="copyright">Copyright 2026 - michael<strong>schreiber</strong>.net</p>
     </div>
   </footer>
 </template>
 
 <style scoped>
 .app-footer {
-  position: relative;
-  background: linear-gradient(135deg, #312e81 0%, #4f46e5 55%, #0e7490 100%);
-  color: var(--color-text-light);
-}
-
-.app-footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--gradient-brand);
+  min-height: 76px;
+  background: var(--gradient-footer);
+  color: var(--color-on-footer);
 }
 
 .footer-container {
-  max-width: var(--container-max-width);
+  max-width: calc(var(--container-max-width) + 2 * var(--page-padding-inline));
   margin: 0 auto;
-  padding: var(--spacing-lg) var(--spacing-xl);
+  padding: var(--spacing-lg) var(--page-padding-inline);
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-md);
@@ -39,36 +30,37 @@
 
 .legal-links {
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xl);
 }
 
 .legal-link {
-  color: rgba(255, 255, 255, 0.85);
+  font: var(--font-label-lg);
+  color: var(--color-on-footer);
   text-decoration: none;
-  font-weight: var(--font-weight-semibold);
-  transition: color var(--transition-fast);
 }
 
-.legal-link:hover,
-.legal-link:focus-visible {
-  color: var(--color-text-light);
+.legal-link:hover {
   text-decoration: underline;
 }
 
 .copyright {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: var(--font-size-sm);
+  font: var(--font-label-sm);
+}
+
+.copyright strong {
+  font-weight: var(--font-weight-bold);
 }
 
 @media (max-width: 768px) {
   .footer-container {
     flex-direction: column;
     align-items: flex-start;
+    padding: var(--spacing-lg);
   }
 
   .legal-links {
     flex-direction: column;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
   }
 }
 </style>

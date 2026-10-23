@@ -31,8 +31,13 @@ layer is documented by this baseline.
 
 Within `app/src`, the repository documents:
 
-- `assets/styles` for CSS variables and global styles;
-- `components` for Vue components;
+- `assets/styles` for CSS variables (`variables.css`, the MS-20 design tokens), the
+  self-hosted font declaration (`fonts.css`) and global styles and shared design classes
+  (`base.css`: `.section`, `.section__inner`, `.section__title`, `.section__subtitle`,
+  `.card`, focus ring, reduced motion);
+- `assets/fonts` for the self-hosted **Inter** variable font (Latin subset, SIL OFL, licence
+  in `app/public/fonts/Inter-OFL.txt`, shipped with the deployed site); no Google Fonts request and no font npm package;
+- `components` for Vue components (`components/sections` for the onepage sections);
 - `views` for page components;
 - `i18n` for internationalization;
 - `data` for JSON data files;

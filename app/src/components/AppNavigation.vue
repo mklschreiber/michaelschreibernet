@@ -1,35 +1,70 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { BRAND_SEGMENTS, BRAND_TITLE, useBrandTitle } from '@/composables/useBrandTitle'
+import { useSectionNavigation } from '@/composables/useSectionNavigation'
+import type { SectionId } from '@/composables/useSectionNavigation'
+import IconMenu from '@/components/icons/IconMenu.vue'
+import IconClose from '@/components/icons/IconClose.vue'
+
+withDefaults(defineProps<{ activeSection?: SectionId | null }>(), {
+  activeSection: null,
+})
 
 const { t } = useI18n()
+const route = useRoute()
+const { sectionHref, goToSection } = useSectionNavigation()
 const { first, strong, tld, phase, onPointerEnter, onPointerLeave } = useBrandTitle()
 const fullFirst = BRAND_TITLE.slice(...BRAND_SEGMENTS.first)
 const fullStrong = BRAND_TITLE.slice(...BRAND_SEGMENTS.strong)
 const fullTld = BRAND_TITLE.slice(...BRAND_SEGMENTS.tld)
 
-// State for the hamburger menu
-const isMenuOpen = ref(false)
+const navItems: { id: SectionId; labelKey: string }[] = [
+  { id: 'home', labelKey: 'nav.home' },
+  { id: 'projects', labelKey: 'nav.projects' },
+  { id: 'about', labelKey: 'nav.about' },
+  { id: 'contact', labelKey: 'nav.contact' },
+]
 
-const toggleMenu = () => {
+const isMenuOpen = ref(false)
+const menuButton = ref<HTMLButtonElement | null>(null)
+
+function toggleMenu(): void {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-// Optional: Close the menu when a link is clicked
-const closeMenu = () => {
+function closeMenu(): void {
   isMenuOpen.value = false
 }
+
+function onSectionClick(id: SectionId, event: MouseEvent): void {
+  closeMenu()
+  void goToSection(id, event)
+}
+
+function onKeydown(event: KeyboardEvent): void {
+  if (event.key !== 'Escape' || !isMenuOpen.value) return
+  closeMenu()
+  menuButton.value?.focus()
+}
+
+watch(
+  () => route.fullPath,
+  () => closeMenu(),
+)
+
+onMounted(() => document.addEventListener('keydown', onKeydown))
+onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
   <header class="nav-header">
     <div class="nav-container">
-      <RouterLink
-        to="/"
+      <a
         class="brand"
-        @click="closeMenu"
+        :href="sectionHref('home')"
+        @click="onSectionClick('home', $event)"
         @pointerenter="onPointerEnter"
         @pointerleave="onPointerLeave"
       >
@@ -56,25 +91,37 @@ const closeMenu = () => {
             ></span>
           </span>
         </span>
-      </RouterLink>
+      </a>
 
       <button
-        class="hamburger"
-        :class="{ 'is-open': isMenuOpen }"
-        @click="toggleMenu"
-        aria-label="Menü öffnen"
+        ref="menuButton"
+        type="button"
+        class="menu-button"
+        :aria-label="t('nav.menu')"
         :aria-expanded="isMenuOpen"
+        aria-controls="main-navigation"
+        @click="toggleMenu"
       >
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
+        <span class="menu-button__icon">
+          <IconClose v-if="isMenuOpen" />
+          <IconMenu v-else />
+        </span>
       </button>
 
-      <nav :class="['navigation', { 'is-open': isMenuOpen }]">
-        <RouterLink to="/" @click="closeMenu">{{ t('nav.home') }}</RouterLink>
-        <RouterLink to="/about" @click="closeMenu">{{ t('nav.about') }}</RouterLink>
-        <RouterLink to="/projects" @click="closeMenu">{{ t('nav.projects') }}</RouterLink>
-        <RouterLink to="/contact" @click="closeMenu">{{ t('nav.contact') }}</RouterLink>
+      <nav
+        id="main-navigation"
+        :class="['navigation', { 'is-open': isMenuOpen }]"
+        :aria-label="t('nav.mainLabel')"
+      >
+        <a
+          v-for="item in navItems"
+          :key="item.id"
+          :href="sectionHref(item.id)"
+          :class="['nav-link', { 'is-active': activeSection === item.id }]"
+          :aria-current="activeSection === item.id ? 'true' : undefined"
+          @click="onSectionClick(item.id, $event)"
+          >{{ t(item.labelKey) }}</a
+        >
       </nav>
     </div>
   </header>
@@ -85,16 +132,18 @@ const closeMenu = () => {
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  padding: var(--spacing-md) var(--spacing-xl);
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border-light);
+  height: var(--nav-height);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid var(--color-outline-variant);
 }
 
 .nav-container {
-  max-width: var(--container-max-width);
+  max-width: calc(var(--container-max-width) + 2 * var(--page-padding-inline));
+  height: 100%;
   margin: 0 auto;
+  padding: 0 var(--page-padding-inline);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -104,7 +153,8 @@ const closeMenu = () => {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-3);
+  color: var(--color-on-surface);
   text-decoration: none;
   flex-shrink: 0;
 }
@@ -113,11 +163,12 @@ const closeMenu = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 6px;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  padding: 8px;
   border-radius: var(--radius-md);
-  background: var(--gradient-brand);
+  background: var(--gradient-brand-mark);
 }
 
 .brand__mark-image {
@@ -127,8 +178,9 @@ const closeMenu = () => {
 }
 
 .brand__name {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-primary);
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
@@ -199,118 +251,99 @@ const closeMenu = () => {
   }
 }
 
-/* Hamburger Icon Design */
-.hamburger {
+.menu-button {
   display: none;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 5px;
-  width: 32px;
-  height: 32px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0px;
-}
-
-.hamburger .bar {
-  display: block;
-  width: 24px;
-  height: 2px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
   border-radius: var(--radius-full);
-  background-color: var(--color-text-primary);
-  transition: transform var(--transition-base), opacity var(--transition-base);
+  background: transparent;
+  color: var(--color-on-surface);
+  cursor: pointer;
 }
 
-.hamburger.is-open .bar:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-.hamburger.is-open .bar:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.is-open .bar:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+.menu-button__icon {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
 }
 
 .navigation {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-sm);
 }
 
-.navigation a {
-  position: relative;
-  text-decoration: none;
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-medium);
-  padding-block: var(--spacing-xs);
-  transition: color var(--transition-fast);
-}
-
-.navigation a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 100%;
-  bottom: 0;
-  height: 2px;
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
   border-radius: var(--radius-full);
-  background: var(--gradient-brand);
-  transition: right var(--transition-base);
+  font: var(--font-label-md);
+  color: var(--color-on-surface-variant);
+  text-decoration: none;
 }
 
-.navigation a:hover {
-  color: var(--color-text-primary);
+.nav-link:hover {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
 }
 
-.navigation a:hover::after {
-  right: 0;
-}
-
-.navigation a.router-link-exact-active {
+.nav-link.is-active {
+  background: var(--color-primary-container);
   color: var(--color-primary);
 }
 
-.navigation a.router-link-exact-active::after {
-  right: 0;
-}
-
 @media (max-width: 768px) {
-  .hamburger {
-    display: flex;
+  .nav-container {
+    padding: 0 16px 0 var(--page-padding-inline);
+    gap: var(--spacing-3);
+  }
+
+  .brand__mark {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+  }
+
+  .brand__name {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .menu-button {
+    display: inline-flex;
   }
 
   .navigation {
     display: none;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-sm);
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    margin-top: var(--spacing-sm);
-    background: var(--color-bg-primary);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 0 16px;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-outline-variant);
+    border-bottom: 1px solid var(--color-outline-variant);
   }
 
   .navigation.is-open {
     display: flex;
   }
 
-  .navigation a {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-sm);
-  }
-
-  .navigation a:hover {
-    background: var(--color-bg-secondary);
-  }
-
-  .navigation a::after {
-    display: none;
+  .nav-link {
+    display: flex;
+    width: 100%;
+    height: 56px;
+    padding: 0 24px;
+    border-radius: 0;
   }
 }
 </style>

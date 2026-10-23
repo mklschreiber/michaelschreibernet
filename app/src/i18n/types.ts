@@ -4,13 +4,14 @@ export interface MessageSchema {
     about: string
     projects: string
     contact: string
+    mainLabel: string
+    menu: string
   }
   landing: {
     title: string
     subtitle: string
     logoAlt: string
-    viewProjects: string
-    getInTouch: string
+    scrollToProjects: string
   }
   projects: {
     title: string
@@ -34,20 +35,11 @@ export interface MessageSchema {
     screenshotMyStandbyLockScreenCloseUpAlt: string
     screenshotMyStandbyLandingMacbookAlt: string
     screenshotMyStandbyLandingPhoneAlt: string
-    previousScreenshot: string
-    nextScreenshot: string
-    screenshotPosition: string
+    galleryLabel: string
   }
   contact: {
     title: string
     subtitle: string
-    contactInfo: string
-    email: string
-    emailValue: string
-    phone: string
-    phoneValue: string
-    location: string
-    locationValue: string
     form: {
       name: string
       namePlaceholder: string

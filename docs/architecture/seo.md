@@ -13,14 +13,23 @@ Person structured data. The Vue router applies a unique title, description,
 Open Graph title/description, and canonical URL after every route navigation.
 
 The application uses hash-based routing for GitHub Pages compatibility.
-Consequently, route canonical URLs retain the hash route rather than claiming
-that every page is the home page. The sitemap lists only the server-resolvable
-home page; route-specific metadata is still available to crawlers that render
-the application.
+Since MS-20 the site is a single page: Welcome, Projects, About me and Contact
+are sections of the onepage at `/`. The section routes (`#/projects`,
+`#/about`, `#/contact`) all use the home metadata and the canonical URL
+`https://michaelschreiber.net/` (one page, one canonical); `og:url` is updated
+with the canonical URL on every navigation. Only imprint and privacy keep their
+own metadata and a canonical URL with the hash route. The sitemap lists only
+the server-resolvable home page, which now holds all content.
+
+The static `index.html` metadata mirrors the home metadata (description kept
+in sync with `pageMetadata.home.description`) and adds `og:title`, `og:url`,
+`og:locale`, `og:image` and `twitter:card`. The JSON-LD is an `@graph` with a
+`WebSite` (`#website`) and the `Person` (`#person`, with `image`, `worksFor`
+and `sameAs` profile links).
 
 ## Files
 
-- `app/index.html`: static SEO metadata and Person JSON-LD
+- `app/index.html`: static SEO metadata and WebSite/Person JSON-LD graph
 - `app/src/seo.ts`: route metadata registry and document-head updater
 - `app/src/router/index.ts`: route metadata and navigation integration
 - `app/public/robots.txt`: crawl policy and sitemap discovery

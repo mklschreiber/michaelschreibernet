@@ -19,21 +19,27 @@ const { t } = useI18n()
     :class="[`timeline-entry--${side}`, { 'timeline-entry--visible': isVisible }]"
     :data-entry-id="entry.id"
   >
-    <div class="timeline-entry__dot"></div>
-    <div class="timeline-entry__connector"></div>
-    <div class="timeline-entry__card">
-      <span class="timeline-entry__date">{{ t(entry.date) }}</span>
-      <h3 class="timeline-entry__company">{{ t(entry.titleKey) }}</h3>
-      <p class="timeline-entry__role">{{ t(entry.descriptionKey) }}</p>
+    <div class="timeline-entry__axis" aria-hidden="true">
+      <span class="timeline-entry__dot"></span>
+    </div>
+    <div class="timeline-entry__cell">
+      <div class="timeline-entry__card">
+        <span class="timeline-entry__date">{{ t(entry.date) }}</span>
+        <h3 class="timeline-entry__company">{{ t(entry.titleKey) }}</h3>
+        <p class="timeline-entry__role">{{ t(entry.descriptionKey) }}</p>
+      </div>
     </div>
   </li>
 </template>
 
 <style scoped>
 .timeline-entry {
-  display: flex;
-  align-items: center;
-  width: 50%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
+}
+
+.timeline-entry__dot,
+.timeline-entry__card {
   opacity: 0;
   transform: translateY(30px);
   transition:
@@ -41,120 +47,117 @@ const { t } = useI18n()
     transform 0.6s ease-out var(--delay, 0s);
 }
 
-.timeline-entry--visible {
+.timeline-entry--visible .timeline-entry__dot,
+.timeline-entry--visible .timeline-entry__card {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Left: card left of the line → flex-direction row-reverse: Card | Connector | Dot */
-.timeline-entry--left {
-  align-self: flex-start;
-  flex-direction: row-reverse;
+@media (prefers-reduced-motion: reduce) {
+  .timeline-entry__dot,
+  .timeline-entry__card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
-/* Right: card right of the line → flex-direction row: Dot | Connector | Card */
-.timeline-entry--right {
-  align-self: flex-end;
-  flex-direction: row;
+.timeline-entry__axis {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.timeline-entry__axis::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: var(--color-primary-container);
+}
+
+.timeline-entry--left .timeline-entry__cell {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.timeline-entry--right .timeline-entry__cell {
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .timeline-entry__dot {
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  border-radius: 50%;
-  background: var(--gradient-brand);
-  border: 3px solid var(--color-bg-primary);
-  box-shadow: 0 0 0 4px var(--color-primary-light), 0 0 16px rgba(79, 70, 229, 0.35);
-  flex-shrink: 0;
-  z-index: 1;
   position: relative;
+  z-index: 1;
+  flex: none;
+  margin-top: 28px;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
 }
 
-/* Shift dot so its center aligns with the vertical timeline line */
-.timeline-entry--left .timeline-entry__dot {
-  margin-right: -8px; /* dot is rightmost in row-reverse: push right by half width */
+.timeline-entry:first-child .timeline-entry__dot {
+  margin-top: 60px;
 }
 
-.timeline-entry--right .timeline-entry__dot {
-  margin-left: -8px; /* dot is leftmost in row: push left by half width */
+.timeline-entry__cell {
+  padding-bottom: var(--spacing-xl);
 }
 
-.timeline-entry__connector {
-  border-top: 2px dashed var(--color-border);
-  flex-grow: 1;
-  min-width: 20px;
-  max-width: 60px;
+.timeline-entry:first-child .timeline-entry__cell {
+  padding-top: var(--spacing-xl);
 }
 
 .timeline-entry__card {
-  position: relative;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-md);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-glow);
-  flex: 1;
-}
-
-.timeline-entry__card > * {
-  position: relative;
-  z-index: 1;
-}
-
-.timeline-entry__card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
-    var(--gradient-brand-horizontal) border-box;
-  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  pointer-events: none;
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 
 .timeline-entry__date {
-  font-size: var(--font-size-sm);
-  color: var(--color-primary);
-  font-weight: var(--font-weight-semibold);
   display: block;
-  margin-bottom: var(--spacing-xs);
+  font: var(--font-label-sm);
+  color: var(--color-primary);
 }
 
 .timeline-entry__company {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+  font: var(--font-title-lg);
+  color: var(--color-on-surface);
 }
 
 .timeline-entry__role {
-  font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
-  margin: 0;
+  margin: 8px 0 0;
+  font: var(--font-body-sm);
+  color: var(--color-on-surface-variant);
 }
 
-/* Mobile: all cards left-aligned */
 @media (max-width: 768px) {
   .timeline-entry {
-    width: 100%;
-    align-self: stretch;
+    grid-template-columns: 24px minmax(0, 1fr);
+    column-gap: var(--spacing-md);
   }
 
-  .timeline-entry--left,
-  .timeline-entry--right {
-    flex-direction: row;
+  .timeline-entry__axis {
+    grid-column: 1;
   }
 
-  /* Reset desktop offsets; mobile line position is adjusted in AboutPage */
-  .timeline-entry--left .timeline-entry__dot,
-  .timeline-entry--right .timeline-entry__dot {
-    margin-right: 0;
-    margin-left: 0;
+  .timeline-entry--left .timeline-entry__cell,
+  .timeline-entry--right .timeline-entry__cell {
+    grid-column: 2;
+  }
+
+  .timeline-entry__cell {
+    padding-bottom: var(--spacing-lg);
   }
 }
 </style>
-

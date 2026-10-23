@@ -3,10 +3,8 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import VueEasyLightbox from 'vue-easy-lightbox'
 import type { Project } from '@/types/project'
-import { getTagColor } from '@/utils/tagColor'
 import IconImagePlaceholder from '@/components/icons/IconImagePlaceholder.vue'
-import IconChevronLeft from '@/components/icons/IconChevronLeft.vue'
-import IconChevronRight from '@/components/icons/IconChevronRight.vue'
+import IconOpenInNew from '@/components/icons/IconOpenInNew.vue'
 
 interface Props {
   project: Project
@@ -20,36 +18,22 @@ const { t } = useI18n()
 const IMAGE_WIDTHS = [320, 640, 960, 1280, 1600, 1920]
 const IMAGE_DEFAULT_WIDTH = 960
 const IMAGE_FULL_WIDTH = 1920
-const IMAGE_MIN_WIDTH = 220
-/** Horizontal space the row never has available: --container-max-width's page
- *  padding, the card's own padding, and the gaps between images. */
-const CONTAINER_MAX_WIDTH = 1200
-const FIXED_HORIZONTAL_SPACING = 64 /* .content padding */ + 64 /* .project-card padding */
-const IMAGE_GAP = 8
-/** Keep in sync with the `@media (max-width: 768px)` block in <style>. */
-const MOBILE_BREAKPOINT = 768
+/**
+ * Rendered slide width: mobile 86% of (100vw - 2×24 section - 2×24 card - 2×1 border);
+ * desktop 84% of the 5/12 column of (100vw - 2×32 - 2×36 - 2×1 - 48 gap), capped at the
+ * 1180px content width. Keep in sync with the styles below.
+ */
+const IMAGE_SIZES =
+  '(max-width: 768px) calc((100vw - 98px) * 0.86), (max-width: 1244px) calc((100vw - 186px) * 0.35), 371px'
+
+const TAG_COLORS = ['lilac', 'sand', 'rose'] as const
 
 function srcsetFor(base: string): string {
   return IMAGE_WIDTHS.map((width) => `${base}-${width}.jpg ${width}w`).join(', ')
 }
 
-/** Mirrors the project-images row: it grows to fill `count` columns until images hit
- *  their min-width, then the row scrolls horizontally instead of shrinking further. */
-function sizesFor(count: number): string {
-  const fixedWidth = FIXED_HORIZONTAL_SPACING + IMAGE_GAP * (count - 1)
-  const scrollBreakpoint = IMAGE_MIN_WIDTH * count + fixedWidth
-  const mobileSize = `(max-width: ${MOBILE_BREAKPOINT}px) calc(100vw - ${FIXED_HORIZONTAL_SPACING}px)`
-  if (scrollBreakpoint >= CONTAINER_MAX_WIDTH) {
-    // Too many images to ever fit: the row always scrolls and every image stays at its min-width.
-    return `${mobileSize}, ${IMAGE_MIN_WIDTH}px`
-  }
-  const maxImageWidth = Math.round((CONTAINER_MAX_WIDTH - fixedWidth) / count)
-  return (
-    `${mobileSize}, ` +
-    `(max-width: ${scrollBreakpoint}px) ${IMAGE_MIN_WIDTH}px, ` +
-    `(max-width: ${CONTAINER_MAX_WIDTH}px) calc((100vw - ${fixedWidth}px) / ${count}), ` +
-    `${maxImageWidth}px`
-  )
+function tagColor(index: number): (typeof TAG_COLORS)[number] {
+  return TAG_COLORS[index % TAG_COLORS.length]!
 }
 
 const lightboxVisible = ref(false)
@@ -69,68 +53,41 @@ function openLightbox(index: number) {
   lightboxVisible.value = true
 }
 
-const currentIndex = ref(0)
-const imageCount = computed(() => props.project.images?.length ?? 0)
-
-function showPrevious(): void {
-  if (imageCount.value < 2) return
-  currentIndex.value = (currentIndex.value - 1 + imageCount.value) % imageCount.value
-}
-
-function showNext(): void {
-  if (imageCount.value < 2) return
-  currentIndex.value = (currentIndex.value + 1) % imageCount.value
+function revealImage(event: FocusEvent) {
+  const image = event.target as HTMLElement
+  image.scrollIntoView({ block: 'nearest', inline: 'nearest' })
 }
 </script>
 
 <template>
   <article class="project-card">
-    <h2>{{ t(project.titleKey) }}</h2>
-    <div v-if="project.images?.length" class="project-gallery">
-      <button
-        v-if="imageCount > 1"
-        type="button"
-        class="gallery-nav gallery-nav--prev"
-        :aria-label="t('projects.previousScreenshot')"
-        @click="showPrevious"
-      >
-        <span class="gallery-nav__icon"><IconChevronLeft /></span>
-      </button>
-      <div class="project-images project-images--gallery">
-        <img
-          v-for="(image, index) in project.images"
-          :key="image.base"
-          :class="['project-image', { 'project-image--active': index === currentIndex }]"
-          :src="`${image.base}-${IMAGE_DEFAULT_WIDTH}.jpg`"
-          :srcset="srcsetFor(image.base)"
-          :sizes="sizesFor(project.images!.length)"
-          :alt="t(image.altKey)"
-          loading="lazy"
-          decoding="async"
-          role="button"
-          tabindex="0"
-          @click="openLightbox(index)"
-          @keydown.enter="openLightbox(index)"
-          @keydown.space.prevent="openLightbox(index)"
-        />
-      </div>
-      <button
-        v-if="imageCount > 1"
-        type="button"
-        class="gallery-nav gallery-nav--next"
-        :aria-label="t('projects.nextScreenshot')"
-        @click="showNext"
-      >
-        <span class="gallery-nav__icon"><IconChevronRight /></span>
-      </button>
-      <p v-if="imageCount > 1" class="gallery-status" aria-live="polite">
-        {{ t('projects.screenshotPosition', { current: currentIndex + 1, total: imageCount }) }}
-      </p>
+    <h3 class="project-card__title">{{ t(project.titleKey) }}</h3>
+    <div
+      v-if="project.images?.length"
+      class="project-carousel"
+      role="group"
+      :aria-label="t('projects.galleryLabel', { title: t(project.titleKey) })"
+    >
+      <img
+        v-for="(image, index) in project.images"
+        :key="image.base"
+        class="project-image"
+        :src="`${image.base}-${IMAGE_DEFAULT_WIDTH}.jpg`"
+        :srcset="srcsetFor(image.base)"
+        :sizes="IMAGE_SIZES"
+        :alt="t(image.altKey)"
+        loading="lazy"
+        decoding="async"
+        role="button"
+        tabindex="0"
+        @click="openLightbox(index)"
+        @focus="revealImage"
+        @keydown.enter="openLightbox(index)"
+        @keydown.space.prevent="openLightbox(index)"
+      />
     </div>
-    <div v-else class="project-images project-images--placeholder" aria-hidden="true">
-      <div class="project-image-placeholder" v-for="n in 3" :key="n">
-        <IconImagePlaceholder />
-      </div>
+    <div v-else class="project-image-placeholder" aria-hidden="true">
+      <span class="project-image-placeholder__icon"><IconImagePlaceholder /></span>
     </div>
     <VueEasyLightbox
       :visible="lightboxVisible"
@@ -141,42 +98,27 @@ function showNext(): void {
       rotate-disabled
       @hide="lightboxVisible = false"
     />
-    <p>{{ t(project.descriptionKey) }}</p>
+    <p class="project-card__description">{{ t(project.descriptionKey) }}</p>
     <div class="technologies">
       <span
-        v-for="tech in project.technologies"
+        v-for="(tech, index) in project.technologies"
         :key="tech"
-        class="tech-badge"
-        :style="{ backgroundColor: getTagColor(tech) }"
+        :class="['tech-badge', `tech-badge--${tagColor(index)}`]"
       >
         {{ tech }}
       </span>
     </div>
     <div v-if="project.links?.length" class="project-links">
       <a
-        v-for="link in project.links"
+        v-for="(link, index) in project.links"
         :key="link.url"
         :href="link.url"
         target="_blank"
         rel="noopener noreferrer"
-        class="project-link"
+        :class="['project-link', index === 0 ? 'project-link--filled' : 'project-link--outlined']"
       >
         {{ t(link.textKey) }}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
+        <span class="project-link__icon"><IconOpenInNew /></span>
       </a>
     </div>
   </article>
@@ -184,226 +126,178 @@ function showNext(): void {
 
 <style scoped>
 .project-card {
-  position: relative;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-light);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-glow);
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-rows: repeat(4, auto);
+  align-content: start;
+  align-items: start;
+  column-gap: var(--spacing-2xl);
+  row-gap: var(--spacing-lg);
   min-width: 0;
+  padding: var(--spacing-card);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.52);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: var(--shadow-glass);
+  color: var(--color-on-primary-container);
 }
 
-.project-card > * {
-  position: relative;
-  z-index: 1;
-}
-
-.project-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
-    var(--gradient-brand-horizontal) border-box;
-  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  pointer-events: none;
-}
-
-.project-card h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-md);
+.project-card__title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  font: var(--font-headline-md);
+  color: var(--color-on-surface);
   overflow-wrap: anywhere;
 }
 
-.project-images {
-  gap: var(--spacing-sm);
+.project-carousel,
+.project-image-placeholder {
+  grid-column: 1;
+  grid-row: 2 / span 3;
 }
 
-.project-images--placeholder {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin-bottom: var(--spacing-lg);
+.project-carousel {
+  display: flex;
+  gap: var(--spacing-3);
+  min-width: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
-.project-gallery {
-  position: relative;
-  margin-bottom: var(--spacing-lg);
-}
-
-.gallery-nav,
-.gallery-status {
+.project-carousel::-webkit-scrollbar {
   display: none;
 }
 
-.project-images--gallery {
-  display: flex;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
-  /* keep the scrollbar from visually overlapping the images */
-  padding-bottom: var(--spacing-xs);
+.project-image {
+  display: block;
+  flex: none;
+  width: 84%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  scroll-snap-align: start;
+  cursor: pointer;
 }
 
 .project-image-placeholder {
-  aspect-ratio: 4 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20%;
-  border-radius: var(--radius-sm);
-  background: var(--gradient-brand-soft);
-  color: var(--color-primary);
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-container);
+  color: var(--color-on-surface-variant);
 }
 
-.project-image {
-  /* fills the row like a grid column, but stops shrinking at 220px so the
-     row scrolls horizontally instead of squeezing the screenshots further */
-  flex: 1 1 220px;
-  min-width: 220px;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  display: block;
-  scroll-snap-align: start;
-  cursor: pointer;
-  transition: transform var(--transition-fast);
+.project-image-placeholder__icon {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
 }
 
-.project-image:hover,
-.project-image:focus-visible {
-  transform: scale(1.02);
-}
-
-/* Keep in sync with MOBILE_BREAKPOINT in <script>. */
-@media (max-width: 768px) {
-  .project-images--gallery {
-    overflow: hidden;
-    scroll-snap-type: none;
-    padding-bottom: 0;
-  }
-
-  .project-image {
-    flex: 1 1 100%;
-    min-width: 0;
-  }
-
-  .project-image:not(.project-image--active) {
-    display: none;
-  }
-
-  .gallery-nav {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border: 0;
-    border-radius: var(--radius-full);
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    opacity: 0.6;
-    cursor: pointer;
-    transition: opacity var(--transition-fast);
-  }
-
-  .gallery-nav:hover,
-  .gallery-nav:focus-visible {
-    opacity: 1;
-  }
-
-  .gallery-nav:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-  }
-
-  .gallery-nav--prev {
-    left: var(--spacing-xs);
-  }
-
-  .gallery-nav--next {
-    right: var(--spacing-xs);
-  }
-
-  .gallery-nav__icon {
-    display: inline-flex;
-    width: 24px;
-    height: 24px;
-  }
-
-  .gallery-status {
-    display: block;
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
-  }
-}
-
-.project-card p {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-lg);
-  line-height: 1.6;
+.project-card__description {
+  grid-column: 2;
+  grid-row: 2;
+  font: var(--font-body-sm);
+  color: var(--color-on-primary-container);
 }
 
 .technologies {
+  grid-column: 2;
+  grid-row: 3;
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
 }
 
 .tech-badge {
-  color: var(--color-text-primary);
-  padding: var(--spacing-xs) var(--spacing-md);
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(24, 24, 27, 0.06);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font: var(--font-label-xs);
+}
+
+.tech-badge--lilac {
+  background: var(--color-chip-lilac);
+  color: var(--color-on-chip-lilac);
+}
+
+.tech-badge--sand {
+  background: var(--color-chip-sand);
+  color: var(--color-on-chip-sand);
+}
+
+.tech-badge--rose {
+  background: var(--color-chip-rose);
+  color: var(--color-on-chip-rose);
 }
 
 .project-links {
+  grid-column: 2;
+  grid-row: 4;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm) var(--spacing-lg);
-  margin-top: var(--spacing-md);
+  align-items: center;
+  gap: var(--spacing-3);
 }
 
 .project-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--spacing-sm);
-  color: var(--color-primary);
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius-full);
+  font: var(--font-label-lg);
   text-decoration: none;
-  font-weight: var(--font-weight-semibold);
-  transition: color var(--transition-base);
 }
 
-.project-link:hover {
-  color: var(--color-primary-hover);
+.project-link--filled {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
-.project-link svg {
-  width: 16px;
-  height: 16px;
-  transition: transform var(--transition-base);
+.project-link--outlined {
+  border: 1.5px solid var(--color-on-primary-container);
+  color: var(--color-on-primary-container);
 }
 
-.project-link:hover svg {
-  transform: translate(2px, -2px);
+.project-link__icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+
+  .project-image {
+    width: 86%;
+  }
+
+  .project-links {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .project-link {
+    display: flex;
+    width: 100%;
+  }
 }
 </style>

@@ -11,6 +11,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import AppNavigation from '@/components/AppNavigation.vue'
 import { createI18n } from 'vue-i18n'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import ImpressumPage from '@/views/ImpressumPage.vue'
@@ -26,7 +27,11 @@ function createWrapper() {
   })
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: [{ path: '/', component: { template: '<div />' } }],
+    routes: ['home', 'projects', 'about', 'contact'].map((name) => ({
+      path: name === 'home' ? '/' : `/${name}`,
+      name,
+      component: { template: '<div />' },
+    })),
   })
   return mount(ImpressumPage, { global: { plugins: [i18n, router] } })
 }
@@ -48,5 +53,36 @@ describe('ImpressumPage', () => {
     expect(emailLink.exists()).toBe(true)
     expect(emailLink.attributes('href')).toBe('mailto:info@michaelschreiber.net')
     expect(emailLink.text()).toBe('info@michaelschreiber.net')
+  })
+})
+
+// MS-20 (docs/architecture/MS-20-tests.md, D5, D6): the legal page renders the
+// shared header with no active section and its own single main landmark.
+describe('ImpressumPage — shared onepage header (MS-20)', () => {
+  it('renders the shared AppNavigation', () => {
+    expect(createWrapper().findComponent(AppNavigation).exists()).toBe(true)
+  })
+
+  it('marks no navigation link as current', () => {
+    expect(createWrapper().findAll('nav a[aria-current]')).toHaveLength(0)
+  })
+
+  it('links the navigation back to the four onepage sections', () => {
+    expect(createWrapper().findAll('nav.navigation a').map((link) => link.attributes('href'))).toEqual([
+      '/',
+      '/projects',
+      '/about',
+      '/contact',
+    ])
+  })
+
+  it('renders exactly one main with the header outside it', () => {
+    const wrapper = createWrapper()
+
+    expect([wrapper.findAll('main').length, wrapper.findAll('main header').length]).toEqual([1, 0])
+  })
+
+  it('renders exactly one h1', () => {
+    expect(createWrapper().findAll('h1')).toHaveLength(1)
   })
 })
