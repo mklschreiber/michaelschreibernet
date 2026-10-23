@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>michaelschreiber.net One-Page Mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&display=block">
+<style>
+body{margin:0}
+.ms{--primary:#4338ca;--on-primary:#ffffff;--primary-container:#e3e0fb;--on-primary-container:#1d1470;--surface:#ffffff;--surface-low:#f6f5fc;--surface-container:#ecebf7;--on-surface:#1b1b1f;--on-surface-variant:#47464f;--outline:#79757f;--outline-variant:#cac4d0;--gs:#6a3de0;--ge:#3b8fcf;--fs:#352b94;--fm:#4a44d4;--fe:#3b73a6;--on-footer:#ffffff;--chip-lilac:#dccdf3;--on-chip-lilac:#2a1a52;--chip-sand:#f1e7c9;--on-chip-sand:#3a2e0a;--chip-rose:#f1cde6;--on-chip-rose:#4a1740;--shadow-card:0 10px 30px rgba(67,56,202,.12);--shadow-raised:0 14px 40px rgba(67,56,202,.2);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--on-surface);background:var(--surface);scroll-behavior:smooth}
+.ms.ms-dark{--primary:#c4c0ff;--on-primary:#1b1075;--primary-container:#3a31a8;--on-primary-container:#e3e0ff;--surface:#131318;--surface-low:#1b1b21;--surface-container:#1f1f26;--on-surface:#e5e1e9;--on-surface-variant:#c8c5d0;--outline:#928f9c;--outline-variant:#47464f;--gs:#b69cff;--ge:#7fc0f0;--fs:#1d1760;--fm:#2c2a9a;--fe:#24507a;--chip-lilac:#3d2f63;--on-chip-lilac:#e8dcff;--chip-sand:#4a3f1c;--on-chip-sand:#f4e9c4;--chip-rose:#5a2a4f;--on-chip-rose:#ffd8f0;--shadow-card:0 10px 30px rgba(0,0,0,.5);--shadow-raised:0 14px 40px rgba(0,0,0,.6)}
+.ms *{box-sizing:border-box}
+.ms a{color:var(--primary);text-decoration:none}
+.ms a:focus-visible,.ms button:focus-visible,.ms input:focus-visible,.ms textarea:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.ms .ico{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;-webkit-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-smoothing:antialiased;user-select:none}
+.ms .menulink{display:flex;align-items:center;height:56px;padding:0 24px;font-size:18px;font-weight:500;color:var(--on-surface-variant)}
+.ms .menulink.on{color:var(--primary);background:var(--primary-container)}
+.ms .grad-text{background:linear-gradient(90deg,var(--gs),var(--ge));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.ms .card{background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,var(--gs),var(--ge)) border-box;border:2px solid transparent;box-shadow:var(--shadow-card)}
+.ms .chip{display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:9999px;font-size:18px;font-weight:500}
+.ms .field{width:100%;height:56px;padding:0 16px;border:1px solid var(--outline);border-radius:8px;background:var(--surface);color:var(--on-surface);font:400 18px/28px Inter,system-ui,sans-serif}
+.ms textarea.field{height:176px;padding:14px 16px;resize:vertical}
+.ms .field::placeholder{color:var(--on-surface-variant)}
+.ms .btn{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;height:56px;padding:0 32px;border:0;border-radius:9999px;background:var(--primary);color:var(--on-primary);font:600 18px/24px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:var(--shadow-card)}
+.ms .car{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.ms .car::-webkit-scrollbar{display:none}
+.ms .car>*{flex:none;scroll-snap-align:start}
+.ms .cursor{display:inline-block;width:.55em;height:.09em;margin-left:2px;background:currentColor;vertical-align:baseline;animation:ms-blink 1.06s steps(1) infinite}
+@keyframes ms-blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.ms .cursor{animation:none}}
+.ms .sec{scroll-margin-top:72px}
+.ms .iconbtn{width:48px;height:48px;border:0;border-radius:9999px;background:transparent;color:var(--on-surface);display:flex;align-items:center;justify-content:center;cursor:pointer}
+</style>
+</helmet>
+
+<div class="{{rootClass}}" style="min-height: 100%">
+
+<!-- App-Bar -->
+<header style="position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--surface) 70%, transparent); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); border-bottom: 1px solid var(--outline-variant)">
+<div style="height: 72px; padding: 0 16px 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<a href="#home" aria-label="michaelschreiber.net – zum Anfang" style="display: flex; align-items: center; gap: 12px; color: var(--on-surface)">
+<img src="/_blob/45e8fb75d0f88705105c238ee989e7f6" alt="" style="width: 40px; height: 40px; display: block">
+<span style="font-size: 20px; line-height: 28px; font-weight: 400; letter-spacing: -0.01em">michael<span style="font-weight: 700">schreiber</span>.net<span class="cursor" aria-hidden="true"></span></span>
+</a>
+<button class="iconbtn" type="button" aria-label="Menü" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}"><span class="ico" aria-hidden="true" style="font-size: 28px">{{menuIcon}}</span></button>
+</div>
+<sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+<nav aria-label="Hauptnavigation" style="border-top: 1px solid var(--outline-variant); padding: 8px 0 16px">
+<a class="menulink on" href="#home" onClick="{{closeMenu}}">Home</a>
+<a class="menulink" href="#projekte" onClick="{{closeMenu}}">Projekte</a>
+<a class="menulink" href="#ueber-mich" onClick="{{closeMenu}}">Über mich</a>
+<a class="menulink" href="#kontakt" onClick="{{closeMenu}}">Kontakt</a>
+</nav>
+</sc-if>
+</header>
+
+<main>
+
+<!-- Home -->
+<section id="home" class="sec" style="position: relative; overflow: hidden; isolation: isolate; min-height: max(560px, calc(100svh - 72px)); background: linear-gradient(180deg, var(--surface-low), var(--surface)); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 24px; gap: 0">
+<img src="/_blob/c9c7987c247e45c5c31c7b360ebb1448" alt="MS-Monogramm im Schaltkreis-Stil" style="width: 240px; height: auto; display: block; margin-bottom: 40px; filter: {{logoFilter}}">
+<h1 class="grad-text" style="margin: 0; font-size: 44px; line-height: 52px; font-weight: 700; letter-spacing: -0.02em">Willkommen</h1>
+<p style="margin: 16px 0 0; font-size: 22px; line-height: 32px; color: var(--on-surface-variant)">Entdecke meine Projekte und nimm Kontakt auf.</p>
+<a href="#projekte" aria-label="Zu „Projekte“ scrollen" style="margin-top: 40px; width: 56px; height: 56px; border-radius: 9999px; border: 1px solid var(--outline); display: flex; align-items: center; justify-content: center; color: var(--primary)"><span class="ico" aria-hidden="true" style="font-size: 28px">keyboard_arrow_down</span></a>
+</section>
+
+<!-- Projekte -->
+<section id="projekte" class="sec" style="position: relative; overflow: hidden; isolation: isolate; background: linear-gradient(135deg, var(--fs), var(--fm) 55%, var(--fe)); color: var(--on-footer); padding: 48px 24px">
+<h2 class="grad-text" style="background-image: linear-gradient(90deg, #ffffff, #5cc8ff); margin: 0; font-size: 44px; line-height: 52px; font-weight: 700; letter-spacing: -0.02em; display: inline-block">Projekte</h2>
+<p style="margin: 8px 0 32px; font-size: 20px; line-height: 28px; color: var(--on-footer); opacity: .88">Eine Auswahl meiner aktuellen Arbeiten</p>
+
+<div style="display: flex; flex-direction: column; gap: 32px">
+
+<article style="color: #1d1470; background: rgba(255,255,255,.52); border: 1px solid rgba(255,255,255,.75); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); box-shadow: 0 8px 24px rgba(10,5,60,.25), inset 0 1px 0 rgba(255,255,255,.25); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 24px">
+<h3 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; color: var(--on-surface)">myStandby</h3>
+<div class="car" role="group" aria-label="Bildergalerie: myStandby auf einem Schreibtisch im Standby-Modus" style="min-width: 0; "><img src="/_blob/73e7b9139b6db1aae96f52328cf7ca53" alt="myStandby auf einem Schreibtisch im Standby-Modus" style="width: 86%; aspect-ratio: 16 / 10; border-radius: 12px; object-fit: cover; display: block"><div style="width: 86%; aspect-ratio: 16 / 10; border-radius: 12px; background: var(--surface-container); color: var(--on-surface-variant); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500">[Bild 2]</div><div style="width: 86%; aspect-ratio: 16 / 10; border-radius: 12px; background: var(--surface-container); color: var(--on-surface-variant); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500">[Bild 3]</div></div>
+<p style="margin: 0; font-size: 18px; line-height: 28px; color: #1d1470">Eine Android App zur Verwaltung von Bereitschaftsdiensten, entwickelt mit Kotlin</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-lilac); color: var(--on-chip-lilac)">Android</span>
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-sand); color: var(--on-chip-sand)">Kotlin</span>
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-rose); color: var(--on-chip-rose)">GitHub CI/CD</span>
+</div>
+<a href="#" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 9999px; font-size: 18px; line-height: 24px; font-weight: 600; text-decoration: none; box-sizing: border-box; width: 100%; background: var(--primary); color: var(--on-primary);">Im Play Store ansehen<span class="ico" aria-hidden="true">open_in_new</span></a>
+</article>
+
+<article style="color: #1d1470; background: rgba(255,255,255,.52); border: 1px solid rgba(255,255,255,.75); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); box-shadow: 0 8px 24px rgba(10,5,60,.25), inset 0 1px 0 rgba(255,255,255,.25); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 24px">
+<h3 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; color: var(--on-surface)">myStandby – LandingPage</h3>
+<div class="car" role="group" aria-label="Bildergalerie: Landing-Page von myStandby auf einem Laptop" style="min-width: 0; "><img src="/_blob/9cdc1e7630aa8fa13714b7f29ae81b1f" alt="Landing-Page von myStandby auf einem Laptop" style="width: 86%; aspect-ratio: 16 / 10; border-radius: 12px; object-fit: cover; display: block"><div style="width: 86%; aspect-ratio: 16 / 10; border-radius: 12px; background: var(--surface-container); color: var(--on-surface-variant); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500">[Bild 2]</div><div style="width: 86%; aspect-ratio: 16 / 10; border-radius: 12px; background: var(--surface-container); color: var(--on-surface-variant); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500">[Bild 3]</div></div>
+<p style="margin: 0; font-size: 18px; line-height: 28px; color: #1d1470">Eine Vue-Applikation als Landing-Page für meine App myStandby.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-lilac); color: var(--on-chip-lilac)">Vue.js</span>
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-sand); color: var(--on-chip-sand)">GitHub CI/CD</span>
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-rose); color: var(--on-chip-rose)">GitHub Pages</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<a href="#" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 9999px; font-size: 18px; line-height: 24px; font-weight: 600; text-decoration: none; box-sizing: border-box; width: 100%; background: var(--primary); color: var(--on-primary);">Website besuchen<span class="ico" aria-hidden="true">open_in_new</span></a>
+<a href="#" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 9999px; font-size: 18px; line-height: 24px; font-weight: 600; text-decoration: none; box-sizing: border-box; width: 100%; border: 1.5px solid #1d1470; color: #1d1470;">Auf GitHub ansehen<span class="ico" aria-hidden="true">open_in_new</span></a>
+</div>
+</article>
+
+<article style="color: #1d1470; background: rgba(255,255,255,.52); border: 1px solid rgba(255,255,255,.75); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); box-shadow: 0 8px 24px rgba(10,5,60,.25), inset 0 1px 0 rgba(255,255,255,.25); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 24px">
+<h3 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; color: var(--on-surface)">michaelschreiber.net</h3>
+<div style="width: 100%; aspect-ratio: 16 / 10; border-radius: 12px; background: var(--surface-container); display: flex; align-items: center; justify-content: center; color: var(--on-surface-variant); font-size: 16px; font-weight: 500">[Projektbild]</div>
+<p style="margin: 0; font-size: 18px; line-height: 28px; color: #1d1470">Eine Vue-Applikation zur Auflistung meiner persönlichen Projekte.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-lilac); color: var(--on-chip-lilac)">Vue.js</span>
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-sand); color: var(--on-chip-sand)">GitHub CI/CD</span>
+<span class="chip" style="height: 28px; padding: 0 12px; font-size: 14px; line-height: 20px; background: var(--chip-rose); color: var(--on-chip-rose)">GitHub Pages</span>
+</div>
+<a href="#" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 9999px; font-size: 18px; line-height: 24px; font-weight: 600; text-decoration: none; box-sizing: border-box; width: 100%; background: var(--primary); color: var(--on-primary);">Auf GitHub ansehen<span class="ico" aria-hidden="true">open_in_new</span></a>
+</article>
+
+</div>
+</section>
+
+<!-- Über mich -->
+<section id="ueber-mich" class="sec" style="position: relative; overflow: hidden; isolation: isolate; background: linear-gradient(180deg, var(--surface-low), var(--surface)); padding: 48px 24px">
+<h2 class="grad-text" style="margin: 0; font-size: 44px; line-height: 52px; font-weight: 700; letter-spacing: -0.02em; display: inline-block">Über mich</h2>
+<p style="margin: 8px 0 32px; font-size: 20px; line-height: 28px; color: var(--on-surface-variant)">Eine Übersicht über mich und meine Stationen</p>
+
+<div class="card" style="border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px">
+<img src="/_blob/f8a66df473678e3e472cf5ac8da3cf94" alt="Porträt von Michael Schreiber" style="width: 128px; height: 128px; border-radius: 9999px; object-fit: cover; border: 4px solid var(--surface); box-shadow: 0 0 0 3px var(--gs)">
+<h3 style="margin: 16px 0 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -0.01em">Michael Schreiber</h3>
+<p style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 500; color: var(--primary)">Senior Software Engineer</p>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px">
+<a class="chip" href="mailto:info@michaelschreiber.net" style="background: var(--surface-low); color: var(--on-surface); gap: 8px"><img src="/_blob/fdf49b69307c049475fc492828bf72bc" alt="" style="width: 20px; height: 20px; display: block; filter: {{logoFilter}}">E-Mail</a>
+<a class="chip" href="tel:+491624337334" style="background: var(--surface-low); color: var(--on-surface); gap: 8px"><img src="/_blob/9e125b338ac296a4530d222028ece053" alt="" style="width: 20px; height: 20px; display: block; filter: {{logoFilter}}">Telefon</a>
+<a class="chip" href="https://www.linkedin.com/in/mklschreiber" aria-label="LinkedIn-Profil" style="background: var(--surface-low); color: var(--on-surface); gap: 8px"><img src="/_blob/476d1cd23e031168d4993d5d2b957b87" alt="" style="width: 20px; height: 20px; display: block; filter: {{logoFilter}}">LinkedIn</a>
+<a class="chip" href="https://github.com/mklschreiber" aria-label="GitHub-Profil" style="background: var(--surface-low); color: var(--on-surface); gap: 8px"><img src="/_blob/75719e9a88b4ae5f5605914605ae6b50" alt="" style="width: 20px; height: 20px; display: block; filter: {{logoFilter}}">GitHub</a>
+<a class="chip" href="https://www.facebook.com/mklschreiber" aria-label="Facebook-Profil" style="background: var(--surface-low); color: var(--on-surface); gap: 8px"><img src="/_blob/37de41702e8de81ff9327e976f5da616" alt="" style="width: 20px; height: 20px; display: block; filter: {{logoFilter}}">Facebook</a>
+<a class="chip" href="https://www.instagram.com/mklschreiber" aria-label="Instagram-Profil" style="background: var(--surface-low); color: var(--on-surface); gap: 8px"><img src="/_blob/b157a3069176838c5d36ee7e8a29fcef" alt="" style="width: 20px; height: 20px; display: block; filter: {{logoFilter}}">Instagram</a>
+<a class="chip" href="https://x.com/mklschreiber" aria-label="X-Profil" style="background: var(--surface-low); color: var(--on-surface); gap: 8px"><span class="ico" aria-hidden="true">link</span>X</a>
+</div>
+</div>
+
+<!-- Timeline: dockt an das Profil an, letzte 3 Stationen -->
+<div style="display: grid; grid-template-columns: 24px minmax(0,1fr); column-gap: 16px">
+<div style="display: flex; flex-direction: column; align-items: center"><span style="width: 2px; height: 60px; background: var(--primary-container)"></span><span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 9999px; border: 3px solid var(--primary); flex: none"></span><span style="flex-grow: 1; width: 2px; background: var(--primary-container)"></span></div>
+<div style="padding-top: 32px; padding-bottom: 24px"><div style="background: var(--surface); border: 1px solid var(--outline-variant); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-card)">
+<p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--primary)">April 2022 – heute</p>
+<h3 style="margin: 4px 0 0; font-size: 22px; line-height: 28px; font-weight: 600">Mercedes-Benz Tech Innovation</h3>
+<p style="margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--on-surface-variant)">[Rolle und Aufgaben in einem Satz]</p>
+</div></div>
+<div style="display: flex; flex-direction: column; align-items: center"><span style="width: 2px; height: 28px; background: var(--primary-container)"></span><span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 9999px; border: 3px solid var(--primary); flex: none"></span><span style="flex-grow: 1; width: 2px; background: var(--primary-container)"></span></div>
+<div style="padding-bottom: 24px"><div style="background: var(--surface); border: 1px solid var(--outline-variant); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-card)">
+<p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--primary)">Mai 2018 – März 2022</p>
+<h3 style="margin: 4px 0 0; font-size: 22px; line-height: 28px; font-weight: 600">[Arbeitgeber]</h3>
+<p style="margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--on-surface-variant)">[Rolle und Aufgaben in einem Satz]</p>
+</div></div>
+<div style="display: flex; flex-direction: column; align-items: center"><span style="width: 2px; height: 28px; background: var(--primary-container)"></span><span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 9999px; border: 3px solid var(--primary); flex: none"></span><span style="flex-grow: 1; width: 2px; background: var(--primary-container)"></span></div>
+<div style="padding-bottom: 24px"><div style="background: var(--surface); border: 1px solid var(--outline-variant); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-card)">
+<p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--primary)">[Monat Jahr] – [Monat Jahr]</p>
+<h3 style="margin: 4px 0 0; font-size: 22px; line-height: 28px; font-weight: 600">[Arbeitgeber oder Station]</h3>
+<p style="margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--on-surface-variant)">[Rolle und Aufgaben in einem Satz]</p>
+</div></div>
+<div aria-hidden="true" style="display: flex; justify-content: center"><span style="width: 0; height: 96px; border-left: 2px dashed var(--primary-container); -webkit-mask-image: linear-gradient(to bottom, #000, transparent); mask-image: linear-gradient(to bottom, #000, transparent)"></span></div>
+<div></div>
+</div>
+</section>
+
+<!-- Kontakt -->
+<section id="kontakt" class="sec" style="position: relative; overflow: hidden; isolation: isolate; padding: 48px 24px 64px">
+<h2 class="grad-text" style="margin: 0; font-size: 44px; line-height: 52px; font-weight: 700; letter-spacing: -0.02em; display: inline-block">Kontakt</h2>
+<p style="margin: 8px 0 32px; font-size: 20px; line-height: 28px; color: var(--on-surface-variant)">Lass uns in Verbindung treten</p>
+
+<div style="display: flex; flex-direction: column; gap: 32px">
+
+<form class="card" style="border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 24px" onsubmit="return false">
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="m-name" style="font-size: 18px; line-height: 24px; font-weight: 500">Name</label><input id="m-name" class="field" type="text" placeholder="Dein Name"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="m-mail" style="font-size: 18px; line-height: 24px; font-weight: 500">E-Mail</label><input id="m-mail" class="field" type="email" placeholder="deine.email@example.com"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="m-msg" style="font-size: 18px; line-height: 24px; font-weight: 500">Nachricht</label><textarea id="m-msg" class="field" placeholder="Deine Nachricht"></textarea></div>
+<button class="btn" type="submit"><span class="ico" aria-hidden="true">send</span>Nachricht senden</button>
+</form>
+
+</div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer style="background: linear-gradient(90deg, var(--fs), var(--fm) 55%, var(--fe)); color: var(--on-footer)">
+<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<nav aria-label="Rechtliches" style="display: flex; flex-direction: column; gap: 8px">
+<a href="#" style="color: var(--on-footer); font-size: 18px; line-height: 24px; font-weight: 600">Impressum</a>
+<a href="#" style="color: var(--on-footer); font-size: 18px; line-height: 24px; font-weight: 600">Datenschutz</a>
+</nav>
+<span style="font-size: 16px; line-height: 24px; font-weight: 500">Copyright 2026 - michael<span style="font-weight: 700">schreiber</span>.net</span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false}}'>
+class Component extends DCLogic {
+  state = { menuOpen: false };
+  renderVals() {
+    const dark = this.props.dark === true;
+    const open = this.state.menuOpen;
+    return {
+      rootClass: dark ? 'ms ms-dark' : 'ms',
+      logoFilter: dark ? 'invert(1)' : 'none',
+      menuOpen: open,
+      menuIcon: open ? 'close' : 'menu',
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      closeMenu: () => this.setState({ menuOpen: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

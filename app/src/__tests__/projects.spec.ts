@@ -12,10 +12,9 @@
  *   three new bases (existence + real pixel width, AC-5). New cases check the
  *   committed unsuffixed originals (D4).
  * - i18n level: the three new alt keys have the exact de/en texts from D6.
- * - Page level (Vue Test Utils): the first card on `ProjectOverviewPage`
+ * - Page level (Vue Test Utils): the first card on `ProjectsSection`
  *   renders six images whose `src` follow the data order, the first image
- *   carries the localized Desk alt text, and the carousel status starts at
- *   "Screenshot 1 of 6".
+ *   carries the localized Desk alt text.
  */
 /**
  * Testing concept — MS-1 myStandby - LandingPage (projects data module)
@@ -35,7 +34,7 @@
  * - i18n level: every `titleKey`, `descriptionKey`, link `textKey` and image
  *   `altKey` used in `projects.json` resolves to a non-empty string in both
  *   `de` and `en`; the new texts match the concept (D3, D4).
- * - Page level (Vue Test Utils): `ProjectOverviewPage` renders the new card as
+ * - Page level (Vue Test Utils): `ProjectsSection` renders the new card as
  *   the second card with its localized title, description and both links.
  */
 import { describe, it, expect } from 'vitest'
@@ -43,7 +42,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import ProjectOverviewPage from '@/views/ProjectOverviewPage.vue'
+import ProjectsSection from '@/components/sections/ProjectsSection.vue'
 import projectsData from '@/data/projects.json'
 import de from '@/i18n/locales/de'
 import en from '@/i18n/locales/en'
@@ -211,7 +210,7 @@ describe('projects data — i18n keys', () => {
     expect([
       de.projects.projectTitleMyStandbyLandingPage,
       en.projects.projectTitleMyStandbyLandingPage,
-    ]).toEqual(['myStandby - LandingPage', 'myStandby - LandingPage'])
+    ]).toEqual(['myStandby – LandingPage', 'myStandby – LandingPage'])
   })
 
   it('has the English website link text', () => {
@@ -241,8 +240,8 @@ function mountPage(locale: 'de' | 'en') {
     locale,
     messages: { de, en },
   })
-  return mount(ProjectOverviewPage, {
-    global: { plugins: [i18n], stubs: { AppNavigation: true } },
+  return mount(ProjectsSection, {
+    global: { plugins: [i18n] },
   })
 }
 
@@ -250,13 +249,13 @@ function secondCard(locale: 'de' | 'en') {
   return mountPage(locale).findAll('.project-card')[1]
 }
 
-describe('ProjectOverviewPage — myStandby - LandingPage card', () => {
+describe('ProjectsSection — myStandby - LandingPage card', () => {
   it('renders three project cards', () => {
     expect(mountPage('en').findAll('.project-card')).toHaveLength(3)
   })
 
   it('shows the landing page title on the second card', () => {
-    expect(secondCard('en')?.find('h2').text()).toBe('myStandby - LandingPage')
+    expect(secondCard('en')?.find('h3').text()).toBe('myStandby – LandingPage')
   })
 
   it('shows the English description on the second card', () => {
@@ -382,7 +381,7 @@ function firstCard(locale: 'de' | 'en') {
   return mountPage(locale).findAll('.project-card')[0]
 }
 
-describe('ProjectOverviewPage — myStandby card with marketing images (MS-14)', () => {
+describe('ProjectsSection — myStandby card with marketing images (MS-14)', () => {
   it('renders the six images in data order on the first card', () => {
     const sources = firstCard('en')
       ?.findAll('img.project-image')
@@ -396,12 +395,6 @@ describe('ProjectOverviewPage — myStandby card with marketing images (MS-14)',
       '/mystandby_2_phone-960.jpg',
       '/mystandby_3_phone-960.jpg',
     ])
-  })
-
-  it('makes the Desk image the active carousel image on the first card', () => {
-    expect(firstCard('en')?.find('.project-image--active').attributes('src')).toBe(
-      '/mystandby_desk-960.jpg',
-    )
   })
 
   it('shows the English Desk alt text on the first image', () => {
@@ -422,9 +415,5 @@ describe('ProjectOverviewPage — myStandby card with marketing images (MS-14)',
         '/mystandby_desk-960.jpg 960w, /mystandby_desk-1280.jpg 1280w, ' +
         '/mystandby_desk-1600.jpg 1600w, /mystandby_desk-1920.jpg 1920w',
     )
-  })
-
-  it('starts the carousel status at screenshot 1 of 6', () => {
-    expect(firstCard('en')?.find('.gallery-status').text()).toBe('Screenshot 1 of 6')
   })
 })

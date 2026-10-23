@@ -59,3 +59,10 @@ export const timelineEntries: TimelineEntry[] = [
   },
 ]
 
+export const LATEST_TIMELINE_ENTRY_COUNT = 3
+
+/** The newest CV entries shown on the onepage. */
+export const latestTimelineEntries: TimelineEntry[] = timelineEntries.slice(
+  0,
+  LATEST_TIMELINE_ENTRY_COUNT,
+)

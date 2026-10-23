@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.app-footer :focus-visible {
+  outline-color: var(--color-on-footer);
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* ── Sections ─────────────────────────────────────────── */
+.section {
+  padding: var(--spacing-3xl) var(--page-padding-inline);
+  scroll-margin-top: var(--nav-height);
+}
+
+.section__inner {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+.section__title {
+  display: inline-block;
+  font: var(--font-display-lg);
+  letter-spacing: -0.02em;
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.section__subtitle {
+  font: var(--font-body-md);
+  color: var(--color-on-surface-variant);
+  margin: 8px 0 48px;
+}
+
+/* ── Card ─────────────────────────────────────────────── */
+.card {
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    var(--gradient-border) border-box;
+  border: 2px solid transparent;
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-xl);
+}
+
+@media (min-width: 769px) {
+  .card {
+    transition: box-shadow 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-raised);
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 48px 24px;
+  }
+
+  .section__title {
+    font: var(--font-display-sm);
+    letter-spacing: -0.02em;
+  }
+
+  .section__subtitle {
+    margin: 8px 0 32px;
+  }
+
+  .card {
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

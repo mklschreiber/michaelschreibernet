@@ -178,6 +178,28 @@ material.
   and component of `/imprint` and `/privacy`, and the `/impressum` and
   `/datenschutz` redirects with the new title and canonical URL. It also
   covers the footer link targets in `App.spec.ts`.
+- [Redesign Onepager](MS-20-redesign-onepager.md) — merges Welcome, Projects,
+  About me and Contact into one scrolling page per the MS-20 design. Hash
+  history stays; `/`, `/projects`, `/about`, `/contact` become section routes
+  of `LandingPage` that scroll via `scrollBehavior` and `scroll-margin-top`, so
+  old bookmarks keep working. A scroll spy sets the active nav item, and a
+  design-styled app bar has a mobile menu button. The design tokens replace
+  `variables.css` (self-hosted Inter, global `base.css`). Only the 3 newest CV
+  entries are shown, tags are coloured by position, and SEO uses one canonical
+  URL with a `WebSite` + `Person` JSON-LD graph. The MS-17 logo and MS-18 title
+  animations are reused unchanged. *(supersedes `colored-tags` and the arrows of
+  `mobile-project-screenshot-carousel`)*
+- [Tests for Redesign Onepager](MS-20-tests.md) — records the router tests: the
+  section routes, a direct `scrollBehavior` check for `'auto'` and `'instant'`,
+  and the root canonical URL. It also records the `useSectionNavigation` and
+  `useActiveSection` composable tests with jsdom stubs for `scrollIntoView` and
+  `IntersectionObserver`, the onepage structure and the reuse of the
+  `LandingPage` instance, and the app bar's active state and mobile menu
+  (Escape, route change, opaque panel). The four section components,
+  `ProjectCard`, the contact form, the 3 newest CV entries, the sync between
+  `index.html` and `seo.ts` with the JSON-LD graph, and the global scroll and
+  font styles are covered too. Manual browser checks cover real scrolling, the
+  scroll spy and the visual design.
 
 ## Reviews
 
@@ -264,6 +286,24 @@ material.
   (lines 130–132) still describes the pre-fix solid-cursor lead; the manual
   browser checks and Open Question 1 (hover target) remain for the user
   review.
+* [Review for Redesign Onepager](MS-20-review.md) - Round 5: positive.
+  User review R5: the URL follows scrolling (150 ms idle, silent `replace`,
+  one-shot `scrollBehavior` marker). Scrolling back up resets `#/contact` to `#/`, so a
+  reload stays at the top. The marker cannot leak into a real navigation. Unit tests
+  (1195/1195), lint and build pass. Round 3: positive.
+  User review R1–R4 match the concept: 1180px content width with matching
+  `ProjectCard` `sizes`, the coloured brand mark tile (`--gradient-brand-mark`),
+  a static timeline line with dot and card fly-in (staggered, reduced motion
+  respected), and header/footer rows whose max width includes the page
+  padding, so they align with the section content. Unit tests (1156/1156),
+  lint and build pass. Round 2: positive.
+  Every `scrollBehavior` result now has an explicit `behavior` (smooth only
+  between two section routes, `'instant'` on first load and to/from legal
+  pages), and the Inter licence ships once as `app/public/fonts/Inter-OFL.txt`
+  (equal to upstream). Unit tests (1129/1129), lint and build pass. Round 1:
+  findings — saved-position and legal-page scrolls ran smoothly over the page.
+  The rest (section routes, scroll spy, app bar and mobile menu, sections,
+  tokens, the 3 newest CV entries, SEO) matched the concept and design.
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconSend from '@/components/icons/IconSend.vue'
 
 const { t } = useI18n()
 
@@ -60,53 +61,58 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="contact-form">
-    <div v-if="submitted" class="success-message">
+  <form class="card contact-form" @submit.prevent="handleSubmit">
+    <div v-if="submitted" class="form-message form-message--success">
       {{ t('contact.form.successMessage') }}
     </div>
 
-    <div v-if="error" class="error-message">
+    <div v-if="error" class="form-message form-message--error">
       {{ error }}
     </div>
 
-    <div class="form-group">
-      <label for="name">{{ t('contact.form.name') }}</label>
-      <input
-        id="name"
-        v-model="formData.name"
-        type="text"
-        required
-        :disabled="isSubmitting"
-        :placeholder="t('contact.form.namePlaceholder')"
-      />
+    <div class="form-row">
+      <div class="form-group">
+        <label for="contact-name">{{ t('contact.form.name') }}</label>
+        <input
+          id="contact-name"
+          v-model="formData.name"
+          class="form-field"
+          type="text"
+          required
+          :disabled="isSubmitting"
+          :placeholder="t('contact.form.namePlaceholder')"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="contact-email">{{ t('contact.form.email') }}</label>
+        <input
+          id="contact-email"
+          v-model="formData.email"
+          class="form-field"
+          type="email"
+          required
+          :disabled="isSubmitting"
+          :placeholder="t('contact.form.emailPlaceholder')"
+        />
+      </div>
     </div>
 
     <div class="form-group">
-      <label for="email">{{ t('contact.form.email') }}</label>
-      <input
-        id="email"
-        v-model="formData.email"
-        type="email"
-        required
-        :disabled="isSubmitting"
-        :placeholder="t('contact.form.emailPlaceholder')"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="message">{{ t('contact.form.message') }}</label>
+      <label for="contact-message">{{ t('contact.form.message') }}</label>
       <textarea
-        id="message"
+        id="contact-message"
         v-model="formData.message"
+        class="form-field form-field--textarea"
         required
-        rows="5"
         :disabled="isSubmitting"
         :placeholder="t('contact.form.messagePlaceholder')"
       ></textarea>
     </div>
 
-    <div class="button-group">
+    <div>
       <button type="submit" class="submit-btn" :disabled="isSubmitting">
+        <span class="submit-btn__icon"><IconSend /></span>
         {{ isSubmitting ? t('contact.form.submitting') : t('contact.form.submit') }}
       </button>
     </div>
@@ -115,116 +121,113 @@ const handleSubmit = async () => {
 
 <style scoped>
 .contact-form {
-  position: relative;
-  background: var(--color-bg-primary);
-  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-card);
+}
+
+.form-message {
+  padding: var(--spacing-md);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border-light);
-  box-shadow: var(--shadow-glow);
+  font: var(--font-body-sm);
+  text-align: center;
 }
 
-.contact-form > * {
-  position: relative;
-  z-index: 1;
-}
-
-.contact-form::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
-    var(--gradient-brand-horizontal) border-box;
-  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  pointer-events: none;
-}
-
-.success-message {
+.form-message--success {
   background-color: var(--color-success);
-  color: white;
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--spacing-lg);
-  text-align: center;
+  color: #ffffff;
 }
 
-.error-message {
+.form-message--error {
   background-color: var(--color-error);
-  color: white;
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--spacing-lg);
-  text-align: center;
+  color: var(--color-on-error);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-lg);
 }
 
 .form-group {
-  margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .form-group label {
-  display: block;
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--spacing-sm);
+  font: var(--font-label-md);
+  color: var(--color-on-surface);
 }
 
-.form-group input,
-.form-group textarea {
+.form-field {
   width: 100%;
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
+  height: 56px;
+  padding: 0 16px;
+  border: 1px solid var(--color-outline);
   border-radius: var(--radius-sm);
-  font-size: var(--font-size-base);
-  font-family: inherit;
-  background: var(--color-bg-primary);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font: var(--font-body-sm);
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px var(--color-primary-light);
+.form-field--textarea {
+  height: 176px;
+  padding: 14px 16px;
+  resize: vertical;
 }
 
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+.form-field::placeholder {
+  color: var(--color-on-surface-variant);
 }
 
 .submit-btn {
-  width: 100%;
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  height: 56px;
+  padding: 0 32px;
+  border: 0;
   border-radius: var(--radius-full);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font: var(--font-label-lg);
+  box-shadow: var(--shadow-card);
   cursor: pointer;
-  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
-  background: var(--gradient-brand);
-  color: white;
+  transition: box-shadow var(--transition-base);
 }
 
 .submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-raised);
 }
 
 .submit-btn:disabled {
-  background: var(--color-primary-light);
+  background: var(--color-primary-container);
   color: var(--color-primary);
-  cursor: not-allowed;
-  transform: none;
   box-shadow: none;
+  cursor: not-allowed;
 }
 
-@media (min-width: 640px) {
-  .button-group {
-    flex-direction: row;
+.submit-btn__icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .contact-form {
+    padding: var(--spacing-lg);
+  }
+
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .submit-btn {
+    display: flex;
+    width: 100%;
   }
 }
 </style>

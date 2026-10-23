@@ -3,13 +3,13 @@ import AppNavigation from '@/components/AppNavigation.vue'
 </script>
 
 <template>
-  <div class="datenschutz-page">
-    <AppNavigation />
+  <AppNavigation />
 
-    <main class="content">
-      <h1>Datenschutz</h1>
+  <main class="section legal-page">
+    <div class="section__inner">
+      <h1 class="section__title legal-page__title">Datenschutz</h1>
 
-      <section class="section">
+      <section class="card legal-card">
         <h2>1. Datenschutz auf einen Blick</h2>
 
         <h3>Allgemeine Hinweise</h3>
@@ -66,7 +66,7 @@ import AppNavigation from '@/components/AppNavigation.vue'
         </p>
       </section>
 
-      <section class="section">
+      <section class="card legal-card">
         <h2>2. Hosting</h2>
 
         <h3>GitHub Pages</h3>
@@ -96,7 +96,7 @@ import AppNavigation from '@/components/AppNavigation.vue'
         </p>
       </section>
 
-      <section class="section">
+      <section class="card legal-card">
         <h2>3. Allgemeine Hinweise und Pflichtinformationen</h2>
 
         <h3>Datenschutz</h3>
@@ -292,7 +292,7 @@ import AppNavigation from '@/components/AppNavigation.vue'
         </p>
       </section>
 
-      <section class="section">
+      <section class="card legal-card">
         <h2>4. Datenerfassung auf dieser Website</h2>
 
         <h3>Kontaktformular</h3>
@@ -319,7 +319,7 @@ import AppNavigation from '@/components/AppNavigation.vue'
         </p>
       </section>
 
-      <section class="section">
+      <section class="card legal-card">
         <h2>5. Plugins und Tools</h2>
 
         <h3>Google reCAPTCHA</h3>
@@ -394,98 +394,55 @@ import AppNavigation from '@/components/AppNavigation.vue'
           </a>
         </p>
       </section>
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
 
 <style scoped>
-.datenschutz-page {
-  min-height: 100%;
-}
-
-.content {
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-xl);
-}
-
-.content h1 {
-  display: inline-block;
-  font-size: var(--font-size-5xl);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.02em;
+.legal-page__title {
   margin-bottom: var(--spacing-xl);
-  background: var(--gradient-text);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
-.section {
-  position: relative;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
+.legal-card {
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
 }
 
-.section > * {
-  position: relative;
-  z-index: 1;
-}
-
-.section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
-    var(--gradient-brand-horizontal) border-box;
-  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  pointer-events: none;
-}
-
-.section h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--color-text-primary);
+.legal-card h2 {
+  font: var(--font-headline-md);
+  color: var(--color-on-surface);
   margin-bottom: var(--spacing-md);
 }
 
-.section h3 {
-  font-size: var(--font-size-xl);
-  color: var(--color-text-primary);
+.legal-card h3 {
+  font: var(--font-title-lg);
+  color: var(--color-on-surface);
   margin: var(--spacing-lg) 0 var(--spacing-sm);
 }
 
-.section h4 {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-primary);
+.legal-card h4 {
+  font: var(--font-title-md);
+  color: var(--color-on-surface);
   margin: var(--spacing-md) 0 var(--spacing-xs);
 }
 
-.section p,
-.section li {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-lg);
-  line-height: 1.6;
+.legal-card p,
+.legal-card li {
+  font: var(--font-body-sm);
+  color: var(--color-on-surface-variant);
 }
 
-.section p + p {
+.legal-card p + p {
   margin-top: var(--spacing-sm);
 }
 
-.section ul {
+.legal-card ul {
   margin: var(--spacing-sm) 0 0 var(--spacing-xl);
   display: grid;
   gap: var(--spacing-sm);
 }
 
-.section a {
+.legal-card a {
   color: inherit;
   text-decoration: underline;
 }
@@ -500,8 +457,8 @@ import AppNavigation from '@/components/AppNavigation.vue'
 }
 
 @media (max-width: 768px) {
-  .content {
-    padding: var(--spacing-xl) var(--spacing-lg);
+  .legal-card {
+    padding: var(--spacing-lg);
   }
 }
 </style>

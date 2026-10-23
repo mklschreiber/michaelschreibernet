@@ -4,25 +4,10 @@ export interface PageMetadata {
 }
 
 export const pageMetadata = {
-  landing: {
+  home: {
     title: 'Michael Schreiber | Senior Software Engineer',
     description:
-      'Michael Schreiber, Senior Software Engineer. Entdecken Sie Projekte, berufliche Erfahrung und Kontaktmöglichkeiten.',
-  },
-  about: {
-    title: 'Über Michael Schreiber | Senior Software Engineer',
-    description:
-      'Erfahren Sie mehr über Michael Schreiber, Senior Software Engineer, und seinen beruflichen Werdegang.',
-  },
-  projects: {
-    title: 'Projekte von Michael Schreiber | Senior Software Engineer',
-    description:
-      'Entdecken Sie ausgewählte Softwareprojekte von Michael Schreiber, Senior Software Engineer.',
-  },
-  contact: {
-    title: 'Kontakt | Michael Schreiber',
-    description:
-      'Nehmen Sie Kontakt mit Michael Schreiber, Senior Software Engineer, auf.',
+      'Michael Schreiber, Senior Software Engineer: Projekte wie myStandby, beruflicher Werdegang und Kontakt auf einer Seite.',
   },
   imprint: {
     title: 'Impressum | michaelschreiber.net',
@@ -67,12 +52,13 @@ function canonicalUrl(path: string): string {
   return `${baseUrl.href}#${path}`
 }
 
-export function updatePageMetadata(metadata: PageMetadata, path: string): void {
+export function updatePageMetadata(metadata: PageMetadata, canonicalPath: string): void {
   document.title = metadata.title
   upsertMeta('meta[name="description"]', 'name', metadata.description)
   upsertMeta('meta[property="og:title"]', 'property', metadata.title)
   upsertMeta('meta[property="og:description"]', 'property', metadata.description)
 
+  const url = canonicalUrl(canonicalPath)
   let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
 
   if (!canonical) {
@@ -81,5 +67,6 @@ export function updatePageMetadata(metadata: PageMetadata, path: string): void {
     document.head.append(canonical)
   }
 
-  canonical.href = canonicalUrl(path)
+  canonical.href = url
+  upsertMeta('meta[property="og:url"]', 'property', url)
 }

@@ -6,8 +6,11 @@ import IconLinkedin from '@/components/icons/IconLinkedin.vue'
 import IconPhone from '@/components/icons/IconPhone.vue'
 import IconFacebook from '@/components/icons/IconFacebook.vue'
 import IconInstagram from '@/components/icons/IconInstagram.vue'
-import IconChevronLeft from '@/components/icons/IconChevronLeft.vue'
-import IconChevronRight from '@/components/icons/IconChevronRight.vue'
+import IconMenu from '@/components/icons/IconMenu.vue'
+import IconClose from '@/components/icons/IconClose.vue'
+import IconArrowDown from '@/components/icons/IconArrowDown.vue'
+import IconOpenInNew from '@/components/icons/IconOpenInNew.vue'
+import IconSend from '@/components/icons/IconSend.vue'
 
 describe.each([
   ['IconEmail', IconEmail],
@@ -16,8 +19,11 @@ describe.each([
   ['IconPhone', IconPhone],
   ['IconFacebook', IconFacebook],
   ['IconInstagram', IconInstagram],
-  ['IconChevronLeft', IconChevronLeft],
-  ['IconChevronRight', IconChevronRight],
+  ['IconMenu', IconMenu],
+  ['IconClose', IconClose],
+  ['IconArrowDown', IconArrowDown],
+  ['IconOpenInNew', IconOpenInNew],
+  ['IconSend', IconSend],
 ])('%s', (_name, component) => {
   it('renders exactly one flat, solid-fill svg with a 0 0 24 24 viewBox', () => {
     const wrapper = mount(component)

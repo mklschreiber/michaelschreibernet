@@ -3,94 +3,79 @@ import AppNavigation from '@/components/AppNavigation.vue'
 </script>
 
 <template>
-  <div class="impressum-page">
-    <AppNavigation />
+  <AppNavigation />
 
-    <main class="content">
-      <h1>Impressum</h1>
+  <main class="section legal-page">
+    <div class="section__inner">
+      <h1 class="section__title legal-page__title">Impressum</h1>
 
-      <section class="section">
+      <section class="card legal-card">
         <p>Michael Schreiber</p>
         <p>Grockelhofen 32</p>
         <p>89340 Leipheim</p>
       </section>
 
-      <section class="section">
+      <section class="card legal-card">
         <h2>Kontakt</h2>
         <p>Telefon: <a href="tel:+491624337334">+49 (0) 162 4337334</a></p>
         <p>E-Mail: <a href="mailto:info@michaelschreiber.net">info@michaelschreiber.net</a></p>
       </section>
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
 
 <style scoped>
-.impressum-page {
-  min-height: 100%;
-}
-
-.content {
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-xl);
-}
-
-.content h1 {
-  display: inline-block;
-  font-size: var(--font-size-5xl);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.02em;
+.legal-page__title {
   margin-bottom: var(--spacing-xl);
-  background: var(--gradient-text);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
-.section {
-  position: relative;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
+.legal-card {
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
 }
 
-.section > * {
-  position: relative;
-  z-index: 1;
-}
-
-.section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
-    var(--gradient-brand-horizontal) border-box;
-  mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 26px, transparent 80%);
-  pointer-events: none;
-}
-
-.section h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--color-text-primary);
+.legal-card h2 {
+  font: var(--font-headline-md);
+  color: var(--color-on-surface);
   margin-bottom: var(--spacing-md);
 }
 
-.section p {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-lg);
-  line-height: 1.5;
+.legal-card h3 {
+  font: var(--font-title-lg);
+  color: var(--color-on-surface);
+  margin: var(--spacing-lg) 0 var(--spacing-sm);
 }
 
-.section a {
+.legal-card h4 {
+  font: var(--font-title-md);
+  color: var(--color-on-surface);
+  margin: var(--spacing-md) 0 var(--spacing-xs);
+}
+
+.legal-card p,
+.legal-card li {
+  font: var(--font-body-sm);
+  color: var(--color-on-surface-variant);
+}
+
+.legal-card p + p {
+  margin-top: var(--spacing-sm);
+}
+
+.legal-card ul {
+  margin: var(--spacing-sm) 0 0 var(--spacing-xl);
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.legal-card a {
   color: inherit;
   text-decoration: underline;
 }
-</style>
 
+@media (max-width: 768px) {
+  .legal-card {
+    padding: var(--spacing-lg);
+  }
+}
+</style>
