@@ -65,13 +65,13 @@ describe('App', () => {
   it('links the Impressum footer entry to the English /imprint path', async () => {
     const wrapper = await mountApp()
 
-    expect(legalLinkHref(wrapper, 'Impressum')).toMatch(/#\/imprint$/)
+    expect(legalLinkHref(wrapper, 'Impressum')).toMatch(/\/imprint\/$/)
   })
 
   it('links the Datenschutz footer entry to the English /privacy path', async () => {
     const wrapper = await mountApp()
 
-    expect(legalLinkHref(wrapper, 'Datenschutz')).toMatch(/#\/privacy$/)
+    expect(legalLinkHref(wrapper, 'Datenschutz')).toMatch(/\/privacy\/$/)
   })
 })
 

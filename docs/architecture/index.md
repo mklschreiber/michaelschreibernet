@@ -188,7 +188,7 @@ material.
   entries are shown, tags are coloured by position, and SEO uses one canonical
   URL with a `WebSite` + `Person` JSON-LD graph. The MS-17 logo and MS-18 title
   animations are reused unchanged. *(supersedes `colored-tags` and the arrows of
-  `mobile-project-screenshot-carousel`)*
+  `mobile-project-screenshot-carousel`; hash history replaced by MS-22)*
 - [Tests for Redesign Onepager](MS-20-tests.md) — records the router tests: the
   section routes, a direct `scrollBehavior` check for `'auto'` and `'instant'`,
   and the root canonical URL. It also records the `useSectionNavigation` and
@@ -200,6 +200,26 @@ material.
   `index.html` and `seo.ts` with the JSON-LD graph, and the global scroll and
   font styles are covered too. Manual browser checks cover real scrolling, the
   scroll spy and the visual design.
+- [Canonical Host and History Routing](MS-22-canonical-host-and-history-routing.md) —
+  fixes the Google Search Console findings. The apex
+  `https://michaelschreiber.net` is the single canonical host, guarded by a
+  static test in `seo.spec.ts`. The router switches to `createWebHistory` with
+  trailing-slash paths (`/imprint/`, `/privacy/`, section routes `/projects/`,
+  `/about/`, `/contact/`). A small Vite plugin writes `dist/<route>/index.html`
+  per route from the built `index.html` with its own title, description,
+  canonical and `og:url` (single source `app/src/staticPages.ts`); section
+  copies canonicalize to `/`. `/impressum` and `/datenschutz` get static
+  redirect pages to `/imprint/` and `/privacy/`, old `#/` links are translated
+  with `replaceState` before the router starts, a catch-all redirects to `/`,
+  and the sitemap lists `/`, `/imprint/`, `/privacy/`. `404.html` and full
+  prerendering are rejected. *(revises MS-20 D1 and the URL form of MS-16)*
+- [Tests for Canonical Host and History Routing](MS-22-tests.md) — records the
+  apex host guard over `CNAME`, `index.html`, `sitemap.xml`, `robots.txt`,
+  the redirect pages and every rendered static page; `renderStaticPage`
+  (per-page head, escaping, missing/duplicate tags); the `/impressum` and
+  `/datenschutz` redirect pages; sitemap sync; the legacy `#/` translation;
+  and the history router (clean hrefs, slash-less paths, catch-all,
+  `staticPages` in sync with the routes).
 
 ## Reviews
 
@@ -304,6 +324,14 @@ material.
   findings — saved-position and legal-page scrolls ran smoothly over the page.
   The rest (section routes, scroll spy, app bar and mobile menu, sections,
   tokens, the 3 newest CV entries, SEO) matched the concept and design.
+* [Review for Fix canonical domain mismatch and legacy 404s reported by Google Search Console](MS-22-review.md) -
+  Round 1: positive. History routing with trailing-slash paths, the
+  per-route HTML plugin (verified output, build fails on collision or a
+  missing tag), `/impressum`/`/datenschutz` redirect pages, the `#/`
+  translation incl. the cross-origin fix, apex-only canonicals/sitemap and
+  the MS-20 section URL sync match the concept. Unit tests (1351/1351), lint
+  and build pass. Two non-blocking notes (stale test comment, `join` vs
+  `resolve` for `outDir`).
 
 When a feature requires a durable architecture decision, add a concise
 Markdown concept document here, list it in this section, and record the

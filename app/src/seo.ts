@@ -1,23 +1,7 @@
-export interface PageMetadata {
-  title: string
-  description: string
-}
+import type { PageMetadata } from './staticPages'
 
-export const pageMetadata = {
-  home: {
-    title: 'Michael Schreiber | Senior Software Engineer',
-    description:
-      'Michael Schreiber, Senior Software Engineer: Projekte wie myStandby, beruflicher Werdegang und Kontakt auf einer Seite.',
-  },
-  imprint: {
-    title: 'Impressum | michaelschreiber.net',
-    description: 'Impressum von michaelschreiber.net.',
-  },
-  privacy: {
-    title: 'Datenschutz | michaelschreiber.net',
-    description: 'Datenschutzerklärung von michaelschreiber.net.',
-  },
-} satisfies Record<string, PageMetadata>
+export { pageMetadata } from './staticPages'
+export type { PageMetadata } from './staticPages'
 
 export function isPageMetadata(value: unknown): value is PageMetadata {
   return (
@@ -43,13 +27,7 @@ function upsertMeta(selector: string, attribute: 'name' | 'property', value: str
 }
 
 function canonicalUrl(path: string): string {
-  const baseUrl = new URL(import.meta.env.BASE_URL, window.location.origin)
-
-  if (path === '/') {
-    return baseUrl.href
-  }
-
-  return `${baseUrl.href}#${path}`
+  return new URL(path, new URL(import.meta.env.BASE_URL, window.location.origin)).href
 }
 
 export function updatePageMetadata(metadata: PageMetadata, canonicalPath: string): void {

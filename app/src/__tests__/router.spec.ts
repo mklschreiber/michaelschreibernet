@@ -39,6 +39,17 @@
  *   first navigation to `/contact` still jumps instantly. The module-level
  *   marker is reset before each of these tests.
  */
+/*
+ * Testing concept (MS-22 — Canonical host and history routing), see
+ * docs/architecture/MS-22-tests.md
+ *
+ * - D3: the router uses web history (no `#` in hrefs); page routes carry a
+ *   trailing slash, `/imprint` without slash still resolves and its canonical
+ *   is the record path `/imprint/`; legacy redirects target `/imprint/` and
+ *   `/privacy/`; an unknown path is redirected to `home` by the catch-all.
+ * - D4: every `staticPages` path resolves to a named route, so the build's
+ *   page list and the route table cannot drift apart.
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { START_LOCATION } from 'vue-router'
@@ -47,6 +58,7 @@ import router from '@/router'
 import { consumeSilentSectionSync, replaceSectionSilently } from '@/composables/useSectionUrlSync'
 import LandingPage from '@/views/LandingPage.vue'
 import { pageMetadata } from '@/seo'
+import { staticPages } from '@/staticPages'
 import ImpressumPage from '@/views/ImpressumPage.vue'
 import DataProtectionPage from '@/views/DataProtectionPage.vue'
 
@@ -81,7 +93,7 @@ describe('route table', () => {
       .map((route) => route.path)
 
     expect(pagePaths.sort()).toEqual(
-      ['/', '/about', '/projects', '/contact', '/imprint', '/privacy'].sort(),
+      ['/', '/about/', '/projects/', '/contact/', '/imprint/', '/privacy/'].sort(),
     )
   })
 
@@ -92,8 +104,9 @@ describe('route table', () => {
       .map((route) => ({ path: route.path, name: route.name, redirect: route.redirect }))
 
     expect(redirects).toEqual([
-      { path: '/impressum', name: undefined, redirect: '/imprint' },
-      { path: '/datenschutz', name: undefined, redirect: '/privacy' },
+      { path: '/impressum', name: undefined, redirect: '/imprint/' },
+      { path: '/datenschutz', name: undefined, redirect: '/privacy/' },
+      { path: '/:pathMatch(.*)*', name: undefined, redirect: '/' },
     ])
   })
 })
@@ -130,13 +143,13 @@ describe('legacy German paths', () => {
   it('redirects /impressum to /imprint', async () => {
     await router.push('/impressum')
 
-    expect(router.currentRoute.value.path).toBe('/imprint')
+    expect(router.currentRoute.value.path).toBe('/imprint/')
   })
 
   it('redirects /datenschutz to /privacy', async () => {
     await router.push('/datenschutz')
 
-    expect(router.currentRoute.value.path).toBe('/privacy')
+    expect(router.currentRoute.value.path).toBe('/privacy/')
   })
 
   it('sets the imprint title after opening /impressum', async () => {
@@ -154,13 +167,13 @@ describe('legacy German paths', () => {
   it('uses the new imprint path as canonical URL after opening /impressum', async () => {
     await router.push('/impressum')
 
-    expect(canonicalHref()).toBe(`${window.location.origin}/#/imprint`)
+    expect(canonicalHref()).toBe(`${window.location.origin}/imprint/`)
   })
 
   it('uses the new privacy path as canonical URL after opening /datenschutz', async () => {
     await router.push('/datenschutz')
 
-    expect(canonicalHref()).toBe(`${window.location.origin}/#/privacy`)
+    expect(canonicalHref()).toBe(`${window.location.origin}/privacy/`)
   })
 })
 
@@ -224,13 +237,13 @@ describe('section routes SEO (MS-20, D15)', () => {
   it('keeps the own canonical path on the imprint page', async () => {
     await router.push('/imprint')
 
-    expect(canonicalHref()).toBe(`${window.location.origin}/#/imprint`)
+    expect(canonicalHref()).toBe(`${window.location.origin}/imprint/`)
   })
 
   it('keeps the own canonical path on the privacy page', async () => {
     await router.push('/privacy')
 
-    expect(canonicalHref()).toBe(`${window.location.origin}/#/privacy`)
+    expect(canonicalHref()).toBe(`${window.location.origin}/privacy/`)
   })
 })
 
@@ -433,7 +446,7 @@ describe('silent URL sync (MS-20, R5)', () => {
 
     await replaceSectionSilently(router, 'about')
 
-    expect(router.currentRoute.value.fullPath).toBe('/about')
+    expect(router.currentRoute.value.fullPath).toBe('/about/')
   })
 
   it('does not scroll the section into view', async () => {
@@ -495,4 +508,75 @@ describe('silent URL sync (MS-20, R5)', () => {
 
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start', behavior: 'instant' })
   })
+})
+
+describe('history routing (MS-22, D3)', () => {
+  it.each([
+    ['home', '/'],
+    ['projects', '/projects/'],
+    ['about', '/about/'],
+    ['contact', '/contact/'],
+    ['imprint', '/imprint/'],
+    ['privacy', '/privacy/'],
+  ])('resolves the route %s to the clean href %s', (name, href) => {
+    expect(router.resolve({ name }).href).toBe(href)
+  })
+
+  it.each(['/imprint', '/imprint/'])('resolves %s to the route named imprint', (path) => {
+    expect(router.resolve(path).name).toBe('imprint')
+  })
+
+  it.each([
+    ['/impressum/', '/imprint/'],
+    ['/datenschutz/', '/privacy/'],
+  ])('also redirects %s with a trailing slash to %s', async (path, target) => {
+    await router.push(path)
+
+    expect(router.currentRoute.value.path).toBe(target)
+  })
+
+  it('uses the record path /imprint/ as canonical after opening /imprint without slash', async () => {
+    await router.push('/imprint')
+
+    expect(canonicalHref()).toBe(`${window.location.origin}/imprint/`)
+  })
+
+  it('uses the record path /privacy/ as og:url after opening /privacy without slash', async () => {
+    await router.push('/privacy')
+
+    expect(document.querySelector('meta[property="og:url"]')?.getAttribute('content')).toBe(
+      `${window.location.origin}/privacy/`,
+    )
+  })
+
+  it('puts the clean path into the address bar', async () => {
+    await router.push({ name: 'imprint' })
+
+    expect(`${window.location.pathname}${window.location.hash}`).toBe('/imprint/')
+  })
+
+  it.each(['/foo', '/foo/bar/', '/imprint/extra'])('redirects the unknown path %s to home', async (path) => {
+    await router.push(path)
+
+    expect(router.currentRoute.value.name).toBe('home')
+  })
+
+  it('uses the site root as canonical after the catch-all redirect', async () => {
+    await router.push('/foo')
+
+    expect(canonicalHref()).toBe(`${window.location.origin}/`)
+  })
+})
+
+describe('static pages and routes in sync (MS-22, D4)', () => {
+  it.each(staticPages.map((page) => page.path))('resolves the static page %s to a named route', (path) => {
+    expect(router.resolve(path).name).toEqual(expect.any(String))
+  })
+
+  it.each(staticPages.map((page) => [page.path, page.metadata] as const))(
+    'carries the same metadata on %s as the static page',
+    (path, metadata) => {
+      expect(router.resolve(path).meta.seo).toEqual(metadata)
+    },
+  )
 })

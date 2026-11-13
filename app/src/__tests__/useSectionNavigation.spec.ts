@@ -10,7 +10,7 @@
  *   `scrollIntoView({ block: 'start' })` on the section element, the
  *   behaviour passed through unchanged, no error for a missing element).
  * - Composable level (harness component + real Vue Router): `sectionHref`
- *   resolves the route href (`#/projects` under hash history), `goToSection`
+ *   resolves the route href (`/projects/` under web history, MS-22 D3), `goToSection`
  *   pushes the named route and prevents the default for a plain primary
  *   click, leaves modified / non-primary / already-prevented clicks to the
  *   browser, and scrolls itself (`'auto'`) on a duplicated navigation
@@ -21,7 +21,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent } from 'vue'
 import { mount } from '@vue/test-utils'
-import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
+import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
 import type { Router, RouterHistory } from 'vue-router'
 import {
   SECTION_IDS,
@@ -49,10 +49,10 @@ function createTestRouter(history: RouterHistory = createMemoryHistory()): Route
     history,
     routes: [
       { path: '/', name: 'home', component: page },
-      { path: '/projects', name: 'projects', component: page },
-      { path: '/about', name: 'about', component: page },
-      { path: '/contact', name: 'contact', component: page },
-      { path: '/imprint', name: 'imprint', component: page },
+      { path: '/projects/', name: 'projects', component: page },
+      { path: '/about/', name: 'about', component: page },
+      { path: '/contact/', name: 'contact', component: page },
+      { path: '/imprint/', name: 'imprint', component: page },
     ],
   })
 }
@@ -164,12 +164,12 @@ describe('scrollToSection', () => {
 
 describe('useSectionNavigation — sectionHref', () => {
   it.each([
-    ['home', '#/'],
-    ['projects', '#/projects'],
-    ['about', '#/about'],
-    ['contact', '#/contact'],
-  ] as const)('resolves %s to the hash href %s', (id, href) => {
-    const navigation = useNavigation(createTestRouter(createWebHashHistory()))
+    ['home', '/'],
+    ['projects', '/projects/'],
+    ['about', '/about/'],
+    ['contact', '/contact/'],
+  ] as const)('resolves %s to the clean href %s', (id, href) => {
+    const navigation = useNavigation(createTestRouter(createWebHistory()))
 
     expect(navigation.sectionHref(id)).toBe(href)
   })
@@ -204,12 +204,12 @@ describe('useSectionNavigation — goToSection', () => {
   })
 
   it('navigates from a legal page to a section', async () => {
-    const router = await routerAt('/imprint')
+    const router = await routerAt('/imprint/')
     const navigation = useNavigation(router)
 
     await navigation.goToSection('projects', click())
 
-    expect(router.currentRoute.value.path).toBe('/projects')
+    expect(router.currentRoute.value.path).toBe('/projects/')
   })
 
   it.each([
@@ -255,7 +255,7 @@ describe('useSectionNavigation — goToSection', () => {
 
   it('scrolls to the section itself when the route is already current', async () => {
     addSection('projects')
-    const navigation = useNavigation(await routerAt('/projects'))
+    const navigation = useNavigation(await routerAt('/projects/'))
 
     await navigation.goToSection('projects', click())
 
