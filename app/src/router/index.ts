@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import LandingPage from '@/views/LandingPage.vue'
 import ImpressumPage from '@/views/ImpressumPage.vue'
 import DataProtectionPage from '@/views/DataProtectionPage.vue'
@@ -7,6 +7,7 @@ import type { PageMetadata } from '@/seo'
 import { isSectionId, scrollToSection } from '@/composables/useSectionNavigation'
 import type { SectionId } from '@/composables/useSectionNavigation'
 import { consumeSilentSectionSync } from '@/composables/useSectionUrlSync'
+import { translateLegacyHashUrl } from '@/router/legacyHash'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -15,8 +16,10 @@ declare module 'vue-router' {
   }
 }
 
+translateLegacyHashUrl()
+
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -25,38 +28,39 @@ const router = createRouter({
       meta: { seo: pageMetadata.home, section: 'home' },
     },
     {
-      path: '/projects',
+      path: '/projects/',
       name: 'projects',
       component: LandingPage,
       meta: { seo: pageMetadata.home, section: 'projects' },
     },
     {
-      path: '/about',
+      path: '/about/',
       name: 'about',
       component: LandingPage,
       meta: { seo: pageMetadata.home, section: 'about' },
     },
     {
-      path: '/contact',
+      path: '/contact/',
       name: 'contact',
       component: LandingPage,
       meta: { seo: pageMetadata.home, section: 'contact' },
     },
     {
-      path: '/imprint',
+      path: '/imprint/',
       name: 'imprint',
       component: ImpressumPage,
       meta: { seo: pageMetadata.imprint },
     },
     {
-      path: '/privacy',
+      path: '/privacy/',
       name: 'privacy',
       component: DataProtectionPage,
       meta: { seo: pageMetadata.privacy },
     },
     // Legacy German paths (MS-16): keep old bookmarks working.
-    { path: '/impressum', redirect: '/imprint' },
-    { path: '/datenschutz', redirect: '/privacy' },
+    { path: '/impressum', redirect: '/imprint/' },
+    { path: '/datenschutz', redirect: '/privacy/' },
+    { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (consumeSilentSectionSync(to.meta.section)) return false
@@ -80,7 +84,8 @@ router.afterEach((to) => {
   const metadata = to.meta.seo
 
   if (isPageMetadata(metadata)) {
-    updatePageMetadata(metadata, isSectionId(to.meta.section) ? '/' : to.path)
+    const recordPath = to.matched[to.matched.length - 1]?.path ?? to.path
+    updatePageMetadata(metadata, isSectionId(to.meta.section) ? '/' : recordPath)
   }
 })
 

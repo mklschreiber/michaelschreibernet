@@ -7,6 +7,8 @@ timestamp: 2026-10-21T00:00:00+02:00
 status: draft
 ---
 
+> **Note (MS-22):** URLs no longer use `#`; the routes are `/imprint/` and `/privacy/`, and `/impressum`, `/datenschutz` also have static redirect pages; see [MS-22](MS-22-canonical-host-and-history-routing.md).
+
 ## Story
 
 As a developer, I want all subpages of the website to use English route

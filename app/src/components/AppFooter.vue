@@ -2,8 +2,8 @@
   <footer class="app-footer">
     <div class="footer-container">
       <nav class="legal-links" aria-label="Rechtliches">
-        <RouterLink class="legal-link" to="/imprint">Impressum</RouterLink>
-        <RouterLink class="legal-link" to="/privacy">Datenschutz</RouterLink>
+        <RouterLink class="legal-link" to="/imprint/">Impressum</RouterLink>
+        <RouterLink class="legal-link" to="/privacy/">Datenschutz</RouterLink>
       </nav>
       <p class="copyright">Copyright 2026 - michael<strong>schreiber</strong>.net</p>
     </div>

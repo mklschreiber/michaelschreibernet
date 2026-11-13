@@ -7,6 +7,8 @@ timestamp: 2026-10-23T20:00:00+02:00
 status: approved
 ---
 
+> **Note (MS-22):** D1's hash history is replaced by `createWebHistory` with trailing-slash section paths (`/projects/` …) and per-route HTML files; see [MS-22](MS-22-canonical-host-and-history-routing.md). The section-route design itself stays valid.
+
 ## Story
 
 As a user, I want a single page (onepager) showing the site's content — Welcome, Projects,
